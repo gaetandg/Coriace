@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { HistoryEntry } from './history';
-import { minutesInLastDays, startOfWeek, topSessions, weekStreak, weeklyStats } from './stats';
+import { groupSets, minutesInLastDays, startOfWeek, topSessions, weekStreak, weeklyStats } from './stats';
 
 let n = 0;
 const at = (date: Date, name = 'Gainage', minutes = 15): HistoryEntry => ({
@@ -46,5 +46,19 @@ describe('stats', () => {
   it('ranks the most completed sessions', () => {
     const entries = [at(now, 'Gainage'), at(now, 'Complète'), at(now, 'Gainage'), at(now, 'Mollets express')];
     expect(topSessions(entries, 2)).toEqual([{ name: 'Gainage', count: 2 }, { name: 'Complète', count: 1 }]);
+  });
+
+  it('counts work intervals per group, and the sessions saved without exercises', () => {
+    const entries = [
+      { ...at(new Date(2026, 9, 6)), exercises: ['calves_seated', 'calves_seated', 'side_plank', 'copenhagen_plank', 'removed_exercise'] },
+      { ...at(new Date(2026, 9, 1)), exercises: ['dead_bug'] },
+      at(new Date(2026, 9, 2)),
+      { ...at(new Date(2026, 7, 1)), exercises: ['calves_seated'] }, // too old
+    ];
+    const { groups, untracked } = groupSets(entries, 30, now);
+    const sets = Object.fromEntries(groups.map(g => [g.group, g.sets]));
+    expect(sets).toMatchObject({ mollets: 2, gainage: 2, adducteurs: 1, cardio: 0 });
+    expect(groups[0].group).toBe('mollets');
+    expect(untracked).toBe(1);
   });
 });

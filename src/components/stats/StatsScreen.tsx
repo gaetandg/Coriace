@@ -1,11 +1,11 @@
 import { ReactNode, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { HistoryEntry, sessionsInLastDays } from '../../lib/history';
-import { minutesInLastDays, topSessions, weekStreak, weeklyStats } from '../../lib/stats';
+import { groupSets, minutesInLastDays, topSessions, weekStreak, weeklyStats } from '../../lib/stats';
 import { plural } from '../../lib/format';
 import { primaryButton, sectionLabel } from '../../lib/ui';
 import { WeeklyChart } from './WeeklyChart';
-import { TopSessions } from './TopSessions';
+import { BarList } from './BarList';
 
 const dayFormat = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
 // Older sessions stay behind a button so the page doesn't grow forever.
@@ -32,6 +32,8 @@ export function StatsScreen({ history, onBack, onClear, account }: StatsScreenPr
     { value: decimal.format(sessionsInLastDays(history, 28) / 4), label: 'en moyenne par semaine' },
   ];
   const top = topSessions(history, 5);
+  const worked = groupSets(history, 30);
+  const trackedSets = worked.groups.reduce((sum, g) => sum + g.sets, 0);
 
   return (
     <main id="panel-stats" className="flex-1 flex flex-col gap-5">
@@ -56,7 +58,20 @@ export function StatsScreen({ history, onBack, onClear, account }: StatsScreenPr
           </div>
 
           <WeeklyChart weeks={weeklyStats(history, 12)} />
-          <TopSessions sessions={top} />
+          {trackedSets > 0 && (
+            <BarList
+              title="Groupes travaillés"
+              subtitle="Séries de travail sur 30 jours"
+              items={worked.groups.map(g => ({ label: g.label, value: g.sets, valueLabel: plural(g.sets, 'série') }))}
+              footer={worked.untracked > 0
+                ? `${plural(worked.untracked, 'séance')} plus ancienne${worked.untracked > 1 ? 's' : ''} sans le détail des exercices.`
+                : undefined}
+            />
+          )}
+          <BarList
+            title="Séances les plus faites"
+            items={top.map(s => ({ label: s.name, value: s.count, valueLabel: `${s.count} fois` }))}
+          />
         </>
       )}
 

@@ -13,6 +13,8 @@ export interface HistoryEntry {
   minutes: number;
   rythme: WorkoutConfig['rythme'];
   exerciseCount: number;
+  // One exercise id per work interval of the circuit and finisher; missing on older sessions.
+  exercises?: string[];
 }
 
 const isEntry = (value: unknown): value is HistoryEntry => {
@@ -23,7 +25,8 @@ const isEntry = (value: unknown): value is HistoryEntry => {
     && typeof e.name === 'string'
     && typeof e.minutes === 'number'
     && (e.rythme === 'equilibre' || e.rythme === 'intense')
-    && typeof e.exerciseCount === 'number';
+    && typeof e.exerciseCount === 'number'
+    && (e.exercises === undefined || (Array.isArray(e.exercises) && e.exercises.every(id => typeof id === 'string')));
 };
 
 // Most recent first; malformed entries are dropped.

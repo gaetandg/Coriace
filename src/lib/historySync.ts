@@ -11,6 +11,7 @@ interface HistoryRow {
   minutes: number;
   rythme: HistoryEntry['rythme'];
   exercise_count: number;
+  exercises?: string[] | null;
 }
 
 const toRow = (entry: HistoryEntry): HistoryRow => ({
@@ -21,6 +22,7 @@ const toRow = (entry: HistoryEntry): HistoryRow => ({
   minutes: entry.minutes,
   rythme: entry.rythme,
   exercise_count: entry.exerciseCount,
+  exercises: entry.exercises ?? null,
 });
 
 const fromRow = (row: HistoryRow): HistoryEntry => ({
@@ -31,7 +33,20 @@ const fromRow = (row: HistoryRow): HistoryEntry => ({
   minutes: row.minutes,
   rythme: row.rythme,
   exerciseCount: row.exercise_count,
+  ...(row.exercises ? { exercises: row.exercises } : {}),
 });
+
+// PGRST204: a column is missing from the table. Until the `exercises` migration is run,
+// sessions are still saved, without their exercises.
+async function insertRows(client: SupabaseClient, rows: HistoryRow[]) {
+  const { error } = await client.from('session_history').insert(rows);
+  if (error?.code === 'PGRST204') {
+    const { error: retryError } = await client.from('session_history').insert(rows.map(({ exercises: _, ...row }) => row));
+    if (retryError) throw retryError;
+  } else if (error) {
+    throw error;
+  }
+}
 
 // Union of both lists by id, most recent first.
 export function mergeHistories(local: HistoryEntry[], remote: HistoryEntry[]): HistoryEntry[] {
@@ -48,15 +63,13 @@ export async function syncHistory(client: SupabaseClient, local: HistoryEntry[])
   const remoteIds = new Set(remote.map(e => e.id));
   const missing = local.filter(e => !remoteIds.has(e.id));
   if (missing.length > 0) {
-    const { error: insertError } = await client.from('session_history').insert(missing.map(toRow));
-    if (insertError) throw insertError;
+    await insertRows(client, missing.map(toRow));
   }
   return mergeHistories(local, remote);
 }
 
 export async function pushHistoryEntry(client: SupabaseClient, entry: HistoryEntry) {
-  const { error } = await client.from('session_history').insert(toRow(entry));
-  if (error) throw error;
+  await insertRows(client, [toRow(entry)]);
 }
 
 export async function deleteRemoteHistory(client: SupabaseClient, userId: string) {

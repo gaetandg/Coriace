@@ -33,7 +33,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [ ] Programme sur plusieurs semaines (enchaînement de séances selon la phase de préparation)
 - [x] Historique des séances terminées, avec le nombre de séances des 7 derniers jours sur l'accueil
 - [x] Écran Statistiques : chiffres clés, séances par semaine, séances les plus faites
-- [ ] Stats par groupe musculaire (enregistrer les exercices de chaque séance)
+- [x] Stats par groupe musculaire : chaque séance enregistre ses exercices (séries de travail sur 30 jours)
 - [ ] Créer ses propres séances (exercices et ordre choisis) et les enregistrer
 
 ### Préférences

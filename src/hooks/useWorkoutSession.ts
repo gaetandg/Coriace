@@ -109,12 +109,17 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
   };
 
   // Countdown: derived from an end timestamp so it stays accurate even if ticks are delayed.
+  // Changing interval bumps `timerTokenRef` right away, so the previous timer, still running until
+  // React re-renders, can't overwrite the new interval's countdown with its own 0 and stall the session.
   const secondsRef = useRef(secondsRemaining);
   secondsRef.current = secondsRemaining;
+  const timerTokenRef = useRef(0);
   useEffect(() => {
     if (!isPlaying || workoutState !== 'active') return;
     const endAt = Date.now() + secondsRef.current * 1000;
+    const token = timerTokenRef.current;
     const timer = window.setInterval(() => {
+      if (timerTokenRef.current !== token) return;
       setSecondsRemaining(Math.max(0, Math.ceil((endAt - Date.now()) / 1000)));
     }, 200);
     return () => window.clearInterval(timer);
@@ -154,6 +159,7 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
   };
 
   const goToInterval = (index: number) => {
+    timerTokenRef.current++;
     setCurrentIntervalIndex(index);
     setSecondsRemaining(intervals[index].duration);
     setTimerRun(run => run + 1);
@@ -257,6 +263,7 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
         minutes: plannedMinutes,
         rythme: config.rythme,
         exerciseCount: plan.circuitExercises.length + plan.finishers.length,
+        exercises: intervals.filter(i => i.type === 'work' && i.stage !== 'warmup' && i.exercise).map(i => i.exercise!.id),
       });
       setHistory(prev => [entry, ...prev]);
       // If this fails (offline), the next sync sends it.

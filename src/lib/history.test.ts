@@ -40,6 +40,13 @@ describe('history', () => {
     expect(loadHistory()).toEqual([]);
   });
 
+  it('keeps the exercises of a session, and drops entries with malformed ones', () => {
+    addHistoryEntry({ ...entry, exercises: ['side_plank', 'dead_bug'] }, new Date(2026, 9, 7));
+    expect(loadHistory()[0].exercises).toEqual(['side_plank', 'dead_bug']);
+    store.set('coriace:history:v1', JSON.stringify([{ ...entry, id: '1', completedAt: '2026-10-07T10:00:00.000Z', exercises: [3] }]));
+    expect(loadHistory()).toEqual([]);
+  });
+
   it('can be cleared', () => {
     addHistoryEntry(entry);
     clearHistory();

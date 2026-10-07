@@ -1,4 +1,7 @@
 import { HistoryEntry } from './history';
+import { EXERCISE_DATABASE } from '../exercises';
+import { EXERCISE_GROUPS } from './groups';
+import { ExerciseGroup } from '../types';
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -72,4 +75,30 @@ export function topSessions(entries: HistoryEntry[], limit: number): { name: str
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'fr'))
     .slice(0, limit);
+}
+
+export interface GroupSets {
+  group: ExerciseGroup;
+  label: string;
+  sets: number;
+}
+
+// Work intervals per exercise group over the last `days` days, in the usual group order.
+// `untracked` counts the sessions of that period saved before exercises were recorded.
+export function groupSets(entries: HistoryEntry[], days: number, now = new Date()): { groups: GroupSets[]; untracked: number } {
+  const since = now.getTime() - days * DAY;
+  const recent = entries.filter(e => {
+    const time = new Date(e.completedAt).getTime();
+    return time > since && time <= now.getTime();
+  });
+  const groupOf = new Map(EXERCISE_DATABASE.map(e => [e.id, e.group]));
+  const sets = new Map<ExerciseGroup, number>();
+  for (const id of recent.flatMap(e => e.exercises ?? [])) {
+    const group = groupOf.get(id);
+    if (group) sets.set(group, (sets.get(group) ?? 0) + 1);
+  }
+  return {
+    groups: EXERCISE_GROUPS.map(g => ({ group: g.id, label: g.label, sets: sets.get(g.id) ?? 0 })),
+    untracked: recent.filter(e => !e.exercises).length,
+  };
 }
