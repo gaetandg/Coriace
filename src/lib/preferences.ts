@@ -1,3 +1,4 @@
+import { isRhythm } from './rhythm';
 import { EXERCISE_DATABASE } from '../exercises';
 import { SoundSettings, WorkoutConfig } from '../types';
 
@@ -61,7 +62,7 @@ export function loadPreferences(): Preferences {
   return {
     config: {
       equipment,
-      rythme: stored.rythme === 'intense' || stored.rythme === 'equilibre' ? stored.rythme : defaults.config.rythme,
+      rythme: isRhythm(stored.rythme) ? stored.rythme : defaults.config.rythme,
       durationMinutes: DURATIONS.includes(stored.durationMinutes as number) ? stored.durationMinutes : defaults.config.durationMinutes,
       skipWarmup: isBoolean(stored.skipWarmup) ? stored.skipWarmup : false,
       selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id).filter(id => !excluded.includes(id)),

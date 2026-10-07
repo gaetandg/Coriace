@@ -20,6 +20,7 @@ const EQUIPMENT_OPTIONS: { key: EquipmentKey; id: string; label: string }[] = [
 ];
 
 const RYTHME_OPTIONS: { value: WorkoutConfig['rythme']; id: string; title: string; label: string }[] = [
+  { value: 'doux', id: 'rad-rythme-doux', title: '20 / 40', label: 'Doux' },
   { value: 'equilibre', id: 'rad-rythme-equilibre', title: '30 / 30', label: 'Équilibré' },
   { value: 'intense', id: 'rad-rythme-intense', title: '40 / 20', label: 'Intense' },
 ];
@@ -63,7 +64,7 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
         <RecentActivity count={sessionsInLastDays(session.history, 7)} onOpen={onOpenHistory} />
       )}
 
-      <div className={`relative ${segmentedTrack}`}>
+      <div className={`relative ${segmentedTrack} grid-cols-2`}>
         {MODE_OPTIONS.map(option => (
           <button
             key={option.value}
@@ -79,7 +80,7 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
 
       <div className="relative flex flex-col gap-2.5">
         <span className={sectionLabel}>Rythme</span>
-        <div className={segmentedTrack}>
+        <div className={`${segmentedTrack} grid-cols-3`}>
           {RYTHME_OPTIONS.map(option => {
             const selected = config.rythme === option.value;
             return (

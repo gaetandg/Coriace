@@ -1,4 +1,5 @@
 import { WorkoutConfig } from '../types';
+import { isRhythm } from './rhythm';
 
 // Completed sessions, kept in this browser only.
 
@@ -24,7 +25,7 @@ const isEntry = (value: unknown): value is HistoryEntry => {
     && typeof e.completedAt === 'string' && !Number.isNaN(Date.parse(e.completedAt))
     && typeof e.name === 'string'
     && typeof e.minutes === 'number'
-    && (e.rythme === 'equilibre' || e.rythme === 'intense')
+    && isRhythm(e.rythme)
     && typeof e.exerciseCount === 'number'
     && (e.exercises === undefined || (Array.isArray(e.exercises) && e.exercises.every(id => typeof id === 'string')));
 };

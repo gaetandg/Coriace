@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ArrowLeft, ChevronRight, Play } from 'lucide-react';
 import { Exercise, WorkoutConfig, WorkoutInterval } from '../../types';
 import { PlanGroups } from '../../lib/plan';
+import { RHYTHMS, rhythmTiming } from '../../lib/rhythm';
 import { outlineButton, primaryButton, sectionLabel } from '../../lib/ui';
 import { ExerciseDetailModal } from './ExerciseDetailModal';
 import { ExerciseThumb } from '../ExerciseThumb';
@@ -62,7 +63,7 @@ export function SummaryScreen({ title, backLabel, minutes, rythme, plan, onBack,
 
   const stats = [
     { value: String(minutes), label: 'minutes' },
-    { value: rythme === 'equilibre' ? '30/30' : '40/20', label: rythme === 'equilibre' ? 'équilibré' : 'intense' },
+    { value: rhythmTiming(rythme), label: RHYTHMS[rythme].label.toLowerCase() },
     { value: String(plan.circuitExercises.length + plan.finishers.length), label: 'exercices' },
   ];
 

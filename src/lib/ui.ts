@@ -8,7 +8,7 @@ export const outlineButton =
 
 export const sectionLabel = 'text-sm font-semibold text-sand';
 
-// Two-option switch, e.g. rhythm or circuit count.
-export const segmentedTrack = 'grid grid-cols-2 gap-1 p-1 rounded-2xl bg-ink/35';
+// Two- or three-option switch, e.g. rhythm or session mode; add the grid-cols-N class.
+export const segmentedTrack = 'grid gap-1 p-1 rounded-2xl bg-ink/35';
 export const segmentedOption = (selected: boolean) =>
   `rounded-xl cursor-pointer transition-colors ${selected ? 'bg-cream text-ink' : 'text-white hover:bg-white/10'}`;

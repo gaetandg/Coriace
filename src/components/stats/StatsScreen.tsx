@@ -3,6 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 import { HistoryEntry, sessionsInLastDays } from '../../lib/history';
 import { groupSets, minutesInLastDays, topSessions, weekStreak, weeklyStats } from '../../lib/stats';
 import { plural } from '../../lib/format';
+import { rhythmTiming } from '../../lib/rhythm';
 import { primaryButton, sectionLabel } from '../../lib/ui';
 import { WeeklyChart } from './WeeklyChart';
 import { BarList } from './BarList';
@@ -86,7 +87,7 @@ export function StatsScreen({ history, onBack, onClear, account }: StatsScreenPr
                 <span className="flex flex-col">
                   <span className="font-semibold text-base">{entry.name}</span>
                   <span className="text-sm text-sand">
-                    {entry.minutes} min · {entry.rythme === 'equilibre' ? '30/30' : '40/20'} · {plural(entry.exerciseCount, 'exercice')}
+                    {entry.minutes} min · {rhythmTiming(entry.rythme)} · {plural(entry.exerciseCount, 'exercice')}
                   </span>
                 </span>
                 <span className="text-sm text-sand shrink-0 first-letter:uppercase">{dayFormat.format(new Date(entry.completedAt))}</span>

@@ -48,7 +48,7 @@ export interface WorkoutConfig {
     poids_8kg: boolean;
     corde_a_sauter: boolean;
   };
-  rythme: 'equilibre' | 'intense'; // equilibre = 30s/30s, intense = 40s/20s
+  rythme: 'doux' | 'equilibre' | 'intense'; // 20/40, 30/30, 40/20 seconds of work/rest (lib/rhythm.ts)
   durationMinutes?: number; // 15 to 60, default 30
   selectedExerciseIds?: string[]; // Exercises selected by the user
   numBlocks?: number; // no longer used: the length of the session decides

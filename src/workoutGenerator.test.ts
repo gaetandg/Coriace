@@ -20,7 +20,7 @@ const firstRound = (intervals: WorkoutInterval[], block = 1) =>
 
 describe('generateWorkout', () => {
   for (const numBlocks of [1, 2]) {
-    for (const rythme of ['equilibre', 'intense'] as const) {
+    for (const rythme of ['doux', 'equilibre', 'intense'] as const) {
       for (const durationMinutes of [15, 20, 30, 45, 60]) {
         it(`lasts ${durationMinutes} min within 30 s (${rythme}, ${numBlocks} block)`, () => {
           const seconds = totalSeconds(config({ numBlocks, rythme, durationMinutes }));

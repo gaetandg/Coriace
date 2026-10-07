@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { WorkoutConfig } from '../types';
 import { plural } from '../lib/format';
 import { primaryButton } from '../lib/ui';
+import { rhythmTiming } from '../lib/rhythm';
 import { LaneArcs } from './Logo';
 
 interface CompletedScreenProps {
@@ -18,7 +19,7 @@ export function CompletedScreen({ durationMinutes, exerciseCount, rythme, recent
   const stats = [
     { value: String(durationMinutes), label: 'minutes' },
     { value: String(exerciseCount), label: 'exercices' },
-    { value: rythme === 'equilibre' ? '30/30' : '40/20', label: 'rythme' },
+    { value: rhythmTiming(rythme), label: 'rythme' },
   ];
 
   return (

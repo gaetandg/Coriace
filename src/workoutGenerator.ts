@@ -1,5 +1,6 @@
 import { EXERCISE_DATABASE } from './exercises';
 import { WorkoutConfig, WorkoutInterval, Exercise, ExerciseGroup, WorkoutStage } from './types';
+import { RHYTHMS } from './lib/rhythm';
 import { MAX_WARMUP_MINUTES, cooldownStretches, warmupMoves } from './sessionParts';
 
 function shuffle<T>(array: T[]): T[] {
@@ -190,8 +191,7 @@ export function buildIntervals(plan: SessionPlan, rythme: WorkoutConfig['rythme'
   plan.finishers.forEach(exercise => slots.push({ stage: 'finisher', exercise }));
   plan.cooldown.forEach(exercise => slots.push({ stage: 'cooldown', exercise }));
 
-  const workTime = rythme === 'equilibre' ? 30 : 40;
-  const restTime = rythme === 'equilibre' ? 30 : 20;
+  const { work: workTime, rest: restTime } = RHYTHMS[rythme];
   const intervals: WorkoutInterval[] = [];
 
   slots.forEach((slot, blockIdx) => {

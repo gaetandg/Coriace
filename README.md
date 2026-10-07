@@ -9,7 +9,7 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Séances prédéfinies** : six séances fixes (Mollets express, Gainage, Hanches solides, Sans matériel, Spécial marathon, Complète), toujours les mêmes exercices dans le même ordre pour suivre ses progrès.
 - **Séance sur mesure** : durée de 15 à 60 minutes, choix des exercices par groupe, fiche détaillée de chaque exercice.
 - **Matériel** : sans matériel, chaise, poids de 8 kg, corde à sauter.
-- **Deux rythmes** : équilibré (30 s / 30 s) ou intense (40 s / 20 s).
+- **Trois rythmes** : doux (20 s / 40 s), équilibré (30 s / 30 s, par défaut) ou intense (40 s / 20 s).
 - **Structure complète** : échauffement progressif (de la mobilité aux sautillements, sans répétition), un ou deux circuits courts (8 exercices au plus, 3 ou 4 tours ; les séances longues ont deux blocs plutôt qu'un circuit sans fin), finisher cardio et sauts, retour au calme avec étirements guidés.
 - **Déjà échauffé** : après un footing, on saute l'échauffement ; la séance garde sa durée, le circuit prend le temps libéré.
 - **Ciblage coureur** : gainage abdominal, endurance des mollets, adducteurs.
@@ -92,7 +92,7 @@ La connexion se fait uniquement avec Google, via Supabase. Le projet et sa clé 
 
 Mise en place, une seule fois, dans le tableau de bord Supabase :
 
-1. **SQL Editor** : exécuter, dans l'ordre, les fichiers de `supabase/migrations/` : `20261007000000_session_history.sql` (table de l'historique et règles d'accès : chacun ne voit que ses séances) puis `20261008000000_session_exercises.sql` (exercices de chaque séance).
+1. **SQL Editor** : exécuter, dans l'ordre, les fichiers de `supabase/migrations/` : `20261007000000_session_history.sql` (table de l'historique et règles d'accès : chacun ne voit que ses séances) puis `20261008000000_session_exercises.sql` (exercices de chaque séance) et `20261009000000_gentle_rhythm.sql` (rythme doux).
 2. **Authentication → Sign In / Providers** : désactiver *Email*, activer *Google* avec l'identifiant et le secret d'un client OAuth Google Cloud dont l'URI de redirection autorisée est `https://prfadpnawhrphxigiyag.supabase.co/auth/v1/callback`.
 3. **Authentication → URL Configuration** : *Site URL* `https://gaetandg.github.io/Coriace/`, et ajouter cette adresse (plus `http://localhost:3000/` pour le développement) aux *Redirect URLs*.
 
