@@ -14,9 +14,9 @@ export default defineConfig(() => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.svg', 'apple-touch-icon-180x180.png'],
         manifest: {
-          name: 'Marathon PPG Coach',
-          short_name: 'PPG Coach',
-          description: 'Séances de renforcement guidées pour les coureurs de marathon.',
+          name: 'Coriace · Renfo pour coureurs',
+          short_name: 'Coriace',
+          description: 'Séances de renfo guidées pour les coureurs.',
           lang: 'fr',
           start_url: '.',
           scope: '.',

@@ -1,6 +1,6 @@
-# Marathon PPG Coach
+# Coriace
 
-Coach interactif de préparation physique générale (PPG) pour les coureurs de marathon.
+**Renfo pour coureurs.** Séances de renforcement musculaire guidées pour les coureurs, pensées d'abord pour la préparation marathon.
 
 L'application génère une séance de renforcement en intervalles (travail / récupération) adaptée au matériel disponible, puis guide l'utilisateur pas à pas avec un minuteur et des signaux sonores.
 

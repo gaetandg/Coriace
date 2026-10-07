@@ -10,7 +10,7 @@ export function Footer() {
         </p>
       </div>
       <p className="text-[10px] text-white/20 pt-3 font-mono">
-        Marathon PPG Coach
+        Coriace · Renfo pour coureurs
       </p>
     </footer>
   );

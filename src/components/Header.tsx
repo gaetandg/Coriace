@@ -26,10 +26,10 @@ export function Header({ activeTab, onTabChange, soundEnabled, onToggleSound }: 
           </div>
           <div>
             <h1 className="text-base sm:text-xl font-display font-black tracking-tighter uppercase text-white flex items-center gap-1.5">
-              Marathon PPG Coach
+              Coriace
             </h1>
             <span className="text-[10px] text-white/50 tracking-widest font-black uppercase block">
-              Renforcement musculaire
+              Renfo pour coureurs
             </span>
           </div>
         </div>
