@@ -40,6 +40,10 @@ export function AccountCard({ auth, compact = false }: AccountCardProps) {
       >
         Se connecter avec Google
       </button>
+      <p className="text-[13px] text-clay leading-snug">
+        En te connectant, tu acceptes les <a href="conditions.html" className="underline">conditions d'utilisation</a> et
+        la <a href="confidentialite.html" className="underline">politique de confidentialité</a>.
+      </p>
     </div>
   );
 }

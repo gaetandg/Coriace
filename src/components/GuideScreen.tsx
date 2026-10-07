@@ -46,6 +46,12 @@ export function GuideScreen({ onOpenWorkout }: { onOpenWorkout: () => void }) {
         </p>
       </section>
 
+      <p className="text-sm text-sand">
+        <a href="conditions.html" className="underline underline-offset-4">Conditions d'utilisation</a>
+        {' · '}
+        <a href="confidentialite.html" className="underline underline-offset-4">Confidentialité</a>
+      </p>
+
       <button onClick={onOpenWorkout} className={`mt-auto w-full ${primaryButton}`}>Préparer une séance</button>
     </main>
   );
