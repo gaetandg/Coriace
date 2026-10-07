@@ -11,6 +11,7 @@ const STAGE_LABELS: Record<WorkoutInterval['stage'], string> = {
   warmup: 'Échauffement',
   main: 'Circuit',
   finisher: 'Finisher',
+  cooldown: 'Retour au calme',
 };
 
 interface PlayerScreenProps {

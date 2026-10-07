@@ -1,6 +1,7 @@
 import { EXERCISE_DATABASE } from './exercises';
 import { Exercise, WorkoutConfig, WorkoutInterval } from './types';
 import { buildIntervals } from './workoutGenerator';
+import { cooldownStretches, warmupMoves } from './sessionParts';
 
 // Ready-made sessions: always the same exercises in the same order, so progress is easy to follow.
 
@@ -12,6 +13,7 @@ export interface PresetSession {
   warmupMinutes: number;
   blocks: { exerciseIds: string[]; rounds: number }[];
   finisherIds: string[];
+  cooldownMinutes: number;
 }
 
 export const PRESET_SESSIONS: PresetSession[] = [
@@ -23,6 +25,7 @@ export const PRESET_SESSIONS: PresetSession[] = [
     warmupMinutes: 2,
     blocks: [{ exerciseIds: ['calves_standing_slow', 'marche_talons_inversion', 'calf_raise_isometric_low', 'pogo_jumps'], rounds: 3 }],
     finisherIds: [],
+    cooldownMinutes: 0,
   },
   {
     id: 'gainage',
@@ -32,48 +35,53 @@ export const PRESET_SESSIONS: PresetSession[] = [
     warmupMinutes: 2,
     blocks: [{ exerciseIds: ['plank_commando', 'dead_bug', 'side_plank', 'bird_dog'], rounds: 3 }],
     finisherIds: [],
+    cooldownMinutes: 0,
   },
   {
     id: 'hanches-solides',
     name: 'Hanches solides',
     description: 'Fessiers, adducteurs et gainage latéral pour stabiliser le bassin.',
     durationMinutes: 20,
-    warmupMinutes: 3,
+    warmupMinutes: 2,
     blocks: [{ exerciseIds: ['single_leg_bridge', 'side_lying_abduction', 'lateral_lunges', 'side_plank', 'squat_sumo'], rounds: 3 }],
-    finisherIds: ['wall_sit'],
+    finisherIds: ['high_knees'],
+    cooldownMinutes: 1,
   },
   {
     id: 'sans-materiel',
     name: 'Sans matériel',
     description: 'Une séance complète à faire n\'importe où.',
     durationMinutes: 20,
-    warmupMinutes: 3,
+    warmupMinutes: 2,
     blocks: [{ exerciseIds: ['squat_classic', 'calves_standing_slow', 'side_plank', 'alternating_lunges', 'single_leg_bridge'], rounds: 3 }],
     finisherIds: ['high_knees'],
+    cooldownMinutes: 1,
   },
   {
     id: 'special-marathon',
     name: 'Spécial marathon',
     description: 'Les zones qui lâchent en fin de course : mollets, adducteurs, fessiers, gainage.',
     durationMinutes: 30,
-    warmupMinutes: 5,
+    warmupMinutes: 4,
     blocks: [{
       exerciseIds: ['copenhagen_plank', 'calves_standing_slow', 'side_plank', 'single_leg_bridge', 'squat_sumo', 'marche_talons_inversion', 'dead_bug'],
       rounds: 3,
     }],
-    finisherIds: ['high_knees', 'wall_sit', 'plank_commando'],
+    finisherIds: ['high_knees', 'jumping_jacks'],
+    cooldownMinutes: 2,
   },
   {
     id: 'complete',
     name: 'Complète',
     description: 'Deux circuits, tous les groupes. Pour une grosse séance de renfo.',
     durationMinutes: 45,
-    warmupMinutes: 5,
+    warmupMinutes: 4,
     blocks: [
       { exerciseIds: ['copenhagen_plank', 'calves_seated', 'dead_bug', 'bulgarian_split_squat', 'side_lying_abduction', 'pushups'], rounds: 3 },
       { exerciseIds: ['shift_squat_goblet', 'calf_raise_isometric_low', 'side_plank', 'single_leg_rdl', 'lateral_lunges', 'woodchop'], rounds: 3 },
     ],
-    finisherIds: ['high_knees', 'wall_sit'],
+    finisherIds: ['high_knees'],
+    cooldownMinutes: 2,
   },
 ];
 
@@ -97,9 +105,10 @@ export function presetEquipment(preset: PresetSession): Exercise['equipmentRequi
 export function buildPresetWorkout(preset: PresetSession, rythme: WorkoutConfig['rythme']): WorkoutInterval[] {
   return buildIntervals(
     {
-      warmupMinutes: preset.warmupMinutes,
+      warmup: warmupMoves(preset.warmupMinutes),
       blocks: preset.blocks.map(block => ({ exercises: block.exerciseIds.map(exerciseById), rounds: block.rounds })),
       finishers: preset.finisherIds.map(exerciseById),
+      cooldown: cooldownStretches(preset.cooldownMinutes),
     },
     rythme,
   );

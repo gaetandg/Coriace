@@ -23,6 +23,7 @@ describe('preferences', () => {
         equipment: { none: true, chaise: false, poids_8kg: false, corde_a_sauter: false },
         rythme: 'intense' as const,
         durationMinutes: 45,
+        skipWarmup: true,
         selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id).filter(id => id !== 'pushups'),
       },
       sound: { beeps: false, voice: true },

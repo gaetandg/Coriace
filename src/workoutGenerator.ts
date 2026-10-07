@@ -1,63 +1,7 @@
 import { EXERCISE_DATABASE } from './exercises';
 import { WorkoutConfig, WorkoutInterval, Exercise, ExerciseGroup, WorkoutStage } from './types';
+import { MAX_WARMUP_MINUTES, cooldownStretches, warmupMoves } from './sessionParts';
 
-// Let's define the fixed warm-up exercises (using no equipment, to keep it universal)
-const WARM_UP_EXERCISES: Omit<Exercise, 'id'>[] = [
-  {
-    name: 'Mobilisation articulaire',
-    target: 'Chevilles, genoux, hanches',
-    description: 'Fais des cercles avec les chevilles, les genoux puis les hanches. Termine en enroulant doucement le dos.',
-    equipmentRequired: [],
-    category: 'general',
-    group: 'cardio',
-    tips: 'Va doucement : le but est de te réchauffer, pas de te fatiguer.',
-    instructionHighlight: 'Mouvements amples et lents.'
-  },
-  {
-    name: 'Squats légers',
-    target: 'Fessiers et quadriceps',
-    description: 'Pieds largeur d\'épaules. Descends à mi-hauteur et remonte, sans forcer.',
-    equipmentRequired: [],
-    category: 'general',
-    group: 'cuisses',
-    tips: 'Sans poids. Garde un rythme fluide.',
-    instructionHighlight: 'Dos droit, regard devant.'
-  },
-  {
-    name: 'Mobilisation des adducteurs',
-    target: 'Adducteurs',
-    description: 'Pieds très écartés. Bascule le poids du corps d\'une jambe sur l\'autre en fente latérale légère.',
-    equipmentRequired: [],
-    category: 'specific_adductor',
-    group: 'adducteurs',
-    tips: 'Tu dois sentir un léger étirement à l\'intérieur de la cuisse tendue.',
-    instructionHighlight: 'Talons au sol.'
-  },
-  {
-    name: 'Planche',
-    target: 'Abdominaux',
-    description: 'En planche sur les avant-bras, ou sur les genoux. Rentre le ventre et respire normalement.',
-    equipmentRequired: [],
-    category: 'abdos',
-    group: 'gainage',
-    tips: 'Serre les abdos et les fessiers.',
-    instructionHighlight: 'Dos plat, fesses alignées.'
-  },
-  {
-    name: 'Jumping jacks légers',
-    target: 'Cardio et mollets',
-    description: 'Petits jumping jacks, réceptions souples sur l\'avant du pied.',
-    equipmentRequired: [],
-    category: 'general',
-    group: 'cardio',
-    tips: 'Augmente le rythme petit à petit.',
-    instructionHighlight: 'Réceptions légères.'
-  }
-];
-
-/**
- * Shuffles an array randomly.
- */
 function shuffle<T>(array: T[]): T[] {
   const result = [...array];
   for (let i = result.length - 1; i > 0; i--) {
@@ -115,131 +59,90 @@ export function generateWorkout(config: WorkoutConfig, previous: WorkoutInterval
     pools.set(ex.group, [...(pools.get(ex.group) ?? []), ex]);
   }
 
-  // Dynamic distribution of blocks (minutes)
-  let warmupMinutes = 5;
-  let finisherMinutes = 3;
-  if (T < 20) {
-    warmupMinutes = 3;
-    finisherMinutes = 2;
-  } else if (T < 26) {
-    warmupMinutes = 4;
-    finisherMinutes = 2;
-  } else if (T < 35) {
-    warmupMinutes = 5;
-    finisherMinutes = 3;
-  } else if (T < 45) {
-    warmupMinutes = 6;
-    finisherMinutes = 4;
-  } else {
-    warmupMinutes = 7;
-    finisherMinutes = 5;
-  }
-  let mainMinutes = T - warmupMinutes - finisherMinutes;
-  const numBlocksOpt = config.numBlocks || 1;
+  const shape = sessionShape(config.durationMinutes || 30, !!config.skipWarmup);
 
-  let block1Minutes = 0;
-  let block2Minutes = 0;
-  let circuitLength = 0;
-  let numRounds = 0;
-  let circuitLength1 = 0;
-  let numRounds1 = 0;
-  let circuitLength2 = 0;
-  let numRounds2 = 0;
-
-  if (numBlocksOpt === 2) {
-    const half = Math.floor(mainMinutes / 2);
-    let foundExact = false;
-    for (let b1 = Math.max(8, half - 3); b1 <= half + 3; b1++) {
-      const b2 = mainMinutes - b1;
-      const config1 = findBestCircuitConfig(b1);
-      const config2 = findBestCircuitConfig(b2);
-      
-      const exact1 = config1.circuitLength * config1.numRounds === b1;
-      const exact2 = config2.circuitLength * config2.numRounds === b2;
-      
-      if (exact1 && exact2) {
-        block1Minutes = b1;
-        block2Minutes = b2;
-        circuitLength1 = config1.circuitLength;
-        numRounds1 = config1.numRounds;
-        circuitLength2 = config2.circuitLength;
-        numRounds2 = config2.numRounds;
-        foundExact = true;
-        break;
-      }
-    }
-    
-    if (!foundExact) {
-      block1Minutes = half;
-      block2Minutes = mainMinutes - half;
-      const config1 = findBestCircuitConfig(block1Minutes);
-      const config2 = findBestCircuitConfig(block2Minutes);
-      circuitLength1 = config1.circuitLength;
-      numRounds1 = config1.numRounds;
-      circuitLength2 = config2.circuitLength;
-      numRounds2 = config2.numRounds;
-      block1Minutes = circuitLength1 * numRounds1;
-      block2Minutes = circuitLength2 * numRounds2;
-      mainMinutes = block1Minutes + block2Minutes;
-    }
-  } else {
-    const configSingle = findBestCircuitConfig(mainMinutes);
-    circuitLength = configSingle.circuitLength;
-    numRounds = configSingle.numRounds;
-    mainMinutes = circuitLength * numRounds;
-  }
-
-  // Each change of round or block adds 30 s of rest: take that time off the warm-up and
-  // finisher so the session lasts the duration that was asked for.
-  const transitions = numBlocksOpt === 2 ? (numRounds1 - 1) + (numRounds2 - 1) + 1 : numRounds - 1;
-  const transitionMinutes = Math.floor((transitions * 30) / 60);
-
-  // Recalculate warmup and finisher to fit exactly with the remainder
-  const leftoverMinutes = Math.max(2, T - mainMinutes - transitionMinutes);
-  warmupMinutes = Math.max(2, Math.ceil(leftoverMinutes * 0.6));
-  finisherMinutes = leftoverMinutes - warmupMinutes;
-  if (finisherMinutes < 1) {
-    warmupMinutes--;
-    finisherMinutes = leftoverMinutes - warmupMinutes;
-  }
-
-  // We want to construct circuit exercises with NO duplicates if possible
+  // Circuits: each one has its own exercises.
   const usedIds = new Set<string>();
-  const circuitExercises: Exercise[] = [];
-  const circuit1Exercises: Exercise[] = [];
-  const circuit2Exercises: Exercise[] = [];
+  const blocks: CircuitBlock[] = shape.blocks.map(({ length, rounds }) => ({
+    exercises: createCircuitExercises(length, pools, usedIds, avoidIds, availableWorkoutExercises),
+    rounds,
+  }));
 
-  if (numBlocksOpt === 2) {
-    const c1 = createCircuitExercises(circuitLength1, pools, usedIds, avoidIds, availableWorkoutExercises);
-    circuit1Exercises.push(...c1);
-    const c2 = createCircuitExercises(circuitLength2, pools, usedIds, avoidIds, availableWorkoutExercises);
-    circuit2Exercises.push(...c2);
-  } else {
-    const c = createCircuitExercises(circuitLength, pools, usedIds, avoidIds, availableWorkoutExercises);
-    circuitExercises.push(...c);
-  }
-
-  // 2. Finisher: cardio, then thighs, then core, drawn among exercises not used in the circuit.
-  const selectedFinishers: Exercise[] = [];
-  const finisherGroups: ExerciseGroup[] = ['cardio', 'cuisses', 'gainage'];
-  for (let f = 0; f < finisherMinutes; f++) {
-    const group = finisherGroups[f % finisherGroups.length];
+  // Finisher: cardio and jumps (jump rope included), drawn among the exercises not used in the circuits.
+  const lively = shuffle(availableWorkoutExercises.filter(ex => ex.group === 'cardio' || ex.equipmentRequired.includes('corde_a_sauter')));
+  const finishers: Exercise[] = [];
+  for (let f = 0; f < shape.finisherMinutes; f++) {
+    const unused = (list: Exercise[]) => list.filter(ex => !usedIds.has(ex.id));
     const exercise =
-      pickFromGroup(pools, group, usedIds, avoidIds) ??
-      availableWorkoutExercises.find(ex => !usedIds.has(ex.id)) ??
+      unused(lively).find(ex => !avoidIds.has(ex.id)) ??
+      unused(lively)[0] ??
+      unused(availableWorkoutExercises)[0] ??
+      lively[f % Math.max(1, lively.length)] ??
       availableWorkoutExercises[f % availableWorkoutExercises.length];
-    selectedFinishers.push(exercise);
+    finishers.push(exercise);
     usedIds.add(exercise.id);
   }
 
-  const blocks: CircuitBlock[] = numBlocksOpt === 2
-    ? [
-        { exercises: circuit1Exercises, rounds: numRounds1 },
-        { exercises: circuit2Exercises, rounds: numRounds2 },
-      ]
-    : [{ exercises: circuitExercises, rounds: numRounds }];
+  return buildIntervals({
+    warmup: warmupMoves(shape.warmupMinutes),
+    blocks,
+    finishers,
+    cooldown: cooldownStretches(shape.cooldownMinutes),
+  }, rythme);
+}
 
-  return buildIntervals({ warmupMinutes, blocks, finishers: selectedFinishers }, rythme);
+export interface SessionShape {
+  warmupMinutes: number;
+  blocks: { length: number; rounds: number }[];
+  finisherMinutes: number;
+  cooldownMinutes: number;
+}
+
+// How a session of `minutes` is laid out. Circuits stay short (about six exercises, eight at
+// most, 3 or 4 rounds); long sessions get a second block rather than an endless circuit. Every change of
+// round or block adds 30 s of rest. Skipping the warm-up gives the time to the circuits.
+export function sessionShape(minutes: number, skipWarmup = false): SessionShape {
+  const target = {
+    warmup: skipWarmup ? 0 : minutes < 20 ? 3 : minutes < 30 ? 4 : minutes < 45 ? 5 : MAX_WARMUP_MINUTES,
+    finisher: minutes < 30 ? 2 : 3,
+    cooldown: minutes < 20 ? 1 : minutes < 45 ? 2 : 3,
+  };
+  // Long sessions: more rounds of about six exercises rather than ever longer circuits.
+  const roundsTarget = minutes >= 45 ? 4 : 3;
+  const around = (value: number, min: number, max: number) =>
+    [value - 1, value, value + 1].filter(v => v >= min && v <= max);
+  const structures: { blocks: { length: number; rounds: number }[]; minutes: number }[] = [];
+  for (let rounds = 2; rounds <= 4; rounds++) {
+    for (let length = 4; length <= 8; length++) {
+      structures.push({ blocks: [{ length, rounds }], minutes: length * rounds + (rounds - 1) / 2 });
+      if (rounds >= 3) {
+        for (const second of [length, length - 1]) {
+          if (second < 4) continue;
+          structures.push({ blocks: [{ length, rounds }, { length: second, rounds }], minutes: (length + second) * rounds + (2 * rounds - 1) / 2 });
+        }
+      }
+    }
+  }
+  let best: SessionShape | null = null, bestScore = Infinity;
+  for (const warmup of skipWarmup ? [0] : around(target.warmup, 2, MAX_WARMUP_MINUTES)) {
+    for (const finisher of around(target.finisher, 1, 4)) {
+      for (const cooldown of around(target.cooldown, 1, 3)) {
+        for (const structure of structures) {
+          // The pause after the last stretch is not played.
+          const total = warmup + finisher + cooldown + structure.minutes - 5 / 60;
+          const [first] = structure.blocks;
+          const score = Math.abs(total - minutes) * 10
+            + Math.abs(warmup - target.warmup) + Math.abs(finisher - target.finisher) * 0.8 + Math.abs(cooldown - target.cooldown) * 0.6
+            + (structure.blocks.length - 1) * 1.5 + Math.abs(first.rounds - roundsTarget) * 0.5 + Math.abs(first.length - 6) * 0.3;
+          if (score < bestScore) {
+            bestScore = score;
+            best = { warmupMinutes: warmup, blocks: structure.blocks, finisherMinutes: finisher, cooldownMinutes: cooldown };
+          }
+        }
+      }
+    }
+  }
+  return best!;
 }
 
 export interface CircuitBlock {
@@ -247,11 +150,13 @@ export interface CircuitBlock {
   rounds: number;
 }
 
-// What a session is made of, minute by minute: warm-up, one or two circuits repeated, finisher.
+// What a session is made of, minute by minute: warm-up, one or two circuits repeated,
+// finisher, cool-down.
 export interface SessionPlan {
-  warmupMinutes: number;
+  warmup: Exercise[];
   blocks: CircuitBlock[];
   finishers: Exercise[];
+  cooldown: Exercise[];
 }
 
 interface MinuteSlot {
@@ -263,19 +168,10 @@ interface MinuteSlot {
   isBlockTransition?: boolean;
 }
 
-// Long warm-ups go round the moves again; the id names the move, so its animation follows.
-const warmupExercise = (index: number): Exercise => ({
-  id: `warmup_${index % WARM_UP_EXERCISES.length}`,
-  equipmentRequired: [],
-  ...WARM_UP_EXERCISES[index % WARM_UP_EXERCISES.length],
-});
-
 // Turns a plan into the timed work and rest intervals the player runs through.
 export function buildIntervals(plan: SessionPlan, rythme: WorkoutConfig['rythme']): WorkoutInterval[] {
   const slots: MinuteSlot[] = [];
-  for (let i = 0; i < plan.warmupMinutes; i++) {
-    slots.push({ stage: 'warmup', exercise: warmupExercise(i) });
-  }
+  plan.warmup.forEach(exercise => slots.push({ stage: 'warmup', exercise }));
   plan.blocks.forEach((block, blockIdx) => {
     for (let round = 1; round <= block.rounds; round++) {
       block.exercises.forEach((exercise, position) => {
@@ -292,6 +188,7 @@ export function buildIntervals(plan: SessionPlan, rythme: WorkoutConfig['rythme'
     }
   });
   plan.finishers.forEach(exercise => slots.push({ stage: 'finisher', exercise }));
+  plan.cooldown.forEach(exercise => slots.push({ stage: 'cooldown', exercise }));
 
   const workTime = rythme === 'equilibre' ? 30 : 40;
   const restTime = rythme === 'equilibre' ? 30 : 20;
@@ -304,9 +201,9 @@ export function buildIntervals(plan: SessionPlan, rythme: WorkoutConfig['rythme'
     const roundTransitionFrom = isRoundTransition ? roundNumber : undefined;
     const roundTransitionTo = isRoundTransition && roundNumber ? roundNumber + 1 : undefined;
 
-    // Warm-up minutes are 50 s of easy work and 10 s to switch.
-    const currentWorkTime = stage === 'warmup' ? 50 : workTime;
-    let currentRestTime = stage === 'warmup' ? 10 : restTime;
+    // Warm-up minutes are 50 s of easy work and 10 s to switch; stretches are held 55 s.
+    const currentWorkTime = stage === 'warmup' ? 50 : stage === 'cooldown' ? 55 : workTime;
+    let currentRestTime = stage === 'warmup' ? 10 : stage === 'cooldown' ? 5 : restTime;
     // Add extra 30s recovery between rounds or blocks
     if (isRoundTransition || isBlockTransition) {
       currentRestTime += 30;
@@ -317,7 +214,7 @@ export function buildIntervals(plan: SessionPlan, rythme: WorkoutConfig['rythme'
       blockIndex: blockIdx,
       stage,
       type: 'work',
-      title: stage === 'warmup' ? `Échauffement : ${exercise.name}` : exercise.name,
+      title: exercise.name,
       description: exercise.description,
       target: exercise.target,
       duration: currentWorkTime,
@@ -335,6 +232,9 @@ export function buildIntervals(plan: SessionPlan, rythme: WorkoutConfig['rythme'
       restDescription = 'Relâche les jambes et les épaules.';
     } else if (stage === 'finisher') {
       restDescription = 'Reprends ton souffle.';
+    } else if (stage === 'cooldown') {
+      restTitle = 'Étirement suivant';
+      restDescription = 'Change de position doucement.';
     }
     if (isRoundTransition) {
       restTitle = `Fin du tour ${roundTransitionFrom}`;
@@ -369,26 +269,6 @@ export function buildIntervals(plan: SessionPlan, rythme: WorkoutConfig['rythme'
 /**
  * Finds the best configuration (circuit length & round count) to cleanly hit training times.
  */
-function findBestCircuitConfig(M: number): { circuitLength: number; numRounds: number } {
-  // Prefer rounds of 2, 3, 4, 5
-  // Prefer circuitLength of 4, 5, 6, 7
-  for (const r of [3, 4, 2, 5]) {
-    const possibleLength = Math.round(M / r);
-    if (possibleLength >= 4 && possibleLength <= 7) {
-      if (r * possibleLength === M) {
-        return { circuitLength: possibleLength, numRounds: r };
-      }
-    }
-  }
-  for (const r of [3, 2, 4]) {
-    const possibleLength = Math.round(M / r);
-    if (possibleLength >= 3) {
-      return { circuitLength: possibleLength, numRounds: r };
-    }
-  }
-  return { circuitLength: Math.max(3, Math.floor(M / 2)), numRounds: 2 };
-}
-
 /**
  * Distributes exercises across legs, arms, and abs targets.
  */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateWorkout } from './workoutGenerator';
+import { generateWorkout, sessionShape } from './workoutGenerator';
 import { EXERCISE_DATABASE } from './exercises';
 import { ExerciseGroup, WorkoutConfig, WorkoutInterval } from './types';
 
@@ -29,6 +29,47 @@ describe('generateWorkout', () => {
       }
     }
   }
+
+  for (const durationMinutes of [15, 20, 30, 45, 60]) {
+    it(`keeps ${durationMinutes} min without the warm-up, with more circuit`, () => {
+      const warm = generateWorkout(config({ durationMinutes }));
+      const skipped = generateWorkout(config({ durationMinutes, skipWarmup: true }));
+      expect(skipped.filter(i => i.stage === 'warmup')).toEqual([]);
+      expect(Math.abs(skipped.reduce((s, i) => s + i.duration, 0) - durationMinutes * 60)).toBeLessThanOrEqual(30);
+      const circuit = (list: WorkoutInterval[]) => list.filter(i => i.stage === 'main' && i.type === 'work').length;
+      expect(circuit(skipped)).toBeGreaterThan(circuit(warm));
+    });
+  }
+
+  it('keeps circuits short: 8 exercises at most, 2 to 4 rounds', () => {
+    for (const durationMinutes of [15, 20, 30, 45, 60]) {
+      for (const skipWarmup of [false, true]) {
+        const shape = sessionShape(durationMinutes, skipWarmup);
+        for (const block of shape.blocks) {
+          expect(block.length).toBeLessThanOrEqual(8);
+          expect(block.rounds).toBeGreaterThanOrEqual(2);
+          expect(block.rounds).toBeLessThanOrEqual(4);
+        }
+      }
+    }
+  });
+
+  it('ends with a cardio finisher and a cool-down', () => {
+    for (let draw = 0; draw < 20; draw++) {
+      const intervals = generateWorkout(config({ durationMinutes: 45 }));
+      const finishers = intervals.filter(i => i.stage === 'finisher' && i.type === 'work');
+      for (const f of finishers) expect(f.exercise!.group === 'cardio' || f.exercise!.equipmentRequired.includes('corde_a_sauter')).toBe(true);
+      expect(intervals[intervals.length - 1].stage).toBe('cooldown');
+    }
+  });
+
+  it('warms up from gentle to lively without repeating a move', () => {
+    for (const durationMinutes of [15, 30, 60]) {
+      const ids = generateWorkout(config({ durationMinutes })).filter(i => i.stage === 'warmup' && i.type === 'work').map(i => i.exercise!.id);
+      expect(new Set(ids).size).toBe(ids.length);
+      expect(ids[0]).toBe('warmup_mobility');
+    }
+  });
 
   it('gives every work interval an exercise', () => {
     for (const durationMinutes of [15, 30, 60]) {

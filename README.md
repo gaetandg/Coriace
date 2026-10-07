@@ -10,7 +10,8 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Séance sur mesure** : durée de 15 à 60 minutes, choix des exercices par groupe, fiche détaillée de chaque exercice.
 - **Matériel** : sans matériel, chaise, poids de 8 kg, corde à sauter.
 - **Deux rythmes** : équilibré (30 s / 30 s) ou intense (40 s / 20 s).
-- **Structure complète** : échauffement, circuit principal, finisher.
+- **Structure complète** : échauffement progressif (de la mobilité aux sautillements, sans répétition), un ou deux circuits courts (8 exercices au plus, 3 ou 4 tours ; les séances longues ont deux blocs plutôt qu'un circuit sans fin), finisher cardio et sauts, retour au calme avec étirements guidés.
+- **Déjà échauffé** : après un footing, on saute l'échauffement ; la séance garde sa durée, le circuit prend le temps libéré.
 - **Ciblage coureur** : gainage abdominal, endurance des mollets, adducteurs.
 - **Minuteur guidé** : chrono géant lisible au sol, fond brique pendant l'effort et vert pendant la récupération.
 - **Guidage vocal** : annonce du prochain exercice et de sa consigne pendant les pauses, décompte « 3, 2, 1 » avant de repartir, « encore dix secondes », « change de côté ». Bips et voix réglables séparément.
@@ -78,6 +79,7 @@ src/
 ├── exercises.ts               # Base de données des exercices
 ├── workoutGenerator.ts        # Séance sur mesure et construction des intervalles
 ├── sessions.ts                # Séances prédéfinies
+├── sessionParts.ts            # Mouvements d'échauffement et étirements du retour au calme
 ├── types.ts                   # Types partagés
 ├── main.tsx                   # Point d'entrée React
 └── index.css                  # Thème « Piste » : couleurs et polices

@@ -20,7 +20,8 @@ export function StepList({ steps, activeBlockIndex, onJump }: StepListProps) {
           { key: 'blockB', label: 'Bloc B', prefix: 'B', steps: mainSteps.filter(s => s.blockNumber === 2) },
         ]
       : [{ key: 'main', label: 'Circuit', prefix: '', steps: mainSteps }]),
-    { key: 'finisher', label: 'Finisher', prefix: 'F', steps: steps.filter(s => s.stage === 'finisher') },
+    { key: 'finisher', label: 'Finisher', prefix: '', steps: steps.filter(s => s.stage === 'finisher') },
+    { key: 'cooldown', label: 'Retour au calme', prefix: '', steps: steps.filter(s => s.stage === 'cooldown') },
   ];
 
   return (
@@ -52,7 +53,7 @@ export function StepList({ steps, activeBlockIndex, onJump }: StepListProps) {
                   <span className={`w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-[13px] font-semibold ${isActive ? 'bg-ink/10' : 'bg-ink/35'}`}>
                     {isPassed ? <Check className="w-3.5 h-3.5" strokeWidth={3} /> : `${group.prefix}${step.blockIndex + 1}`}
                   </span>
-                  <span className="flex-1 min-w-0 truncate font-medium">{step.title.replace('Échauffement : ', '')}</span>
+                  <span className="flex-1 min-w-0 truncate font-medium">{step.title}</span>
                   <span className={`text-sm truncate ${isActive ? 'text-clay' : 'text-sand'}`}>{step.target.split(' - ')[0]}</span>
                   {!isActive && <ChevronRight className="w-4 h-4 shrink-0 text-sand" aria-hidden="true" />}
                 </button>

@@ -349,9 +349,6 @@ const plankCommando: Scene = {
     { move: 350, hold: 400, pose: plank(127, forearm(), forearm(-2)) },
   ]),
 };
-const forearmPlank: Scene = {
-  motion: hold({ ...plank(127, forearm(), forearm(-2)), ...plankBends } as Pose, plank(125.5, forearm(), forearm(-2))),
-};
 
 const sidePlankBase: Pose = {
   view: 'front', nearSide: 'right', anchor: ['far.elbow', [40, 145]],
@@ -477,19 +474,75 @@ const pogo: Scene = {
   dynamic: (p) => { const lift = (p as Pose & { lift: number }).lift; return { back: shadow(100, 14 - lift, 1 - lift / 12) }; },
 };
 
-// Warm-up joint mobility: slow arm circles, standing.
-const armCircles: Scene = {
+// --- Warm-up and cool-down ---
+
+// Hip circles, hands on the hips, front view.
+const hipCircles: Scene = {
   motion: {
     duration: 2400,
-    still: 600,
+    still: 0,
     at(ms) {
-      const a = (360 * ms) / 2400;
+      const a = (2 * Math.PI * ms) / 2400;
+      const hip: Pt = [100 + 6 * Math.cos(a), STAND_HIP + 2 + 1.5 * Math.sin(a)];
+      return frontBase({
+        anchor: ['hip', hip], ik: { near: [109, ANKLE_Y], far: [91, ANKLE_Y], nearHand: [hip[0] + 10, hip[1] - 3], farHand: [hip[0] - 10, hip[1] - 3] },
+        bend: { near: 1, far: -1, nearHand: 1, farHand: -1 },
+        angles: { torso: 180 - 5 * Math.cos(a), head: 180 },
+      });
+    },
+  },
+};
+
+// One hand on the wall, the near leg swings forward and back.
+const legSwings: Scene = {
+  motion: keyframes({
+    anchor: ['hip', [100, STAND_HIP]], ik: { far: [100, ANKLE_Y], farHand: [128, 66] }, bend: { far: 1, farHand: -1 },
+    angles: { torso: 180, head: 180, nearThigh: -30, nearShin: -36, nearFoot: 70, farFoot: 90, nearUpperArm: -20, nearForearm: 10 },
+  }, [
+    { move: 650, hold: 0, pose: { angles: { nearThigh: 62, nearShin: 52, nearFoot: 130, nearUpperArm: -30 } } },
+    { move: 650, hold: 0, pose: { angles: { nearThigh: -30, nearShin: -36, nearFoot: 70, nearUpperArm: 10 } } },
+  ]),
+  props: () => ({ back: wall(134, 'right') }),
+};
+
+// Calf raises on the spot, then small bounces.
+const calvesWarmup: Scene = {
+  motion: {
+    duration: 3600,
+    still: 500,
+    at(ms) {
+      let foot = 90, lift = 0;
+      if (ms < 2000) foot = 90 - 35 * Math.sin((Math.PI * (ms % 1000)) / 1000);
+      else { const t = (ms - 2000) % 400 / 400; lift = 4 * Math.sin(Math.PI * t); foot = 62 - lift; }
       return {
-        anchor: ['hip', [100, STAND_HIP]], ik: { near: [101, ANKLE_Y], far: [99, ANKLE_Y] }, bend: { near: 1, far: 1 },
-        angles: { torso: 180, head: 180, ...flatFeet, nearUpperArm: a, nearForearm: a + 8, farUpperArm: a + 180, farForearm: a + 188 },
+        anchor: ['near.toe', [111, ANKLE_Y - lift]],
+        angles: { torso: 180, head: 180, nearThigh: 0, nearShin: 0, farThigh: 0, farShin: 0, nearFoot: foot, farFoot: foot, ...armsDown, nearForearm: 30, farForearm: 26 },
       } as Pose;
     },
   },
+};
+
+// Calf stretch against the wall: back leg straight, heel down.
+const calfStretch: Scene = {
+  motion: hold({
+    anchor: ['hip', [108, 96]], ik: { near: [124, ANKLE_Y], far: [78, ANKLE_Y], nearHand: [143, 66], farHand: [141, 68] },
+    bend: { near: 1, far: 1, nearHand: -1, farHand: -1 },
+    angles: { torso: 158, head: 160, ...flatFeet },
+  }, { anchor: ['hip', [110, 96]] }, 4000),
+  props: () => ({ back: wall(148, 'right') }),
+};
+
+// Half kneeling: back knee on the floor, hips pushed forward.
+const hipFlexorStretch: Scene = {
+  motion: hold({
+    anchor: ['hip', [102, 118]], ik: { near: [128, ANKLE_Y], nearHand: [110, 111], farHand: [108, 111] },
+    bend: { near: 1, nearHand: -1, farHand: -1 },
+    angles: { torso: 180, head: 180, nearFoot: 90, farThigh: -12, farShin: -88, farFoot: -96 },
+  }, { anchor: ['hip', [105, 118.5]], angles: { farThigh: -18 } }, 4000),
+};
+
+const adductorStretch: Scene = {
+  motion: hold(frontBase({ ...lateral('near'), anchor: ['hip', [130, 104]] }), { anchor: ['hip', [131, 106]] }, 4000),
 };
 
 export const SCENES: Record<string, Scene> = {
@@ -523,12 +576,17 @@ export const SCENES: Record<string, Scene> = {
   side_plank: sidePlank,
   dead_bug: deadBug,
   bird_dog: birdDog,
-  // Warm-up moves reuse a gentler version of a close exercise.
-  warmup_0: armCircles,
-  warmup_1: { motion: squatMotion(0.55) },
-  warmup_2: lateralLunges,
-  warmup_3: forearmPlank,
-  warmup_4: { motion: jumpingJacksMotion(1.4) },
+  // Warm-up and cool-down.
+  warmup_mobility: hipCircles,
+  warmup_leg_swings: legSwings,
+  warmup_squat: { motion: squatMotion(0.55) },
+  warmup_lateral: lateralLunges,
+  warmup_lunge: lunges,
+  warmup_calves: calvesWarmup,
+  warmup_knees: highKnees,
+  cooldown_calves: calfStretch,
+  cooldown_hip_flexors: hipFlexorStretch,
+  cooldown_adductors: adductorStretch,
 };
 
 const tops = new WeakMap<Scene, number>();

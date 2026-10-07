@@ -5,6 +5,7 @@ export function groupPlan(intervals: WorkoutInterval[]) {
   const warmups = intervals.filter(inv => inv.stage === 'warmup' && inv.type === 'work');
   const mains = intervals.filter(inv => inv.stage === 'main' && inv.type === 'work');
   const finishers = intervals.filter(inv => inv.stage === 'finisher' && inv.type === 'work');
+  const cooldowns = intervals.filter(inv => inv.stage === 'cooldown' && inv.type === 'work');
 
   const hasTwoBlocks = mains.some(m => m.blockNumber === 2);
   const circuit1Exercises = mains.filter(m => (m.blockNumber || 1) === 1 && m.roundNumber === 1);
@@ -19,6 +20,7 @@ export function groupPlan(intervals: WorkoutInterval[]) {
     warmups,
     circuitExercises,
     finishers,
+    cooldowns,
     numRounds,
     hasTwoBlocks,
     circuit1Exercises,
@@ -28,6 +30,7 @@ export function groupPlan(intervals: WorkoutInterval[]) {
     totalWarmup: warmups.length,
     totalMainCircuit: circuitExercises.length,
     totalFinishers: finishers.length,
+    totalCooldown: cooldowns.length,
   };
 }
 

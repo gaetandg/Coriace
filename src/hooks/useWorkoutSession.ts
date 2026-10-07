@@ -263,7 +263,7 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
         minutes: plannedMinutes,
         rythme: config.rythme,
         exerciseCount: plan.circuitExercises.length + plan.finishers.length,
-        exercises: intervals.filter(i => i.type === 'work' && i.stage !== 'warmup' && i.exercise).map(i => i.exercise!.id),
+        exercises: intervals.filter(i => i.type === 'work' && (i.stage === 'main' || i.stage === 'finisher') && i.exercise).map(i => i.exercise!.id),
       });
       setHistory(prev => [entry, ...prev]);
       // If this fails (offline), the next sync sends it.

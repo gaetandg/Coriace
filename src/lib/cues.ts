@@ -22,7 +22,7 @@ const DONE: Beep = { frequency: 1500, duration: 0.8 };
 
 const COUNTDOWN = ['Un', 'Deux', 'Trois'];
 
-const exerciseName = (interval: WorkoutInterval) => interval.title.replace('Échauffement : ', '');
+const exerciseName = (interval: WorkoutInterval) => interval.title;
 
 // Written units read badly aloud: "2 s" becomes "2 secondes", "90°" becomes "90 degrés".
 export function speakable(text: string) {
@@ -39,9 +39,18 @@ const changesSides = (interval: WorkoutInterval) => !!interval.exercise && /à m
 const nextWork = (intervals: WorkoutInterval[], index: number) =>
   intervals.slice(index + 1).find(interval => interval.type === 'work');
 
+// Announced when the next exercise opens a new part of the session.
+const STAGE_CUES: Record<WorkoutInterval['stage'], string> = {
+  warmup: 'Place à l\'échauffement.',
+  main: 'Place au circuit.',
+  finisher: 'Place au finisher.',
+  cooldown: 'Place au retour au calme.',
+};
+
 export function sessionStartCue(intervals: WorkoutInterval[]): Cue {
   const first = intervals[0];
-  return { beep: START, say: first ? `Échauffement. ${exerciseName(first)}. C'est parti.` : "C'est parti." };
+  if (!first) return { beep: START, say: "C'est parti." };
+  return { beep: START, say: `${first.stage === 'warmup' ? 'Échauffement' : 'Circuit'}. ${exerciseName(first)}. C'est parti.` };
 }
 
 export function sessionEndCue(): Cue {
@@ -65,7 +74,7 @@ export function intervalStartCue(intervals: WorkoutInterval[], index: number): C
   const next = nextWork(intervals, index);
   if (next) {
     if (next.stage !== interval.stage) {
-      parts.push(next.stage === 'main' ? 'Place au circuit.' : 'Place au finisher.');
+      parts.push(STAGE_CUES[next.stage]);
     }
     parts.push(`Prochain exercice : ${speakable(exerciseName(next))}.`);
     // Short warm-up breaks only leave time for the name.
@@ -81,7 +90,8 @@ export function intervalStartCue(intervals: WorkoutInterval[], index: number): C
 export function tickCue(interval: WorkoutInterval, secondsRemaining: number): Cue | null {
   if (secondsRemaining >= 1 && secondsRemaining <= 3) {
     // Before an exercise starts the voice counts down; before it ends, short beeps.
-    return interval.type === 'rest'
+    // Between two stretches the pause is too short to talk over: beeps only.
+    return interval.type === 'rest' && interval.stage !== 'cooldown'
       ? { say: COUNTDOWN[secondsRemaining - 1], fallbackBeep: SHORT }
       : { beep: SHORT };
   }

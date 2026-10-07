@@ -33,7 +33,7 @@ function PlanSection({ label, items, prefix, onSelect }: PlanSectionProps) {
               )}
               {item.exercise && <ExerciseThumb exerciseId={item.exercise.id} className="w-[60px] h-12" />}
               <span className="flex-1 flex flex-col">
-                <span className="font-medium text-base">{item.title.replace('Échauffement : ', '')}</span>
+                <span className="font-medium text-base">{item.title}</span>
                 <span className="text-sm text-sand">{item.target.split(' - ')[0]}</span>
               </span>
               <ChevronRight className="w-[18px] h-[18px] shrink-0 text-sand" aria-hidden="true" />
@@ -84,7 +84,9 @@ export function SummaryScreen({ title, backLabel, minutes, rythme, plan, onBack,
         ))}
       </div>
 
-      <PlanSection label={`Échauffement · ${plan.totalWarmup} min`} items={plan.warmups} onSelect={setSelectedExercise} />
+      {plan.totalWarmup > 0 && (
+        <PlanSection label={`Échauffement · ${plan.totalWarmup} min`} items={plan.warmups} onSelect={setSelectedExercise} />
+      )}
 
       {plan.hasTwoBlocks ? (
         <>
@@ -110,7 +112,12 @@ export function SummaryScreen({ title, backLabel, minutes, rythme, plan, onBack,
         />
       )}
 
-      <PlanSection label={`Finisher · ${plan.totalFinishers} min`} items={plan.finishers} onSelect={setSelectedExercise} />
+      {plan.totalFinishers > 0 && (
+        <PlanSection label={`Finisher · ${plan.totalFinishers} min`} items={plan.finishers} onSelect={setSelectedExercise} />
+      )}
+      {plan.totalCooldown > 0 && (
+        <PlanSection label={`Retour au calme · ${plan.totalCooldown} min`} items={plan.cooldowns} onSelect={setSelectedExercise} />
+      )}
 
       <div className="sticky bottom-0 mt-auto -mx-5 px-5 pt-3 pb-1 bg-brick flex gap-2.5">
         {onRegenerate && (

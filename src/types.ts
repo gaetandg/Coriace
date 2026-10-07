@@ -20,7 +20,7 @@ export interface Exercise {
   caution?: string;
 }
 
-export type WorkoutStage = 'warmup' | 'main' | 'finisher';
+export type WorkoutStage = 'warmup' | 'main' | 'finisher' | 'cooldown';
 export type IntervalType = 'work' | 'rest';
 
 export interface WorkoutInterval {
@@ -51,7 +51,9 @@ export interface WorkoutConfig {
   rythme: 'equilibre' | 'intense'; // equilibre = 30s/30s, intense = 40s/20s
   durationMinutes?: number; // 15 to 60, default 30
   selectedExerciseIds?: string[]; // Exercises selected by the user
-  numBlocks?: number; // 1 or 2 blocks of circuit
+  numBlocks?: number; // no longer used: the length of the session decides
+  // Already warm (after a run): no warm-up, the circuits get the time instead.
+  skipWarmup?: boolean;
 }
 
 export interface SoundSettings {

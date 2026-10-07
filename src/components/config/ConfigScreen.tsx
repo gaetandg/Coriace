@@ -147,6 +147,21 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
               );
             })}
           </div>
+          <button
+            id="switch-skip-warmup"
+            role="switch"
+            aria-checked={!!config.skipWarmup}
+            onClick={() => setConfig(prev => ({ ...prev, skipWarmup: !prev.skipWarmup }))}
+            className="mt-1 py-2 flex items-center gap-4 text-left cursor-pointer"
+          >
+            <span className="flex-1 flex flex-col gap-0.5">
+              <span className="font-semibold text-base">Déjà échauffé</span>
+              <span className="text-sm text-sand">Après un footing : pas d'échauffement, plus de renfo pour la même durée.</span>
+            </span>
+            <span className={`w-13 h-8 rounded-full p-1 shrink-0 transition-colors ${config.skipWarmup ? 'bg-cream' : 'bg-ink/35'}`}>
+              <span className={`block w-6 h-6 rounded-full transition-transform ${config.skipWarmup ? 'translate-x-5 bg-brick' : 'bg-white/80'}`} />
+            </span>
+          </button>
         </div>
 
         <div id="exercise-list" className="relative flex flex-col gap-4">

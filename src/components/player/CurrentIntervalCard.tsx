@@ -38,7 +38,7 @@ export function CurrentIntervalCard({ interval, secondsRemaining, playing }: Cur
       {interval.exercise ? (
         <div className="flex flex-col gap-1.5">
           <h1 className="font-display font-bold text-[34px] leading-[1.05] tracking-[-0.02em]">
-            {interval.title.replace('Échauffement : ', '')}
+            {interval.title}
           </h1>
           <span className="text-base text-sand">{interval.target}</span>
           {hasAnimation(interval.exercise.id) && (
