@@ -10,6 +10,7 @@ import { Exercise, WorkoutConfig } from '../../types';
 import { ExerciseDetailModal } from '../summary/ExerciseDetailModal';
 import { outlineButton, primaryButton, sectionLabel, segmentedOption, segmentedTrack } from '../../lib/ui';
 import { LaneArcs } from '../Logo';
+import { ExerciseThumb } from '../ExerciseThumb';
 
 const EQUIPMENT_OPTIONS: { key: EquipmentKey; id: string; label: string }[] = [
   { key: 'none', id: 'chk-eq-none', label: 'Aucun' },
@@ -191,6 +192,7 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
                           <span className={`w-6 h-6 rounded-md shrink-0 flex items-center justify-center ${isSelected ? 'bg-cream text-ink' : 'border-[1.5px] border-white/55'}`}>
                             {isSelected && <Check className="w-4 h-4" strokeWidth={3} />}
                           </span>
+                          <ExerciseThumb exerciseId={ex.id} className={`w-[60px] h-12 ${isSelected ? '' : 'opacity-50'}`} />
                           <span className="flex flex-col">
                             <span className={`font-semibold text-base ${isSelected ? '' : 'text-sand'}`}>{ex.name}</span>
                             <span className="text-sm text-sand">{ex.target}</span>

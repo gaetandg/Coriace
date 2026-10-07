@@ -4,6 +4,7 @@ import { Exercise, WorkoutConfig, WorkoutInterval } from '../../types';
 import { PlanGroups } from '../../lib/plan';
 import { outlineButton, primaryButton, sectionLabel } from '../../lib/ui';
 import { ExerciseDetailModal } from './ExerciseDetailModal';
+import { ExerciseThumb } from '../ExerciseThumb';
 
 interface PlanSectionProps {
   label: string;
@@ -30,6 +31,7 @@ function PlanSection({ label, items, prefix, onSelect }: PlanSectionProps) {
                   {prefix}{idx + 1}
                 </span>
               )}
+              {item.exercise && <ExerciseThumb exerciseId={item.exercise.id} className="w-[60px] h-12" />}
               <span className="flex-1 flex flex-col">
                 <span className="font-medium text-base">{item.title.replace('Échauffement : ', '')}</span>
                 <span className="text-sm text-sand">{item.target.split(' - ')[0]}</span>

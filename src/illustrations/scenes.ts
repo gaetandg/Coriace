@@ -13,6 +13,8 @@ export interface Scene {
   props?: (first: Joints) => Props;
   // Scenery that follows the body (weights, ropes, shadows).
   dynamic?: (pose: Pose, joints: Joints, ms: number) => { back?: string; front?: string };
+  // Moment shown as a still thumbnail, when the first key pose isn't the most telling.
+  thumb?: number;
 }
 
 const STAND_HIP = ANKLE_Y - 55 + 0.5;
@@ -226,6 +228,7 @@ const lungeKeys = (front: 'near' | 'far'): Key[] => {
   ];
 };
 const lunges: Scene = {
+  thumb: 1800,
   motion: keyframes({
     anchor: ['hip', [100, STAND_HIP]], ik: { near: [101, ANKLE_Y], far: [99, ANKLE_Y] }, bend: { near: 1, far: 1 },
     angles: { torso: 180, head: 180, ...armsDown, ...flatFeet },
@@ -332,6 +335,7 @@ const hand = (x = 0): Pt => [HAND_X + x, 146.5];
 const lifted = (x = 0): Pt => [HAND_X - 9 + x, 136];
 const plankBends = { bend: { near: 1, far: 1, nearHand: 1, farHand: 1 } };
 const plankCommando: Scene = {
+  thumb: 2000,
   motion: keyframes({ ...plank(127, forearm(), forearm(-2)), ...plankBends } as Pose, [
     { move: 300, hold: 0, pose: plank(126, lifted(), forearm(-2)) },
     { move: 300, hold: 0, pose: plank(124, hand(), forearm(-2)) },
@@ -426,7 +430,7 @@ const jumpingJacksMotion = (speed: number) => keyframes(frontBase(jack(false)), 
   { move: 170 * speed, hold: 0, pose: jackAir },
   { move: 170 * speed, hold: 90 * speed, pose: jack(false) },
 ]);
-const jumpingJacks: Scene = { motion: jumpingJacksMotion(1) };
+const jumpingJacks: Scene = { motion: jumpingJacksMotion(1), thumb: 340 };
 
 const knee = (up: 'near' | 'far'): Partial<Pose> => {
   const down = up === 'near' ? 'far' : 'near';
@@ -444,6 +448,7 @@ const bothDown: Partial<Pose> = {
   angles: { nearThigh: 6, nearShin: -6, nearFoot: 62, farThigh: 4, farShin: -8, farFoot: 62, nearUpperArm: 0, nearForearm: 90, farUpperArm: 0, farForearm: 90 },
 };
 const highKnees: Scene = {
+  thumb: 280,
   dynamic: (p) => { const lift = Math.max(0, STAND_HIP - 3 - p.anchor[1][1]); return { back: shadow(100, 16 - lift, 1 - lift / 14) }; },
   // Running on the spot: the standing leg is straight, so the hip sits a leg's length above the floor.
   motion: keyframes({ anchor: ['hip', [100, STAND_HIP - 3]], angles: { torso: 182, head: 182, ...knee('near').angles } } as Pose, [
@@ -470,6 +475,21 @@ const pogoMotion: Motion = {
 const pogo: Scene = {
   motion: pogoMotion,
   dynamic: (p) => { const lift = (p as Pose & { lift: number }).lift; return { back: shadow(100, 14 - lift, 1 - lift / 12) }; },
+};
+
+// Warm-up joint mobility: slow arm circles, standing.
+const armCircles: Scene = {
+  motion: {
+    duration: 2400,
+    still: 600,
+    at(ms) {
+      const a = (360 * ms) / 2400;
+      return {
+        anchor: ['hip', [100, STAND_HIP]], ik: { near: [101, ANKLE_Y], far: [99, ANKLE_Y] }, bend: { near: 1, far: 1 },
+        angles: { torso: 180, head: 180, ...flatFeet, nearUpperArm: a, nearForearm: a + 8, farUpperArm: a + 180, farForearm: a + 188 },
+      } as Pose;
+    },
+  },
 };
 
 export const SCENES: Record<string, Scene> = {
@@ -504,6 +524,7 @@ export const SCENES: Record<string, Scene> = {
   dead_bug: deadBug,
   bird_dog: birdDog,
   // Warm-up moves reuse a gentler version of a close exercise.
+  warmup_0: armCircles,
   warmup_1: { motion: squatMotion(0.55) },
   warmup_2: lateralLunges,
   warmup_3: forearmPlank,
@@ -525,6 +546,19 @@ export function sceneTop(scene: Scene): number {
     tops.set(scene, top);
   }
   return top;
+}
+
+// Still frame for a thumbnail, framed tightly around the body, 5:4, resting on the floor.
+export function sceneThumb(scene: Scene): { viewBox: string; svg: string } {
+  const ms = scene.thumb ?? scene.motion.still ?? 0;
+  const j = skeleton(scene.motion.at(ms));
+  const xs = Object.values(j).map(p => p[0]), ys = Object.values(j).map(p => p[1]);
+  const bottom = FLOOR + 4;
+  let x0 = Math.min(...xs) - 12, x1 = Math.max(...xs) + 12, y0 = Math.min(...ys) - 12;
+  let w = x1 - x0, h = bottom - y0;
+  if (w / h < 1.25) { const extra = h * 1.25 - w; x0 -= extra / 2; w = h * 1.25; }
+  else { h = w / 1.25; y0 = bottom - h; }
+  return { viewBox: `${x0.toFixed(1)} ${y0.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`, svg: sceneFrame(scene, ms, {}) };
 }
 
 // Inner SVG of one frame, in a 200 x 160 box (see sceneTop for the visible part).
