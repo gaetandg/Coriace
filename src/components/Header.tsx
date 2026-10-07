@@ -15,7 +15,10 @@ export function Header({ activeTab, onTabChange, soundOn, onOpenSound }: HeaderP
     <header className="relative flex items-center justify-between">
       <div className="flex items-center gap-2.5">
         <Logo />
-        <span className="font-display font-extrabold text-[23px] tracking-tight">Coriace</span>
+        <div className="flex flex-col">
+          <span className="font-display font-extrabold text-[23px] leading-tight tracking-tight">Coriace</span>
+          <span className="text-[13px] leading-tight text-sand">Le renfo pour les coureurs</span>
+        </div>
       </div>
 
       <div className="flex items-center gap-1">

@@ -52,14 +52,9 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
     <div id="panel-config" className="flex-1 flex flex-col gap-[22px]">
       <LaneArcs className="w-[300px] -top-[100px] -right-[140px] opacity-[0.18]" />
 
-      <div className="relative mt-1.5 flex flex-col gap-3">
-        <h1 className="font-display font-extrabold text-[44px] leading-none tracking-[-0.03em]">
-          Prépare<br />ta séance
-        </h1>
-        <p className="text-base leading-snug text-sand max-w-[320px]">
-          Le renfo des coureurs : mollets, adducteurs, fessiers et gainage, pour tenir ta foulée jusqu'au bout. Guidé à la voix, à la maison.
-        </p>
-      </div>
+      <h1 className="relative mt-1.5 font-display font-extrabold text-[44px] leading-none tracking-[-0.03em]">
+        Prépare<br />ta séance
+      </h1>
 
       <div className={`relative ${segmentedTrack}`}>
         {MODE_OPTIONS.map(option => (
