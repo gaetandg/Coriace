@@ -74,4 +74,4 @@ L'application est déployée automatiquement sur GitHub Pages à chaque push sur
 
 Mise en place initiale (une seule fois) : dans **Settings → Pages** du dépôt, choisir **Source : GitHub Actions**.
 
-Adresse : https://gaetandg.github.io/PPG-marathon/
+Adresse : https://gaetandg.github.io/Coriace/

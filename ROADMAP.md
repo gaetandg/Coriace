@@ -4,7 +4,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 
 ## Fait
 
-- [x] Déploiement automatique sur GitHub Pages (https://gaetandg.github.io/PPG-marathon/)
+- [x] Déploiement automatique sur GitHub Pages (https://gaetandg.github.io/Coriace/)
 - [x] Application installable (PWA), fonctionne hors ligne
 - [x] Nettoyage du code issu d'AI Studio, découpage en composants
 - [x] Réécriture de tous les textes : tutoiement, ton sobre et direct
@@ -13,8 +13,8 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 ## À faire
 
 ### Identité visuelle
-- [ ] Logo (l'icône actuelle est provisoire)
-- [ ] Direction artistique : couleurs, typographies, remplacement des emojis-icônes (matériel, parties du corps) par de vraies icônes
+- [ ] Logo (l'icône actuelle est provisoire) — direction retenue : C · Piste (C formé de trois couloirs)
+- [ ] Direction artistique « Piste » (fond brique, crème, Bricolage Grotesque + Instrument Sans) : couleurs, typographies, remplacement des emojis-icônes (matériel, parties du corps) par de vraies icônes
 
 ### Guidage audio
 - [ ] Voix qui annonce le prochain exercice pendant les pauses (synthèse vocale du navigateur, voix française)
