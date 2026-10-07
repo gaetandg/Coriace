@@ -13,6 +13,11 @@ export interface Exercise {
   group: ExerciseGroup;
   tips: string;
   instructionHighlight: string;
+  // Ways to adjust the difficulty, shown in the exercise sheet (missing on warm-up moves).
+  easier?: string;
+  harder?: string;
+  // Safety note, e.g. for jumps.
+  caution?: string;
 }
 
 export type WorkoutStage = 'warmup' | 'main' | 'finisher';

@@ -16,7 +16,7 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Guidage vocal** : annonce du prochain exercice et de sa consigne pendant les pauses, décompte « 3, 2, 1 » avant de repartir, « encore dix secondes », « change de côté ». Bips et voix réglables séparément.
 - **Écran maintenu allumé** pendant la séance (si le navigateur le permet).
 - **Durée respectée** : la séance dure le temps choisi, à 30 secondes près.
-- **Guide des exercices** : description, consignes clés et conseils pour chaque mouvement.
+- **Fiche de chaque exercice** (30 exercices) : description, conseil, variante plus facile et plus dure, précautions pour les sauts.
 - **Circuits équilibrés et variés** : chaque circuit contient au moins un exercice de mollets, d'adducteurs, de fessiers et de gainage, au plus deux par groupe, sans deux exercices du même groupe à la suite. « Régénérer » évite les exercices de la séance précédente.
 - **Bouton retour du téléphone** : revient à l'écran précédent ; pendant une séance, il met en pause au lieu de quitter.
 - **Statistiques** : bouton en haut à droite. Séances sur 7 et 30 jours, minutes, semaines d'affilée, moyenne par semaine, graphique des séances par semaine (12 semaines, repère à 2 par semaine), séries par groupe musculaire sur 30 jours, séances les plus faites et historique complet. Chaque séance terminée garde la liste de ses exercices. L'accueil affiche le nombre de séances des 7 derniers jours.

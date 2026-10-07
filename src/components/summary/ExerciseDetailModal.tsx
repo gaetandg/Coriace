@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { TriangleAlert, X } from 'lucide-react';
 import { Exercise } from '../../types';
 import { useBackHandler } from '../../hooks/useBackHandler';
 
@@ -58,6 +58,27 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
             <h3 className="text-sm font-semibold text-clay">Conseil</h3>
             <p className="text-base leading-relaxed">{exercise.tips}</p>
           </div>
+        )}
+
+        {(exercise.easier || exercise.harder) && (
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { title: 'Plus facile', text: exercise.easier },
+              { title: 'Plus dur', text: exercise.harder },
+            ].filter(level => level.text).map(level => (
+              <div key={level.title} className="rounded-2xl bg-ink/[0.06] px-3.5 py-3 flex flex-col gap-0.5">
+                <h3 className="text-sm font-semibold text-clay">{level.title}</h3>
+                <p className="text-[15px] leading-snug">{level.text}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {exercise.caution && (
+          <p className="flex gap-2.5 text-[15px] leading-snug">
+            <TriangleAlert className="w-5 h-5 shrink-0 text-clay" aria-label="Attention" />
+            {exercise.caution}
+          </p>
         )}
 
         {exercise.instructionHighlight && (

@@ -18,19 +18,19 @@ export const PRESET_SESSIONS: PresetSession[] = [
   {
     id: 'mollets-express',
     name: 'Mollets express',
-    description: 'Mollets et tibias, à glisser avant ou après une sortie.',
+    description: 'Mollets, tibias et rebond, à glisser avant ou après une sortie.',
     durationMinutes: 15,
     warmupMinutes: 2,
-    blocks: [{ exerciseIds: ['calves_standing_slow', 'marche_talons_inversion', 'calf_raise_isometric_low', 'wall_sit'], rounds: 3 }],
+    blocks: [{ exerciseIds: ['calves_standing_slow', 'marche_talons_inversion', 'calf_raise_isometric_low', 'pogo_jumps'], rounds: 3 }],
     finisherIds: [],
   },
   {
     id: 'gainage',
     name: 'Gainage',
-    description: 'Le tronc sous toutes ses faces, plus le pont fessier.',
+    description: 'Le tronc sous toutes ses faces : avant, côtés et bas du dos.',
     durationMinutes: 15,
     warmupMinutes: 2,
-    blocks: [{ exerciseIds: ['plank_commando', 'dead_bug', 'side_plank', 'single_leg_bridge'], rounds: 3 }],
+    blocks: [{ exerciseIds: ['plank_commando', 'dead_bug', 'side_plank', 'bird_dog'], rounds: 3 }],
     finisherIds: [],
   },
   {
@@ -49,7 +49,7 @@ export const PRESET_SESSIONS: PresetSession[] = [
     durationMinutes: 20,
     warmupMinutes: 3,
     blocks: [{ exerciseIds: ['squat_classic', 'calves_standing_slow', 'side_plank', 'alternating_lunges', 'single_leg_bridge'], rounds: 3 }],
-    finisherIds: ['jumping_jacks'],
+    finisherIds: ['high_knees'],
   },
   {
     id: 'special-marathon',
@@ -61,7 +61,7 @@ export const PRESET_SESSIONS: PresetSession[] = [
       exerciseIds: ['copenhagen_plank', 'calves_standing_slow', 'side_plank', 'single_leg_bridge', 'squat_sumo', 'marche_talons_inversion', 'dead_bug'],
       rounds: 3,
     }],
-    finisherIds: ['jumping_jacks', 'wall_sit', 'plank_commando'],
+    finisherIds: ['high_knees', 'wall_sit', 'plank_commando'],
   },
   {
     id: 'complete',
@@ -71,9 +71,9 @@ export const PRESET_SESSIONS: PresetSession[] = [
     warmupMinutes: 5,
     blocks: [
       { exerciseIds: ['copenhagen_plank', 'calves_seated', 'dead_bug', 'bulgarian_split_squat', 'side_lying_abduction', 'pushups'], rounds: 3 },
-      { exerciseIds: ['shift_squat_goblet', 'calf_raise_isometric_low', 'side_plank', 'single_leg_rdl', 'lateral_lunges', 'russian_twists'], rounds: 3 },
+      { exerciseIds: ['shift_squat_goblet', 'calf_raise_isometric_low', 'side_plank', 'single_leg_rdl', 'lateral_lunges', 'woodchop'], rounds: 3 },
     ],
-    finisherIds: ['jumping_jacks', 'wall_sit'],
+    finisherIds: ['high_knees', 'wall_sit'],
   },
 ];
 
