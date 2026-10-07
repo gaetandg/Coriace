@@ -1,8 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { EXERCISE_DATABASE } from './exercises';
 import { WorkoutConfig, WorkoutInterval, Exercise, WorkoutStage } from './types';
 

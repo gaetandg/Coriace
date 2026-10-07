@@ -1,8 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { Exercise } from './types';
 
 export const EXERCISE_DATABASE: Exercise[] = [

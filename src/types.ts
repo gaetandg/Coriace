@@ -1,8 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 export type ExerciseCategory = 'specific_calf' | 'specific_adductor' | 'abdos' | 'general';
 
 export interface Exercise {

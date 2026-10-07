@@ -13,15 +13,16 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Ciblage coureur** : gainage abdominal, endurance des mollets, adducteurs.
 - **Minuteur guidé** : bips sonores sur les 3 dernières secondes et aux changements d'étape.
 - **Guide des exercices** : description, consignes clés et conseils pour chaque mouvement.
+- **Installable (PWA)** : s'ajoute à l'écran d'accueil et fonctionne hors ligne.
 
 ## Stack technique
 
 - [React 19](https://react.dev/) + TypeScript
 - [Vite](https://vitejs.dev/)
 - [Tailwind CSS 4](https://tailwindcss.com/)
-- [Motion](https://motion.dev/) pour les animations
 - [Lucide](https://lucide.dev/) pour les icônes
 - Web Audio API pour les signaux sonores
+- [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) pour l'installation et le hors ligne
 
 ## Lancer le projet en local
 
@@ -47,12 +48,24 @@ L'application est alors disponible sur http://localhost:3000.
 
 ```
 src/
-├── App.tsx               # Interface : configuration, résumé, séance active, fin de séance
-├── exercises.ts          # Base de données des exercices
-├── workoutGenerator.ts   # Génération de la séance (échauffement, circuit, finisher)
-├── types.ts              # Types partagés
-├── main.tsx              # Point d'entrée React
-└── index.css             # Thème et styles globaux
+├── App.tsx                    # Assemble l'en-tête, les écrans et le pied de page
+├── hooks/
+│   ├── useWorkoutSession.ts   # État de la séance : configuration, plan, minuteur, actions
+│   └── useBeep.ts             # Bips sonores (Web Audio API)
+├── components/
+│   ├── Header.tsx, Footer.tsx
+│   ├── GuideScreen.tsx        # Onglet « Guide Prévention »
+│   ├── CompletedScreen.tsx    # Fin de séance
+│   ├── config/                # Écran de configuration
+│   ├── summary/               # Résumé du plan et fiche détaillée d'un exercice
+│   └── player/                # Séance en cours : minuteur, prochaine étape, commandes, déroulé
+├── lib/                       # Fonctions utilitaires (regroupement du plan, formatage)
+├── exercises.ts               # Base de données des exercices
+├── workoutGenerator.ts        # Génération de la séance (échauffement, circuit, finisher)
+├── types.ts                   # Types partagés
+├── main.tsx                   # Point d'entrée React
+└── index.css                  # Thème et styles globaux
+public/                        # Icônes de l'application (PWA)
 ```
 
 ## Déploiement
