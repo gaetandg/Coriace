@@ -20,7 +20,7 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Circuits équilibrés et variés** : chaque circuit contient au moins un exercice de mollets, d'adducteurs, de fessiers et de gainage, au plus deux par groupe, sans deux exercices du même groupe à la suite. « Régénérer » évite les exercices de la séance précédente.
 - **Bouton retour du téléphone** : revient à l'écran précédent ; pendant une séance, il met en pause au lieu de quitter.
 - **Historique** : chaque séance terminée est enregistrée (date, nom, durée, rythme) ; l'accueil affiche le nombre de séances des 7 derniers jours.
-- **Compte Google (optionnel)** : en se connectant, l'historique est sauvegardé et synchronisé entre appareils (Supabase).
+- **Compte Google (optionnel)** : bouton compte en haut à droite ; en se connectant, l'historique est sauvegardé et synchronisé entre appareils (Supabase).
 - **Préférences retenues** : matériel, rythme, durée, exercices cochés et réglages du son sont gardés d'une visite à l'autre (dans le navigateur).
 - **Installable (PWA)** : s'ajoute à l'écran d'accueil et fonctionne hors ligne.
 
@@ -69,6 +69,7 @@ src/
 │   ├── GuideScreen.tsx        # Onglet « Guide »
 │   ├── CompletedScreen.tsx    # Fin de séance
 │   ├── HistoryScreen.tsx      # Historique des séances terminées
+│   ├── AccountCard.tsx, AccountSheet.tsx  # Connexion Google et compte
 │   ├── config/                # Accueil (réglages) et choix des exercices
 │   ├── summary/               # Résumé du plan et fiche détaillée d'un exercice
 │   └── player/                # Séance en cours : minuteur, prochaine étape, commandes, déroulé

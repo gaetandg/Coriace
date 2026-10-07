@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { User } from '@supabase/supabase-js';
 import { useWorkoutSession } from './hooks/useWorkoutSession';
 import { AppTab, Header } from './components/Header';
 import { GuideScreen } from './components/GuideScreen';
@@ -12,11 +13,16 @@ import { HistoryScreen } from './components/HistoryScreen';
 import { sessionsInLastDays } from './lib/history';
 import { useAuth } from './hooks/useAuth';
 import { AccountCard } from './components/AccountCard';
+import { AccountSheet } from './components/AccountSheet';
+
+const accountInitial = (user: User | null) =>
+  user ? ((user.user_metadata?.full_name as string | undefined) || user.email || '?').charAt(0).toUpperCase() : '';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<AppTab>('workout');
   const [feedbackMessage, setFeedbackMessage] = useState<string>('');
   const [showSound, setShowSound] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
 
   const notify = (message: string) => {
     setFeedbackMessage(message);
@@ -43,6 +49,7 @@ export default function App() {
   };
   useBackHandler(activeTab === 'history', closeHistory);
   useBackHandler(showSound, () => setShowSound(false));
+  useBackHandler(showAccount, () => setShowAccount(false));
 
   // Rest turns the screen green so effort and recovery read at a glance from the floor.
   const isBreak = activeTab === 'workout' && workoutState === 'active' && activeInterval?.type === 'rest';
@@ -55,6 +62,8 @@ export default function App() {
           onTabChange={setActiveTab}
           soundOn={session.sound.beeps || (session.sound.voice && session.speechSupported)}
           onOpenSound={() => setShowSound(true)}
+          accountInitial={auth.enabled ? accountInitial(auth.user) : null}
+          onOpenAccount={() => setShowAccount(true)}
         />
 
         {activeTab === 'guide' ? (
@@ -109,6 +118,14 @@ export default function App() {
           onChange={session.setSoundOption}
           onTest={session.testSound}
           onClose={() => setShowSound(false)}
+        />
+      )}
+
+      {showAccount && (
+        <AccountSheet
+          auth={auth}
+          onOpenHistory={() => { setShowAccount(false); setActiveTab('history'); }}
+          onClose={() => setShowAccount(false)}
         />
       )}
 

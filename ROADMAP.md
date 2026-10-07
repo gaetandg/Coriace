@@ -39,7 +39,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 
 ### Comptes et statistiques
 - [ ] Mesure d'audience (analytics) : savoir quelles séances et quels écrans sont utilisés, dans le respect du RGPD (outil sans cookie ou consentement)
-- [x] Connexion Google (Supabase) et synchronisation de l'historique entre appareils
+- [x] Connexion Google (Supabase) et synchronisation de l'historique entre appareils, accessible depuis l'en-tête
 - [ ] Synchroniser aussi les préférences et les séances enregistrées
 - [x] Sans compte : proposer de se connecter en fin de séance pour sauvegarder son historique (l'historique local est repris à la connexion)
 - [ ] Export vers Strava : envoyer chaque séance terminée comme activité « Renforcement musculaire » (API Strava, connexion Strava du coureur)
