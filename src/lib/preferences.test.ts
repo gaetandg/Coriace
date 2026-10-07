@@ -23,7 +23,6 @@ describe('preferences', () => {
         equipment: { none: true, chaise: false, poids_8kg: false, corde_a_sauter: false },
         rythme: 'intense' as const,
         durationMinutes: 45,
-        numBlocks: 2,
         selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id).filter(id => id !== 'pushups'),
       },
       sound: { beeps: false, voice: true },
@@ -42,7 +41,7 @@ describe('preferences', () => {
   it('ignores corrupted or invalid values', () => {
     store.set('coriace:preferences:v1', '{not json');
     expect(loadPreferences()).toEqual(DEFAULT_PREFERENCES);
-    store.set('coriace:preferences:v1', JSON.stringify({ durationMinutes: 999, rythme: 'fast', numBlocks: 3, sound: { voice: 'yes' } }));
+    store.set('coriace:preferences:v1', JSON.stringify({ durationMinutes: 999, rythme: 'fast', sound: { voice: 'yes' } }));
     expect(loadPreferences()).toEqual(DEFAULT_PREFERENCES);
   });
 

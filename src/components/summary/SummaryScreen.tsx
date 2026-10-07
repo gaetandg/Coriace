@@ -67,10 +67,7 @@ export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: 
         Réglages
       </button>
 
-      <div className="flex flex-col gap-2">
-        <h1 className="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">Ta séance</h1>
-        <p className="text-[15px] text-sand">Touche un exercice pour voir ses consignes.</p>
-      </div>
+      <h1 className="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">Ta séance</h1>
 
       <div className="grid grid-cols-3 bg-cream text-ink rounded-[18px] py-3.5">
         {stats.map((stat, i) => (
@@ -110,8 +107,8 @@ export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: 
       <PlanSection label={`Finisher · ${plan.totalFinishers} min`} items={plan.finishers} prefix="F" onSelect={setSelectedExercise} />
 
       <div className="sticky bottom-0 mt-auto -mx-5 px-5 pt-3 pb-1 bg-brick flex gap-2.5">
-        <button onClick={onRegenerate} title="Tirer un nouvel ordre des exercices" className={`h-15 px-[18px] rounded-[18px] text-[15px] ${outlineButton}`}>
-          Mélanger
+        <button onClick={onRegenerate} title="Tirer une nouvelle séance avec les mêmes réglages" className={`h-15 px-[18px] rounded-[18px] text-[15px] ${outlineButton}`}>
+          Régénérer
         </button>
         <button onClick={onLaunch} className={`flex-1 ${primaryButton}`}>
           <Play className="w-[18px] h-[18px] fill-current" />

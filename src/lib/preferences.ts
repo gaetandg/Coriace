@@ -16,7 +16,6 @@ interface StoredPreferences {
   equipment?: Partial<WorkoutConfig['equipment']>;
   rythme?: WorkoutConfig['rythme'];
   durationMinutes?: number;
-  numBlocks?: number;
   excludedExerciseIds?: string[];
   sound?: Partial<SoundSettings>;
 }
@@ -26,7 +25,6 @@ export const DEFAULT_PREFERENCES: Preferences = {
     equipment: { none: false, chaise: true, poids_8kg: true, corde_a_sauter: false },
     rythme: 'equilibre',
     durationMinutes: 30,
-    numBlocks: 1,
     selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id),
   },
   sound: { beeps: true, voice: true },
@@ -57,7 +55,6 @@ export function loadPreferences(): Preferences {
       equipment,
       rythme: stored.rythme === 'intense' || stored.rythme === 'equilibre' ? stored.rythme : defaults.config.rythme,
       durationMinutes: DURATIONS.includes(stored.durationMinutes as number) ? stored.durationMinutes : defaults.config.durationMinutes,
-      numBlocks: stored.numBlocks === 1 || stored.numBlocks === 2 ? stored.numBlocks : defaults.config.numBlocks,
       selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id).filter(id => !excluded.includes(id)),
     },
     sound: {
@@ -73,7 +70,6 @@ export function savePreferences({ config, sound }: Preferences) {
     equipment: config.equipment,
     rythme: config.rythme,
     durationMinutes: config.durationMinutes,
-    numBlocks: config.numBlocks,
     excludedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id).filter(id => !selected.includes(id)),
     sound,
   };

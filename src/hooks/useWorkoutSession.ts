@@ -162,7 +162,7 @@ export function useWorkoutSession(notify: (message: string) => void) {
     setIntervals(generated);
     setCurrentIntervalIndex(0);
     setSecondsRemaining(generated[0]?.duration || 30);
-    notify('Nouvel ordre des exercices.');
+    notify('Nouvelle séance générée.');
   };
 
   // Find compatible exercises for selected configuration (equipment based)
@@ -207,23 +207,18 @@ export function useWorkoutSession(notify: (message: string) => void) {
     });
   };
 
-  const handleSelectAllExercises = (select: boolean) => {
-    setConfig(prev => {
-      let nextSelected;
-      if (select) {
-        nextSelected = Array.from(new Set([...(prev.selectedExerciseIds || []), ...compatibleExercises.map(ex => ex.id)]));
-      } else {
-        nextSelected = (prev.selectedExerciseIds || []).filter(id => !compatibleExercises.some(ex => ex.id === id));
-        // Fallback: keep at least 1 exercise
-        if (nextSelected.length === 0 && compatibleExercises.length > 0) {
-          nextSelected.push(compatibleExercises[0].id);
-        }
-      }
-      return {
-        ...prev,
-        selectedExerciseIds: nextSelected
-      };
-    });
+  // Checks or unchecks several exercises at once (a group, or the whole list).
+  // At least one exercise usable with the equipment stays checked.
+  const setExercisesSelected = (ids: string[], select: boolean) => {
+    const current = config.selectedExerciseIds || EXERCISE_DATABASE.map(e => e.id);
+    const nextSelected = select ? Array.from(new Set([...current, ...ids])) : current.filter(id => !ids.includes(id));
+    if (!compatibleExercises.some(ex => nextSelected.includes(ex.id))) {
+      const kept = compatibleExercises.find(ex => ids.includes(ex.id)) ?? compatibleExercises[0];
+      if (!kept) return;
+      nextSelected.push(kept.id);
+      notify(`Il faut au moins un exercice : ${kept.name} reste coché.`);
+    }
+    setConfig(prev => ({ ...prev, selectedExerciseIds: nextSelected }));
   };
 
   // The start cue of the new interval is played by the cue effect.
@@ -339,7 +334,7 @@ export function useWorkoutSession(notify: (message: string) => void) {
     handleBackToConfig,
     handleRegeneratePlan,
     toggleExerciseSelection,
-    handleSelectAllExercises,
+    setExercisesSelected,
     handleNextInterval,
     handlePrevInterval,
     handleJumpToBlock,

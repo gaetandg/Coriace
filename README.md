@@ -6,7 +6,7 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 
 ## Fonctionnalités
 
-- **Séance personnalisée** : durée de 15 à 60 minutes, 1 ou 2 blocs de circuit, choix des exercices.
+- **Séance personnalisée** : durée de 15 à 60 minutes, choix des exercices par groupe, fiche détaillée de chaque exercice.
 - **Matériel** : sans matériel, chaise, poids de 8 kg, corde à sauter.
 - **Deux rythmes** : équilibré (30 s / 30 s) ou intense (40 s / 20 s).
 - **Structure complète** : échauffement, circuit principal, finisher.
