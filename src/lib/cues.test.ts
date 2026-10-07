@@ -29,23 +29,23 @@ describe('intervalStartCue', () => {
 
   it('announces the next exercise and its key cue during rest', () => {
     const cue = intervalStartCue([work('squat_classic'), rest(30), work('wall_sit')], 1);
-    expect(cue.say).toBe('Ensuite : Chaise contre un mur. Cuisses parallèles au sol.');
+    expect(cue.say).toBe('Prochain exercice : Chaise contre un mur. Cuisses parallèles au sol.');
   });
 
   it('keeps short breaks to the name', () => {
     const cue = intervalStartCue([work('squat_classic'), rest(10), work('wall_sit')], 1);
-    expect(cue.say).toBe('Ensuite : Chaise contre un mur.');
+    expect(cue.say).toBe('Prochain exercice : Chaise contre un mur.');
   });
 
   it('announces the end of a round', () => {
     const cue = intervalStartCue([work('squat_classic'), rest(60, { isRoundTransition: true, roundTransitionFrom: 1, roundTransitionTo: 2 }), work('wall_sit')], 1);
-    expect(cue.say).toMatch(/^Fin du tour 1\. Trente secondes de récupération en plus\. Ensuite : Chaise contre un mur\./);
+    expect(cue.say).toMatch(/^Fin du tour 1\. Trente secondes de récupération en plus\. Prochain exercice : Chaise contre un mur\./);
   });
 
   it('announces a change of stage', () => {
     const warmupRest = rest(10, { stage: 'warmup' });
     const cue = intervalStartCue([work('squat_classic'), warmupRest, work('wall_sit')], 1);
-    expect(cue.say).toBe('Place au circuit. Ensuite : Chaise contre un mur.');
+    expect(cue.say).toBe('Place au circuit. Prochain exercice : Chaise contre un mur.');
   });
 });
 

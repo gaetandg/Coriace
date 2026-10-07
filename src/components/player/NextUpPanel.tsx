@@ -11,7 +11,7 @@ export function NextUpPanel({ nextUp, detailed }: NextUpPanelProps) {
     <div id="pnl-next-up" className="relative bg-cream text-ink rounded-[18px] px-4 py-3.5 flex flex-col gap-1">
       <div className="flex items-center justify-between gap-3">
         <div className="flex flex-col gap-0.5">
-          <span className="text-[13px] font-semibold text-clay">Ensuite</span>
+          <span className="text-[13px] font-semibold text-clay">Prochain exercice</span>
           <span className="font-display font-bold text-[21px] leading-tight">{nextUp.title.replace('Échauffement : ', '')}</span>
         </div>
         <span className="text-sm text-clay text-right">{nextUp.target.split(' - ')[0]}</span>

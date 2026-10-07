@@ -67,7 +67,7 @@ export function intervalStartCue(intervals: WorkoutInterval[], index: number): C
     if (next.stage !== interval.stage) {
       parts.push(next.stage === 'main' ? 'Place au circuit.' : 'Place au finisher.');
     }
-    parts.push(`Ensuite : ${speakable(exerciseName(next))}.`);
+    parts.push(`Prochain exercice : ${speakable(exerciseName(next))}.`);
     // Short warm-up breaks only leave time for the name.
     if (interval.duration >= 20 && next.exercise) {
       parts.push(speakable(next.exercise.instructionHighlight));
