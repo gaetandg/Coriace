@@ -21,6 +21,8 @@ export interface Pose {
   bend?: Partial<Record<'near' | 'far' | 'nearHand' | 'farHand', number>>;
   // The far leg stays in line with the near thigh (single-leg bridges).
   farLegFollowsNearThigh?: boolean;
+  // Both hands together, at this offset from the middle of the shoulders (holding a weight, clasped).
+  hands?: Pt;
 }
 
 export const BODY = { torso: 33, neck: 5.5, headR: 7.8, upperArm: 19, forearm: 17, thigh: 28, shin: 27, foot: 11 };
@@ -57,15 +59,19 @@ export function skeleton(pose: Pose): Joints {
   j.chest = add(hip, A.torso, L.torso * 0.86);
   j.neck = add(hip, A.torso, L.torso);
   j.head = add(j.neck, A.head ?? A.torso, L.neck + L.headR);
+  const shoulderMid = add(hip, A.torso, L.torso * 0.84);
   for (const side of ['near', 'far'] as Side[]) {
     const sign = side === 'near' ? 1 : -1;
-    const shoulder = add(add(hip, A.torso, L.torso * 0.84), acrossAngle, spread.shoulder * sign);
+    const shoulder = add(shoulderMid, acrossAngle, spread.shoulder * sign);
     const hipJoint = add(hip, acrossAngle, spread.hip * sign);
-    const hand = pose.ik?.[`${side}Hand`];
+    const hand = pose.hands
+      ? [shoulderMid[0] + pose.hands[0] + 1.5 * sign, shoulderMid[1] + pose.hands[1]] as Pt
+      : pose.ik?.[`${side}Hand`];
     if (hand) [A[`${side}UpperArm`], A[`${side}Forearm`]] = reach(shoulder, hand, L.upperArm, L.forearm, pose.bend?.[`${side}Hand`] ?? 1);
     const foot = pose.ik?.[side];
     if (foot) [A[`${side}Thigh`], A[`${side}Shin`]] = reach(hipJoint, foot, L.thigh, L.shin, pose.bend?.[side] ?? 1);
-    if (side === 'far' && pose.farLegFollowsNearThigh) A.farThigh = A.farShin = A.nearThigh;
+    // Lying on the back: the raised foot points its toes to the ceiling, square to the leg.
+    if (side === 'far' && pose.farLegFollowsNearThigh) { A.farThigh = A.farShin = A.nearThigh; A.farFoot = A.nearThigh + 90; }
     const elbow = add(shoulder, A[`${side}UpperArm`], len(`${side}UpperArm`, L.upperArm));
     const knee = add(hipJoint, A[`${side}Thigh`], len(`${side}Thigh`, L.thigh));
     const ankle = add(knee, A[`${side}Shin`], len(`${side}Shin`, L.shin));

@@ -24,7 +24,8 @@ export function blend(p: Pose, q: Pose, t: number): Pose {
     if (a && b) ik[k] = mixPt(a, b, t);
     else if (a || b) ik[k] = (t < 0.5 ? a : b) ?? undefined;
   }
-  return { ...q, angles, scale, ik, anchor: [q.anchor[0], mixPt(p.anchor[1], q.anchor[1], t)] };
+  const hands = p.hands && q.hands ? mixPt(p.hands, q.hands, t) : q.hands;
+  return { ...q, angles, scale, ik, hands, anchor: [q.anchor[0], mixPt(p.anchor[1], q.anchor[1], t)] };
 }
 
 export interface Key {
