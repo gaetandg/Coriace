@@ -2,6 +2,7 @@ import { ChartColumn, UserRound, Volume2, VolumeX } from 'lucide-react';
 import { Logo } from './Logo';
 
 interface HeaderProps {
+  onHome: () => void;
   statsOpen: boolean;
   onToggleStats: () => void;
   soundOn: boolean;
@@ -11,16 +12,16 @@ interface HeaderProps {
   onOpenAccount: () => void;
 }
 
-export function Header({ statsOpen, onToggleStats, soundOn, onOpenSound, accountInitial, onOpenAccount }: HeaderProps) {
+export function Header({ onHome, statsOpen, onToggleStats, soundOn, onOpenSound, accountInitial, onOpenAccount }: HeaderProps) {
   return (
     <header className="relative flex items-center justify-between">
-      <div className="flex items-center gap-2">
+      <button onClick={onHome} aria-label="Accueil" className="flex items-center gap-2 text-left cursor-pointer">
         <Logo size={42} />
         <div className="flex flex-col">
           <span className="font-display font-extrabold text-[23px] leading-tight tracking-tight">Coriace</span>
           <span className="text-[13px] leading-tight text-sand min-[375px]:whitespace-nowrap">Le renfo pour les coureurs</span>
         </div>
-      </div>
+      </button>
 
       <div className="flex items-center gap-1">
         <button

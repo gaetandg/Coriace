@@ -51,6 +51,16 @@ export default function App() {
   useBackHandler(showSound, () => setShowSound(false));
   useBackHandler(showAccount, () => setShowAccount(false));
 
+  // The logo leads home, except during a session, which only "Quitter" ends.
+  const goHome = () => {
+    if (workoutState === 'active') return;
+    setShowSound(false);
+    setShowAccount(false);
+    setActiveTab('workout');
+    if (workoutState === 'summary') session.handleBackToConfig();
+    if (workoutState === 'completed') session.resetWorkout();
+  };
+
   // Rest turns the screen green so effort and recovery read at a glance from the floor.
   const isBreak = activeTab === 'workout' && workoutState === 'active' && activeInterval?.type === 'rest';
 
@@ -58,6 +68,7 @@ export default function App() {
     <div className={`min-h-dvh overflow-x-clip text-white transition-colors duration-500 ${isBreak ? 'bg-grass' : 'bg-brick'}`}>
       <div className="relative w-full max-w-md min-h-dvh mx-auto px-5 pt-5 pb-6 flex flex-col gap-[22px]">
         <Header
+          onHome={goHome}
           statsOpen={activeTab === 'stats'}
           onToggleStats={() => (activeTab === 'stats' ? closeStats() : setActiveTab('stats'))}
           soundOn={session.sound.beeps || (session.sound.voice && session.speechSupported)}
