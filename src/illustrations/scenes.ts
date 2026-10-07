@@ -196,8 +196,8 @@ const copenhagen: Scene = {
 // --- Thighs ---
 
 const squatPose = (down: boolean, depth = 1): Partial<Pose> => ({
-  anchor: ['hip', down ? [100 - 18 * depth, STAND_HIP + 26 * depth] : [100, STAND_HIP]],
-  angles: down ? { torso: 180 - 32 * depth, head: 180 - 15 * depth, nearUpperArm: 98, nearForearm: 96, farUpperArm: 94, farForearm: 92 } : { torso: 180, head: 182, ...armsDown },
+  anchor: ['hip', down ? [100 - 12 * depth, STAND_HIP + 39 * depth] : [100, STAND_HIP]],
+  angles: down ? { torso: 180 - 40 * depth, head: 180 - 18 * depth, nearUpperArm: 98, nearForearm: 96, farUpperArm: 94, farForearm: 92 } : { torso: 180, head: 182, ...armsDown },
 });
 const squatMotion = (depth: number) => keyframes({
   anchor: ['hip', [100, STAND_HIP]], ik: { near: [101, ANKLE_Y], far: [99, ANKLE_Y] }, bend: { near: 1, far: 1 },
@@ -217,10 +217,12 @@ const lungeKeys = (front: 'near' | 'far'): Key[] => {
     anchor: ['hip', hip], ik: { [front]: frontFoot, [back]: backFoot }, angles: { [`${front}Foot`]: 90, [`${back}Foot`]: backAngle },
   } as Partial<Pose>);
   return [
-    { move: 450, hold: 0, pose: pose([108, 93], [120, 136], stay, 90) },
+    { move: 400, hold: 0, pose: pose([106, 92], [118, 136], stay, 90) },
+    { move: 350, hold: 150, pose: pose([113, 96], [130, ANKLE_Y], stay, 90) },
     { move: 900, hold: 300, pose: pose([114, 114], [130, ANKLE_Y], heelUp, 52) },
-    { move: 800, hold: 0, pose: pose([108, 93], [120, 136], stay, 90) },
-    { move: 450, hold: 300, pose: pose([100, STAND_HIP], [front === 'near' ? 101 : 99, ANKLE_Y], stay, 90) },
+    { move: 700, hold: 100, pose: pose([113, 96], [130, ANKLE_Y], stay, 90) },
+    { move: 350, hold: 0, pose: pose([106, 92], [118, 136], stay, 90) },
+    { move: 350, hold: 300, pose: pose([100, STAND_HIP], [front === 'near' ? 101 : 99, ANKLE_Y], stay, 90) },
   ];
 };
 const lunges: Scene = {
@@ -331,8 +333,12 @@ const lifted = (x = 0): Pt => [HAND_X - 9 + x, 136];
 const plankBends = { bend: { near: 1, far: 1, nearHand: 1, farHand: 1 } };
 const plankCommando: Scene = {
   motion: keyframes({ ...plank(127, forearm(), forearm(-2)), ...plankBends } as Pose, [
-    { move: 600, hold: 100, pose: plank(119, hand(), forearm(-2)) },
-    { move: 600, hold: 400, pose: plank(110.5, hand(), hand(-2)) },
+    { move: 300, hold: 0, pose: plank(126, lifted(), forearm(-2)) },
+    { move: 300, hold: 0, pose: plank(124, hand(), forearm(-2)) },
+    { move: 350, hold: 100, pose: plank(119, hand(), forearm(-2)) },
+    { move: 300, hold: 0, pose: plank(118, hand(), lifted(-2)) },
+    { move: 300, hold: 0, pose: plank(116, hand(), hand(-2)) },
+    { move: 350, hold: 400, pose: plank(110.5, hand(), hand(-2)) },
     { move: 350, hold: 0, pose: plank(116, lifted(), hand(-2)) },
     { move: 350, hold: 100, pose: plank(119, forearm(), hand(-2)) },
     { move: 350, hold: 0, pose: plank(124, forearm(), lifted(-2)) },
@@ -384,10 +390,10 @@ const chop = (high: boolean): Partial<Pose> => ({
   anchor: ['hip', high ? [101, STAND_HIP + 2] : [97, 99]],
   angles: { torso: high ? 174 : 187, head: high ? 174 : 184 },
   ik: { near: [114, ANKLE_Y], far: [86, ANKLE_Y] },
-  hands: high ? [22, -25] : [-21, 25],
+  hands: high ? [19, -22] : [-18, 23],
 });
 const woodchop: Scene = {
-  motion: keyframes(frontBase({ ...chop(false), bend: { near: 1, far: -1, nearHand: -1, farHand: -1 } }), [
+  motion: keyframes(frontBase({ ...chop(false), bend: { near: 1, far: -1, nearHand: 0, farHand: 0 } }), [
     { move: 900, hold: 200, pose: chop(true) },
     { move: 1600, hold: 200, pose: chop(false) },
   ]),
@@ -424,21 +430,26 @@ const jumpingJacks: Scene = { motion: jumpingJacksMotion(1) };
 const knee = (up: 'near' | 'far'): Partial<Pose> => {
   const down = up === 'near' ? 'far' : 'near';
   return {
+    anchor: ['hip', [100, STAND_HIP - 3]],
     angles: {
       [`${up}Thigh`]: 90, [`${up}Shin`]: 0, [`${up}Foot`]: 75, [`${down}Thigh`]: 0, [`${down}Shin`]: 0, [`${down}Foot`]: 62,
       [`${down}UpperArm`]: 35, [`${down}Forearm`]: 125, [`${up}UpperArm`]: -35, [`${up}Forearm`]: 55,
     },
   } as Partial<Pose>;
 };
-// Between two knees, both feet touch down on the toes for an instant.
-const bothDown: Partial<Pose> = { angles: { nearThigh: 0, nearShin: 0, nearFoot: 62, farThigh: 0, farShin: 0, farFoot: 62, nearUpperArm: 0, nearForearm: 90, farUpperArm: 0, farForearm: 90 } };
+// Between two knees, a small jump: both feet leave the floor.
+const bothDown: Partial<Pose> = {
+  anchor: ['hip', [100, STAND_HIP - 10]],
+  angles: { nearThigh: 6, nearShin: -6, nearFoot: 62, farThigh: 4, farShin: -8, farFoot: 62, nearUpperArm: 0, nearForearm: 90, farUpperArm: 0, farForearm: 90 },
+};
 const highKnees: Scene = {
+  dynamic: (p) => { const lift = Math.max(0, STAND_HIP - 3 - p.anchor[1][1]); return { back: shadow(100, 16 - lift, 1 - lift / 14) }; },
   // Running on the spot: the standing leg is straight, so the hip sits a leg's length above the floor.
   motion: keyframes({ anchor: ['hip', [100, STAND_HIP - 3]], angles: { torso: 182, head: 182, ...knee('near').angles } } as Pose, [
-    { move: 110, hold: 0, pose: bothDown },
-    { move: 170, hold: 110, pose: knee('far') },
-    { move: 110, hold: 0, pose: bothDown },
-    { move: 170, hold: 110, pose: knee('near') },
+    { move: 130, hold: 0, pose: bothDown },
+    { move: 150, hold: 120, pose: knee('far') },
+    { move: 130, hold: 0, pose: bothDown },
+    { move: 150, hold: 120, pose: knee('near') },
   ]),
 };
 

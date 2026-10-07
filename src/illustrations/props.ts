@@ -1,7 +1,7 @@
 import { Pt } from './mannequin';
 
 // Scenery in flat colours: floor, wall, step, chair, weight, jump rope.
-export const COLORS = { floor: '#EBDCCB', shadow: '#DEC6B0', wall: '#EADACA', step: '#D5B79E', stepTop: '#C9A88D', wood: '#BE9373', woodDark: '#A57A5C', iron: '#5A3A30', rope: '#3B140C', handle: '#A13D2B' };
+export const COLORS = { floor: '#EBDCCB', shadow: '#DEC6B0', wall: '#EADACA', step: '#D5B79E', stepTop: '#C9A88D', wood: '#BE9373', woodDark: '#A57A5C', iron: '#A13D2B', rope: '#3B140C', handle: '#A13D2B' };
 export const FLOOR = 150;
 // Height of the ankle when the foot is flat on the floor.
 export const ANKLE_Y = 145.5;
