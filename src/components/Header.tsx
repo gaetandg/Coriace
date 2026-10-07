@@ -13,11 +13,11 @@ interface HeaderProps {
 export function Header({ activeTab, onTabChange, soundOn, onOpenSound }: HeaderProps) {
   return (
     <header className="relative flex items-center justify-between">
-      <div className="flex items-center gap-2.5">
-        <Logo />
+      <div className="flex items-center gap-2">
+        <Logo size={42} />
         <div className="flex flex-col">
           <span className="font-display font-extrabold text-[23px] leading-tight tracking-tight">Coriace</span>
-          <span className="text-[13px] leading-tight text-sand">Le renfo pour les coureurs</span>
+          <span className="text-[13px] leading-tight text-sand min-[350px]:whitespace-nowrap">Le renfo pour les coureurs</span>
         </div>
       </div>
 
@@ -25,7 +25,7 @@ export function Header({ activeTab, onTabChange, soundOn, onOpenSound }: HeaderP
         <button
           id="tab-guide"
           onClick={() => onTabChange(activeTab === 'guide' ? 'workout' : 'guide')}
-          className="h-11 px-3 font-semibold text-[15px] cursor-pointer hover:underline underline-offset-4"
+          className="h-11 px-2 font-semibold text-[15px] cursor-pointer hover:underline underline-offset-4"
         >
           {activeTab === 'guide' ? 'Séance' : 'Guide'}
         </button>
