@@ -8,6 +8,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Application installable (PWA), fonctionne hors ligne
 - [x] Nettoyage du code issu d'AI Studio, découpage en composants
 - [x] Réécriture de tous les textes : tutoiement, ton sobre et direct
+- [x] Tests automatiques (générateur, annonces, préférences), lancés à chaque déploiement
 - [x] Nom : **Coriace · Renfo pour coureurs**
 - [x] Direction artistique « Piste » : fond brique (vert pendant la récupération), crème, Bricolage Grotesque + Instrument Sans, logo en trois couloirs
 
@@ -25,13 +26,13 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Classer les exercices par groupe sur l'écran de préparation
 - [x] Première revue : ajout fessiers et ischios (pont fessier, abduction, soulevé de terre sur une jambe), fente bulgare, gainage latéral, dead bug ; retrait des crunchs et sit-ups
 - [ ] Revue approfondie avec un regard de coach ou de kiné : dosage, progressions, variantes plus faciles et plus dures
-- [ ] Séances qui équilibrent les groupes (aujourd'hui le tirage ne garantit pas, par exemple, au moins un exercice fessiers par circuit)
+- [x] Circuits équilibrés : mollets, gainage, adducteurs et fessiers d'abord, en alternant les zones
 
 ### Séances
 - [ ] Proposer des séances toutes faites et cohérentes, en plus de la génération aléatoire
 
 ### Préférences
-- [ ] Se souvenir des préférences de l'utilisateur d'une fois sur l'autre (matériel, rythme, durée, exercices cochés, son)
+- [x] Se souvenir des préférences d'une fois sur l'autre (matériel, rythme, durée, exercices cochés, son)
 
 ### Plus tard
 - [ ] Applications Android et iPhone avec Capacitor (minuteur et voix qui continuent écran verrouillé)

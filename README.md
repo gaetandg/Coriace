@@ -16,6 +16,8 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Écran maintenu allumé** pendant la séance (si le navigateur le permet).
 - **Durée respectée** : la séance dure le temps choisi, à 30 secondes près.
 - **Guide des exercices** : description, consignes clés et conseils pour chaque mouvement.
+- **Circuits équilibrés** : chaque circuit pioche d'abord dans les mollets, le gainage, les adducteurs et les fessiers.
+- **Préférences retenues** : matériel, rythme, durée, exercices cochés et réglages du son sont gardés d'une visite à l'autre (dans le navigateur).
 - **Installable (PWA)** : s'ajoute à l'écran d'accueil et fonctionne hors ligne.
 
 ## Stack technique
@@ -46,6 +48,7 @@ L'application est alors disponible sur http://localhost:3000.
 | `npm run build`   | Build de production dans `dist/`         |
 | `npm run preview` | Prévisualisation du build de production  |
 | `npm run lint`    | Vérification des types TypeScript        |
+| `npm test`        | Tests automatiques (Vitest)              |
 
 ## Structure
 
@@ -64,7 +67,7 @@ src/
 │   ├── config/                # Accueil (réglages) et choix des exercices
 │   ├── summary/               # Résumé du plan et fiche détaillée d'un exercice
 │   └── player/                # Séance en cours : minuteur, prochaine étape, commandes, déroulé
-├── lib/                       # Annonces de séance (cues.ts), groupes d'exercices, plan, formatage, classes d'interface
+├── lib/                       # Annonces (cues.ts), préférences, groupes d'exercices, plan, formatage, classes d'interface
 ├── exercises.ts               # Base de données des exercices
 ├── workoutGenerator.ts        # Génération de la séance (échauffement, circuit, finisher)
 ├── types.ts                   # Types partagés
@@ -75,7 +78,7 @@ public/                        # Icônes de l'application (PWA)
 
 ## Déploiement
 
-L'application est déployée automatiquement sur GitHub Pages à chaque push sur `main`, via le workflow `.github/workflows/deploy.yml` : vérification des types, build, puis publication.
+L'application est déployée automatiquement sur GitHub Pages à chaque push sur `main`, via le workflow `.github/workflows/deploy.yml` : vérification des types, tests, build, puis publication.
 
 Mise en place initiale (une seule fois) : dans **Settings → Pages** du dépôt, choisir **Source : GitHub Actions**.
 

@@ -1,5 +1,5 @@
 import { EXERCISE_DATABASE } from './exercises';
-import { WorkoutConfig, WorkoutInterval, Exercise, WorkoutStage } from './types';
+import { WorkoutConfig, WorkoutInterval, Exercise, ExerciseGroup, WorkoutStage } from './types';
 
 // Let's define the fixed warm-up exercises (using no equipment, to keep it universal)
 const WARM_UP_EXERCISES: Omit<Exercise, 'id'>[] = [
@@ -67,15 +67,6 @@ function shuffle<T>(array: T[]): T[] {
   return result;
 }
 
-/**
- * Classifies an exercise into legs (jambes), arms (bras), or abs (abdos).
- */
-export function getBodyPart(ex: Exercise): 'jambes' | 'bras' | 'abdos' {
-  if (ex.id === 'pushups' || ex.id === 'plank_commando') return 'bras';
-  if (ex.category === 'abdos') return 'abdos';
-  return 'jambes';
-}
-
 export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
   const { equipment, rythme } = config;
   const T = config.durationMinutes || 30; // Chosen total duration in minutes
@@ -115,10 +106,11 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
     availableWorkoutExercises = EXERCISE_DATABASE;
   }
 
-  // Group by body part & shuffle pools to ensure "Régénérer l'ordre" works dynamically
-  const legsList = shuffle(availableWorkoutExercises.filter(ex => getBodyPart(ex) === 'jambes'));
-  const armsList = shuffle(availableWorkoutExercises.filter(ex => getBodyPart(ex) === 'bras'));
-  const absList = shuffle(availableWorkoutExercises.filter(ex => getBodyPart(ex) === 'abdos'));
+  // One shuffled pool per group, so each draw gives a new order
+  const pools = new Map<ExerciseGroup, Exercise[]>();
+  for (const ex of shuffle(availableWorkoutExercises)) {
+    pools.set(ex.group, [...(pools.get(ex.group) ?? []), ex]);
+  }
 
   // Dynamic distribution of blocks (minutes)
   let warmupMinutes = 5;
@@ -216,12 +208,12 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
   const circuit2Exercises: Exercise[] = [];
 
   if (numBlocksOpt === 2) {
-    const c1 = createCircuitExercises(circuitLength1, legsList, armsList, absList, usedIds, availableWorkoutExercises);
+    const c1 = createCircuitExercises(circuitLength1, pools, usedIds, availableWorkoutExercises);
     circuit1Exercises.push(...c1);
-    const c2 = createCircuitExercises(circuitLength2, legsList, armsList, absList, usedIds, availableWorkoutExercises);
+    const c2 = createCircuitExercises(circuitLength2, pools, usedIds, availableWorkoutExercises);
     circuit2Exercises.push(...c2);
   } else {
-    const c = createCircuitExercises(circuitLength, legsList, armsList, absList, usedIds, availableWorkoutExercises);
+    const c = createCircuitExercises(circuitLength, pools, usedIds, availableWorkoutExercises);
     circuitExercises.push(...c);
   }
 
@@ -448,92 +440,37 @@ function findBestCircuitConfig(M: number): { circuitLength: number; numRounds: n
 /**
  * Distributes exercises across legs, arms, and abs targets.
  */
+// Order in which groups are drawn into a circuit: the runner-specific groups come first and
+// come back more often, and body areas alternate from one exercise to the next.
+const CIRCUIT_GROUP_SEQUENCE: ExerciseGroup[] = [
+  'mollets', 'gainage', 'adducteurs', 'fessiers', 'cuisses',
+  'mollets', 'gainage', 'adducteurs', 'haut_du_corps', 'fessiers', 'cardio',
+];
+
 function createCircuitExercises(
   circuitLength: number,
-  legsList: Exercise[],
-  armsList: Exercise[],
-  absList: Exercise[],
+  pools: Map<ExerciseGroup, Exercise[]>,
   usedIds: Set<string>,
   fallbackPool: Exercise[]
 ): Exercise[] {
-  let targetArmsCount = 0;
-  let targetAbsCount = 0;
-
-  if (circuitLength <= 3) {
-    targetArmsCount = armsList.filter(ex => !usedIds.has(ex.id)).length > 0 ? 1 : 0;
-    targetAbsCount = 0;
-  } else if (circuitLength <= 5) {
-    targetArmsCount = armsList.filter(ex => !usedIds.has(ex.id)).length > 0 ? 1 : 0;
-    targetAbsCount = absList.filter(ex => !usedIds.has(ex.id)).length > 0 ? 1 : 0;
-  } else if (circuitLength <= 8) {
-    targetArmsCount = Math.min(armsList.filter(ex => !usedIds.has(ex.id)).length, 1);
-    targetAbsCount = Math.min(absList.filter(ex => !usedIds.has(ex.id)).length, 2);
-  } else {
-    targetArmsCount = Math.min(armsList.filter(ex => !usedIds.has(ex.id)).length, 2);
-    targetAbsCount = Math.min(absList.filter(ex => !usedIds.has(ex.id)).length, 2);
-  }
-
-  let targetLegsCount = circuitLength - targetArmsCount - targetAbsCount;
-
-  const availableLegs = legsList.filter(ex => !usedIds.has(ex.id));
-  const availableArms = armsList.filter(ex => !usedIds.has(ex.id));
-  const availableAbs = absList.filter(ex => !usedIds.has(ex.id));
-
-  const selectedLegs: Exercise[] = [];
-  const selectedArms: Exercise[] = [];
-  const selectedAbs: Exercise[] = [];
-
-  for (let i = 0; i < targetLegsCount; i++) {
-    if (availableLegs.length > 0) {
-      selectedLegs.push(availableLegs[i % availableLegs.length]);
-    } else {
-      selectedLegs.push(legsList[i % legsList.length]);
-    }
-  }
-
-  for (let i = 0; i < targetArmsCount; i++) {
-    if (availableArms.length > 0) {
-      selectedArms.push(availableArms[i % availableArms.length]);
-    } else {
-      selectedArms.push(armsList[i % armsList.length]);
-    }
-  }
-
-  for (let i = 0; i < targetAbsCount; i++) {
-    if (availableAbs.length > 0) {
-      selectedAbs.push(availableAbs[i % availableAbs.length]);
-    } else {
-      selectedAbs.push(absList[i % absList.length]);
-    }
-  }
-
-  const tempLegs = [...selectedLegs];
-  const tempArms = [...selectedArms];
-  const tempAbs = [...selectedAbs];
-
   const result: Exercise[] = [];
-  for (let i = 0; i < circuitLength; i++) {
+  let cursor = 0;
+  while (result.length < circuitLength) {
+    // Walk the sequence to the next group that still has an unused exercise.
     let chosen: Exercise | undefined;
-    if (i % 4 === 0 || i % 4 === 1) {
-      chosen = tempLegs.shift() || tempAbs.shift() || tempArms.shift();
-    } else if (i % 4 === 2) {
-      chosen = tempArms.shift() || tempAbs.shift() || tempLegs.shift();
-    } else {
-      chosen = tempAbs.shift() || tempLegs.shift() || tempArms.shift();
+    for (let step = 0; step < CIRCUIT_GROUP_SEQUENCE.length && !chosen; step++) {
+      const group = CIRCUIT_GROUP_SEQUENCE[(cursor + step) % CIRCUIT_GROUP_SEQUENCE.length];
+      chosen = pools.get(group)?.find(ex => !usedIds.has(ex.id));
+      if (chosen) cursor = (cursor + step + 1) % CIRCUIT_GROUP_SEQUENCE.length;
     }
-
+    // Every selected exercise is used: repeat, preferring ones not yet in this circuit.
     if (!chosen) {
-      const unusedInFallback = fallbackPool.filter(ex => !usedIds.has(ex.id));
-      if (unusedInFallback.length > 0) {
-        chosen = unusedInFallback[i % unusedInFallback.length];
-      } else {
-        chosen = fallbackPool[i % fallbackPool.length];
-      }
+      const notInCircuit = fallbackPool.filter(ex => !result.includes(ex));
+      const pool = notInCircuit.length > 0 ? notInCircuit : fallbackPool;
+      chosen = pool[result.length % pool.length];
     }
-
     result.push(chosen);
     usedIds.add(chosen.id);
   }
-
   return result;
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { generateWorkout } from '../workoutGenerator';
-import { WorkoutConfig, WorkoutInterval } from '../types';
+import { SoundSettings, WorkoutConfig, WorkoutInterval } from '../types';
+import { loadPreferences, savePreferences } from '../lib/preferences';
 import { EXERCISE_DATABASE } from '../exercises';
 import { getBlockSteps, groupPlan } from '../lib/plan';
 import { useBeep } from './useBeep';
@@ -11,35 +12,27 @@ import { Cue, intervalStartCue, sessionEndCue, sessionStartCue, tickCue } from '
 export type WorkoutState = 'config' | 'summary' | 'active' | 'completed';
 export type EquipmentKey = keyof WorkoutConfig['equipment'];
 
-export interface SoundSettings {
-  beeps: boolean;
-  voice: boolean;
-}
+export type { SoundSettings };
 
 // Workout configuration, generated plan and player state, with every action on them.
 export function useWorkoutSession(notify: (message: string) => void) {
   // --- STATE ---
-  const [config, setConfig] = useState<WorkoutConfig>({
-    equipment: {
-      none: false,
-      chaise: true,
-      poids_8kg: true,
-      corde_a_sauter: false,
-    },
-    rythme: 'equilibre', // 'equilibre' vs 'intense'
-    durationMinutes: 30,
-    numBlocks: 1, // Defaulting to 1 block
-    selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id)
-  });
+  // Saved settings are read once, when the app opens.
+  const [initialPreferences] = useState(loadPreferences);
+  const [config, setConfig] = useState<WorkoutConfig>(initialPreferences.config);
 
   const [workoutState, setWorkoutState] = useState<WorkoutState>('config');
   const [intervals, setIntervals] = useState<WorkoutInterval[]>([]);
   const [currentIntervalIndex, setCurrentIntervalIndex] = useState<number>(0);
   const [secondsRemaining, setSecondsRemaining] = useState<number>(30);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [sound, setSound] = useState<SoundSettings>({ beeps: true, voice: true });
+  const [sound, setSound] = useState<SoundSettings>(initialPreferences.sound);
   // Bumped whenever the countdown must restart from `secondsRemaining` without the interval changing.
   const [timerRun, setTimerRun] = useState(0);
+
+  useEffect(() => {
+    savePreferences({ config, sound });
+  }, [config, sound]);
 
   const { initAudio, beep: triggerAudioBeep } = useBeep(sound.beeps);
   const speech = useSpeech(sound.voice);

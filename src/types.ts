@@ -48,3 +48,8 @@ export interface WorkoutConfig {
   selectedExerciseIds?: string[]; // Exercises selected by the user
   numBlocks?: number; // 1 or 2 blocks of circuit
 }
+
+export interface SoundSettings {
+  beeps: boolean;
+  voice: boolean;
+}
