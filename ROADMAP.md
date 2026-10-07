@@ -32,7 +32,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Circuits équilibrés et variés : groupes clés garantis, ordre aléatoire, deux exercices max par groupe ; « Régénérer » évite la séance précédente
 
 ### Séances
-- [x] Échauffement progressif sans répétition, option « Déjà échauffé » (même durée), finisher cardio, retour au calme guidé ; circuits courts et deux blocs pour les séances longues
+- [x] Échauffement progressif sans répétition, option « Ne pas inclure d'échauffement » (même durée), finisher cardio, retour au calme guidé ; circuits courts et deux blocs pour les séances longues
 - [x] Six séances prédéfinies, exercices fixes dans un ordre fixe
 - [ ] Programme sur plusieurs semaines (enchaînement de séances selon la phase de préparation)
 - [x] Historique des séances terminées, avec le nombre de séances des 7 derniers jours sur l'accueil
