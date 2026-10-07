@@ -29,7 +29,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Circuits équilibrés : mollets, gainage, adducteurs et fessiers d'abord, en alternant les zones
 
 ### Séances
-- [x] Six séances toutes faites, exercices fixes dans un ordre fixe
+- [x] Six séances prédéfinies, exercices fixes dans un ordre fixe
 - [ ] Programme sur plusieurs semaines (enchaînement de séances selon la phase de préparation)
 - [ ] Historique des séances faites
 

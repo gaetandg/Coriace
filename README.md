@@ -6,7 +6,7 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 
 ## Fonctionnalités
 
-- **Séances toutes faites** : six séances fixes (Mollets express, Gainage, Hanches solides, Sans matériel, Spécial marathon, Complète), toujours les mêmes exercices dans le même ordre pour suivre ses progrès.
+- **Séances prédéfinies** : six séances fixes (Mollets express, Gainage, Hanches solides, Sans matériel, Spécial marathon, Complète), toujours les mêmes exercices dans le même ordre pour suivre ses progrès.
 - **Séance sur mesure** : durée de 15 à 60 minutes, choix des exercices par groupe, fiche détaillée de chaque exercice.
 - **Matériel** : sans matériel, chaise, poids de 8 kg, corde à sauter.
 - **Deux rythmes** : équilibré (30 s / 30 s) ou intense (40 s / 20 s).
@@ -71,7 +71,7 @@ src/
 ├── lib/                       # Annonces (cues.ts), préférences, groupes d'exercices, plan, formatage, classes d'interface
 ├── exercises.ts               # Base de données des exercices
 ├── workoutGenerator.ts        # Séance sur mesure et construction des intervalles
-├── sessions.ts                # Séances toutes faites
+├── sessions.ts                # Séances prédéfinies
 ├── types.ts                   # Types partagés
 ├── main.tsx                   # Point d'entrée React
 └── index.css                  # Thème « Piste » : couleurs et polices

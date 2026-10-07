@@ -43,7 +43,7 @@ export default function App() {
             {workoutState === 'summary' && summaryPlanGroups && (
               <SummaryScreen
                 title={session.activePreset?.name ?? 'Ta séance'}
-                backLabel={session.activePreset ? 'Séances' : 'Réglages'}
+                backLabel={session.activePreset ? 'Séances prédéfinies' : 'Réglages'}
                 minutes={session.plannedMinutes}
                 rythme={config.rythme}
                 plan={summaryPlanGroups}
