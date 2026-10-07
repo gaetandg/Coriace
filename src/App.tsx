@@ -42,10 +42,13 @@ export default function App() {
 
             {workoutState === 'summary' && summaryPlanGroups && (
               <SummaryScreen
-                config={config}
+                title={session.activePreset?.name ?? 'Ta séance'}
+                backLabel={session.activePreset ? 'Séances' : 'Réglages'}
+                minutes={session.plannedMinutes}
+                rythme={config.rythme}
                 plan={summaryPlanGroups}
                 onBack={session.handleBackToConfig}
-                onRegenerate={session.handleRegeneratePlan}
+                onRegenerate={session.activePreset ? undefined : session.handleRegeneratePlan}
                 onLaunch={session.handleLaunchWorkout}
               />
             )}
@@ -56,7 +59,7 @@ export default function App() {
 
             {workoutState === 'completed' && summaryPlanGroups && (
               <CompletedScreen
-                durationMinutes={config.durationMinutes || 30}
+                durationMinutes={session.plannedMinutes}
                 exerciseCount={summaryPlanGroups.circuitExercises.length + summaryPlanGroups.finishers.length}
                 rythme={config.rythme}
                 onRestart={session.resetWorkout}

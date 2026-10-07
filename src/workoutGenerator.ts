@@ -199,7 +199,6 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
     warmupMinutes--;
     finisherMinutes = leftoverMinutes - warmupMinutes;
   }
-  const totalBlocks = warmupMinutes + mainMinutes + finisherMinutes;
 
   // We want to construct circuit exercises with NO duplicates if possible
   const usedIds = new Set<string>();
@@ -239,132 +238,91 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
     selectedFinishers.push(finisherExercises[f % finisherExercises.length]);
   }
 
-  // Time metrics
+  const blocks: CircuitBlock[] = numBlocksOpt === 2
+    ? [
+        { exercises: circuit1Exercises, rounds: numRounds1 },
+        { exercises: circuit2Exercises, rounds: numRounds2 },
+      ]
+    : [{ exercises: circuitExercises, rounds: numRounds }];
+
+  return buildIntervals({ warmupMinutes, blocks, finishers: selectedFinishers }, rythme);
+}
+
+export interface CircuitBlock {
+  exercises: Exercise[];
+  rounds: number;
+}
+
+// What a session is made of, minute by minute: warm-up, one or two circuits repeated, finisher.
+export interface SessionPlan {
+  warmupMinutes: number;
+  blocks: CircuitBlock[];
+  finishers: Exercise[];
+}
+
+interface MinuteSlot {
+  stage: WorkoutStage;
+  exercise: Exercise;
+  roundNumber?: number;
+  blockNumber?: number;
+  isRoundTransition?: boolean;
+  isBlockTransition?: boolean;
+}
+
+const warmupExercise = (index: number): Exercise => ({
+  id: `warmup_${index}`,
+  equipmentRequired: [],
+  ...WARM_UP_EXERCISES[index % WARM_UP_EXERCISES.length],
+});
+
+// Turns a plan into the timed work and rest intervals the player runs through.
+export function buildIntervals(plan: SessionPlan, rythme: WorkoutConfig['rythme']): WorkoutInterval[] {
+  const slots: MinuteSlot[] = [];
+  for (let i = 0; i < plan.warmupMinutes; i++) {
+    slots.push({ stage: 'warmup', exercise: warmupExercise(i) });
+  }
+  plan.blocks.forEach((block, blockIdx) => {
+    for (let round = 1; round <= block.rounds; round++) {
+      block.exercises.forEach((exercise, position) => {
+        const endsRound = position === block.exercises.length - 1;
+        slots.push({
+          stage: 'main',
+          exercise,
+          roundNumber: round,
+          blockNumber: blockIdx + 1,
+          isRoundTransition: endsRound && round < block.rounds,
+          isBlockTransition: endsRound && round === block.rounds && blockIdx < plan.blocks.length - 1,
+        });
+      });
+    }
+  });
+  plan.finishers.forEach(exercise => slots.push({ stage: 'finisher', exercise }));
+
   const workTime = rythme === 'equilibre' ? 30 : 40;
   const restTime = rythme === 'equilibre' ? 30 : 20;
-
   const intervals: WorkoutInterval[] = [];
-  let intervalCounter = 0;
 
-  // Let's compile the intervals.
-  for (let blockIdx = 0; blockIdx < totalBlocks; blockIdx++) {
-    let stage: WorkoutStage;
-    let exercise: Exercise;
-    let roundNumber: number | undefined;
-    let blockNumber: number | undefined;
+  slots.forEach((slot, blockIdx) => {
+    const { stage, exercise, roundNumber, blockNumber } = slot;
+    const isRoundTransition = !!slot.isRoundTransition;
+    const isBlockTransition = !!slot.isBlockTransition;
+    const roundTransitionFrom = isRoundTransition ? roundNumber : undefined;
+    const roundTransitionTo = isRoundTransition && roundNumber ? roundNumber + 1 : undefined;
 
-    if (blockIdx < warmupMinutes) {
-      // Warmup
-      stage = 'warmup';
-      const wEx = WARM_UP_EXERCISES[blockIdx % WARM_UP_EXERCISES.length];
-      // Adapt as Exercise object
-      exercise = {
-        id: `warmup_${blockIdx}`,
-        name: wEx.name,
-        target: wEx.target,
-        description: wEx.description,
-        equipmentRequired: [],
-        category: wEx.category,
-        group: wEx.group,
-        tips: wEx.tips,
-        instructionHighlight: wEx.instructionHighlight
-      };
-    } else if (blockIdx < warmupMinutes + mainMinutes) {
-      // Main Circuit
-      stage = 'main';
-      const stepInMain = blockIdx - warmupMinutes;
-      if (numBlocksOpt === 2) {
-        if (stepInMain < block1Minutes) {
-          blockNumber = 1;
-          const stepInRound1 = stepInMain % circuitLength1;
-          roundNumber = Math.floor(stepInMain / circuitLength1) + 1;
-          exercise = circuit1Exercises[stepInRound1];
-        } else {
-          blockNumber = 2;
-          const stepInBlock2 = stepInMain - block1Minutes;
-          const stepInRound2 = stepInBlock2 % circuitLength2;
-          roundNumber = Math.floor(stepInBlock2 / circuitLength2) + 1;
-          exercise = circuit2Exercises[stepInRound2];
-        }
-      } else {
-        blockNumber = 1;
-        const stepInRound = stepInMain % circuitLength;
-        roundNumber = Math.floor(stepInMain / circuitLength) + 1;
-        exercise = circuitExercises[stepInRound];
-      }
-    } else {
-      // Finisher
-      stage = 'finisher';
-      const stepIdx = blockIdx - (warmupMinutes + mainMinutes);
-      exercise = selectedFinishers[stepIdx % selectedFinishers.length];
-    }
-
-    // Check for round or block transitions
-    let isRoundTransition = false;
-    let roundTransitionFrom: number | undefined;
-    let roundTransitionTo: number | undefined;
-    let isBlockTransition = false;
-
-    if (stage === 'main') {
-      const stepInMain = blockIdx - warmupMinutes;
-      if (numBlocksOpt === 2) {
-        if (stepInMain < block1Minutes) {
-          const stepInRound1 = stepInMain % circuitLength1;
-          const currentRound = Math.floor(stepInMain / circuitLength1) + 1;
-          if (stepInRound1 === circuitLength1 - 1) {
-            if (currentRound < numRounds1) {
-              isRoundTransition = true;
-              roundTransitionFrom = currentRound;
-              roundTransitionTo = currentRound + 1;
-            } else {
-              isBlockTransition = true;
-            }
-          }
-        } else {
-          const stepInBlock2 = stepInMain - block1Minutes;
-          const stepInRound2 = stepInBlock2 % circuitLength2;
-          const currentRound = Math.floor(stepInBlock2 / circuitLength2) + 1;
-          if (stepInRound2 === circuitLength2 - 1) {
-            if (currentRound < numRounds2) {
-              isRoundTransition = true;
-              roundTransitionFrom = currentRound;
-              roundTransitionTo = currentRound + 1;
-            }
-          }
-        }
-      } else {
-        const stepInRound = stepInMain % circuitLength;
-        const currentRound = Math.floor(stepInMain / circuitLength) + 1;
-        if (stepInRound === circuitLength - 1) {
-          if (currentRound < numRounds) {
-            isRoundTransition = true;
-            roundTransitionFrom = currentRound;
-            roundTransitionTo = currentRound + 1;
-          }
-        }
-      }
-    }
-
-    // Work Interval
-    let currentWorkTime = workTime;
-    let currentRestTime = restTime;
-    if (stage === 'warmup') {
-      currentWorkTime = 50;
-      currentRestTime = 10;
-    }
-
+    // Warm-up minutes are 50 s of easy work and 10 s to switch.
+    const currentWorkTime = stage === 'warmup' ? 50 : workTime;
+    let currentRestTime = stage === 'warmup' ? 10 : restTime;
     // Add extra 30s recovery between rounds or blocks
     if (isRoundTransition || isBlockTransition) {
       currentRestTime += 30;
     }
 
-    const workTitle = stage === 'warmup' ? `Échauffement : ${exercise.name}` : exercise.name;
     intervals.push({
-      intervalIndex: intervalCounter++,
+      intervalIndex: intervals.length,
       blockIndex: blockIdx,
       stage,
       type: 'work',
-      title: workTitle,
+      title: stage === 'warmup' ? `Échauffement : ${exercise.name}` : exercise.name,
       description: exercise.description,
       target: exercise.target,
       duration: currentWorkTime,
@@ -373,43 +331,42 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
       blockNumber
     });
 
-    // Rest Interval - Only add if NOT the very last block of the session
-    if (blockIdx < totalBlocks - 1) {
-      let restTitle = 'Récupération';
-      let restDescription = 'Respire et bois une gorgée si besoin.';
-      if (stage === 'warmup') {
-        restDescription = 'Relâche les jambes et les épaules.';
-      } else if (stage === 'finisher') {
-        restDescription = 'Reprends ton souffle.';
-      }
+    // No rest after the very last exercise of the session
+    if (blockIdx === slots.length - 1) return;
 
-      if (isRoundTransition && roundTransitionFrom && roundTransitionTo) {
-        restTitle = `Fin du tour ${roundTransitionFrom}`;
-        restDescription = `30 secondes de récupération en plus avant le tour ${roundTransitionTo}.`;
-      } else if (isBlockTransition) {
-        restTitle = 'Fin du bloc A';
-        restDescription = '30 secondes de récupération en plus avant le bloc B.';
-      }
-
-      intervals.push({
-        intervalIndex: intervalCounter++,
-        blockIndex: blockIdx,
-        stage,
-        type: 'rest',
-        title: restTitle,
-        description: restDescription,
-        target: isRoundTransition ? 'Changement de tour (+30 s)' : isBlockTransition ? 'Changement de bloc (+30 s)' : 'Récupération',
-        duration: currentRestTime,
-        exercise: null,
-        roundNumber,
-        blockNumber,
-        isRoundTransition,
-        roundTransitionFrom,
-        roundTransitionTo,
-        isBlockTransition
-      });
+    let restTitle = 'Récupération';
+    let restDescription = 'Respire et bois une gorgée si besoin.';
+    if (stage === 'warmup') {
+      restDescription = 'Relâche les jambes et les épaules.';
+    } else if (stage === 'finisher') {
+      restDescription = 'Reprends ton souffle.';
     }
-  }
+    if (isRoundTransition) {
+      restTitle = `Fin du tour ${roundTransitionFrom}`;
+      restDescription = `30 secondes de récupération en plus avant le tour ${roundTransitionTo}.`;
+    } else if (isBlockTransition) {
+      restTitle = 'Fin du bloc A';
+      restDescription = '30 secondes de récupération en plus avant le bloc B.';
+    }
+
+    intervals.push({
+      intervalIndex: intervals.length,
+      blockIndex: blockIdx,
+      stage,
+      type: 'rest',
+      title: restTitle,
+      description: restDescription,
+      target: isRoundTransition ? 'Changement de tour (+30 s)' : isBlockTransition ? 'Changement de bloc (+30 s)' : 'Récupération',
+      duration: currentRestTime,
+      exercise: null,
+      roundNumber,
+      blockNumber,
+      isRoundTransition,
+      roundTransitionFrom,
+      roundTransitionTo,
+      isBlockTransition
+    });
+  });
 
   return intervals;
 }

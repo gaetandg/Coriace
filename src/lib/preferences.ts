@@ -5,9 +5,13 @@ import { SoundSettings, WorkoutConfig } from '../types';
 
 const STORAGE_KEY = 'coriace:preferences:v1';
 
+// Ready-made sessions or a custom one, as last chosen on the home screen.
+export type SessionMode = 'preset' | 'custom';
+
 export interface Preferences {
   config: WorkoutConfig;
   sound: SoundSettings;
+  mode: SessionMode;
 }
 
 // Unchecked exercises are stored rather than checked ones, so exercises added in a later
@@ -18,6 +22,7 @@ interface StoredPreferences {
   durationMinutes?: number;
   excludedExerciseIds?: string[];
   sound?: Partial<SoundSettings>;
+  mode?: SessionMode;
 }
 
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -28,6 +33,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
     selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id),
   },
   sound: { beeps: true, voice: true },
+  mode: 'preset',
 };
 
 const DURATIONS = [15, 20, 30, 45, 60];
@@ -61,10 +67,11 @@ export function loadPreferences(): Preferences {
       beeps: isBoolean(stored.sound?.beeps) ? stored.sound.beeps : defaults.sound.beeps,
       voice: isBoolean(stored.sound?.voice) ? stored.sound.voice : defaults.sound.voice,
     },
+    mode: stored.mode === 'custom' || stored.mode === 'preset' ? stored.mode : defaults.mode,
   };
 }
 
-export function savePreferences({ config, sound }: Preferences) {
+export function savePreferences({ config, sound, mode }: Preferences) {
   const selected = config.selectedExerciseIds ?? EXERCISE_DATABASE.map(ex => ex.id);
   const stored: StoredPreferences = {
     equipment: config.equipment,
@@ -72,6 +79,7 @@ export function savePreferences({ config, sound }: Preferences) {
     durationMinutes: config.durationMinutes,
     excludedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id).filter(id => !selected.includes(id)),
     sound,
+    mode,
   };
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));

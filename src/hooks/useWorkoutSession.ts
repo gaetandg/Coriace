@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { generateWorkout } from '../workoutGenerator';
 import { SoundSettings, WorkoutConfig, WorkoutInterval } from '../types';
-import { loadPreferences, savePreferences } from '../lib/preferences';
+import { SessionMode, loadPreferences, savePreferences } from '../lib/preferences';
+import { PresetSession, buildPresetWorkout } from '../sessions';
 import { EXERCISE_DATABASE } from '../exercises';
 import { getBlockSteps, groupPlan } from '../lib/plan';
 import { useBeep } from './useBeep';
@@ -12,7 +13,7 @@ import { Cue, intervalStartCue, sessionEndCue, sessionStartCue, tickCue } from '
 export type WorkoutState = 'config' | 'summary' | 'active' | 'completed';
 export type EquipmentKey = keyof WorkoutConfig['equipment'];
 
-export type { SoundSettings };
+export type { SoundSettings, SessionMode };
 
 // Workout configuration, generated plan and player state, with every action on them.
 export function useWorkoutSession(notify: (message: string) => void) {
@@ -22,6 +23,9 @@ export function useWorkoutSession(notify: (message: string) => void) {
   const [config, setConfig] = useState<WorkoutConfig>(initialPreferences.config);
 
   const [workoutState, setWorkoutState] = useState<WorkoutState>('config');
+  const [mode, setMode] = useState<SessionMode>(initialPreferences.mode);
+  // The ready-made session being run, or null for a custom one.
+  const [activePreset, setActivePreset] = useState<PresetSession | null>(null);
   const [intervals, setIntervals] = useState<WorkoutInterval[]>([]);
   const [currentIntervalIndex, setCurrentIntervalIndex] = useState<number>(0);
   const [secondsRemaining, setSecondsRemaining] = useState<number>(30);
@@ -31,8 +35,8 @@ export function useWorkoutSession(notify: (message: string) => void) {
   const [timerRun, setTimerRun] = useState(0);
 
   useEffect(() => {
-    savePreferences({ config, sound });
-  }, [config, sound]);
+    savePreferences({ config, sound, mode });
+  }, [config, sound, mode]);
 
   const { initAudio, beep: triggerAudioBeep } = useBeep(sound.beeps);
   const speech = useSpeech(sound.voice);
@@ -133,13 +137,26 @@ export function useWorkoutSession(notify: (message: string) => void) {
   };
 
   // --- NAVIGATION & CONTROLS ---
-  const handleGenerateWorkoutPlan = () => {
+  const showPlan = (generated: WorkoutInterval[], preset: PresetSession | null) => {
     initAudio();
-    const generated = generateWorkout(config);
     setIntervals(generated);
+    setActivePreset(preset);
     setCurrentIntervalIndex(0);
     setSecondsRemaining(generated[0]?.duration || 30);
     setWorkoutState('summary');
+  };
+
+  // Custom sessions need at least one checked exercise usable with the equipment.
+  const handleGenerateWorkoutPlan = () => {
+    if (previewExercises.length === 0) {
+      notify('Coche au moins un exercice pour créer ta séance.');
+      return;
+    }
+    showPlan(generateWorkout(config), null);
+  };
+
+  const handleStartPreset = (preset: PresetSession) => {
+    showPlan(buildPresetWorkout(preset, config.rythme), preset);
   };
 
   const handleLaunchWorkout = () => {
@@ -188,37 +205,18 @@ export function useWorkoutSession(notify: (message: string) => void) {
   const toggleExerciseSelection = (id: string) => {
     setConfig(prev => {
       const selected = prev.selectedExerciseIds || EXERCISE_DATABASE.map(e => e.id);
-      let nextSelected;
-      if (selected.includes(id)) {
-        // Prevent deselecting if it is the last compatible one
-        const compatibleSelectedCount = compatibleExercises.filter(ex => selected.includes(ex.id)).length;
-        if (compatibleSelectedCount <= 1 && selected.includes(id)) {
-          notify('Garde au moins un exercice.');
-          return prev;
-        }
-        nextSelected = selected.filter(x => x !== id);
-      } else {
-        nextSelected = [...selected, id];
-      }
-      return {
-        ...prev,
-        selectedExerciseIds: nextSelected
-      };
+      const nextSelected = selected.includes(id) ? selected.filter(x => x !== id) : [...selected, id];
+      return { ...prev, selectedExerciseIds: nextSelected };
     });
   };
 
   // Checks or unchecks several exercises at once (a group, or the whole list).
-  // At least one exercise usable with the equipment stays checked.
   const setExercisesSelected = (ids: string[], select: boolean) => {
-    const current = config.selectedExerciseIds || EXERCISE_DATABASE.map(e => e.id);
-    const nextSelected = select ? Array.from(new Set([...current, ...ids])) : current.filter(id => !ids.includes(id));
-    if (!compatibleExercises.some(ex => nextSelected.includes(ex.id))) {
-      const kept = compatibleExercises.find(ex => ids.includes(ex.id)) ?? compatibleExercises[0];
-      if (!kept) return;
-      nextSelected.push(kept.id);
-      notify(`Il faut au moins un exercice : ${kept.name} reste coché.`);
-    }
-    setConfig(prev => ({ ...prev, selectedExerciseIds: nextSelected }));
+    setConfig(prev => {
+      const current = prev.selectedExerciseIds || EXERCISE_DATABASE.map(e => e.id);
+      const nextSelected = select ? Array.from(new Set([...current, ...ids])) : current.filter(id => !ids.includes(id));
+      return { ...prev, selectedExerciseIds: nextSelected };
+    });
   };
 
   // The start cue of the new interval is played by the cue effect.
@@ -309,9 +307,17 @@ export function useWorkoutSession(notify: (message: string) => void) {
     return null;
   }, [intervals, currentIntervalIndex]);
 
+  // Length shown on the summary and completion screens.
+  const plannedMinutes = activePreset ? activePreset.durationMinutes : config.durationMinutes || 30;
+
   return {
     config,
     setConfig,
+    mode,
+    setMode,
+    activePreset,
+    plannedMinutes,
+    handleStartPreset,
     workoutState,
     intervals,
     currentIntervalIndex,

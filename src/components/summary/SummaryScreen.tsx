@@ -30,8 +30,10 @@ function PlanSection({ label, items, prefix, onSelect }: PlanSectionProps) {
                   {prefix}{idx + 1}
                 </span>
               )}
-              <span className="flex-1 font-medium text-base">{item.title.replace('Échauffement : ', '')}</span>
-              <span className="text-sm text-sand text-right">{item.target.split(' - ')[0]}</span>
+              <span className="flex-1 flex flex-col">
+                <span className="font-medium text-base">{item.title.replace('Échauffement : ', '')}</span>
+                <span className="text-sm text-sand">{item.target.split(' - ')[0]}</span>
+              </span>
               <ChevronRight className="w-[18px] h-[18px] shrink-0 text-sand" aria-hidden="true" />
             </button>
           </li>
@@ -42,21 +44,23 @@ function PlanSection({ label, items, prefix, onSelect }: PlanSectionProps) {
 }
 
 interface SummaryScreenProps {
-  config: WorkoutConfig;
+  title: string;
+  backLabel: string;
+  minutes: number;
+  rythme: WorkoutConfig['rythme'];
   plan: PlanGroups;
   onBack: () => void;
-  onRegenerate: () => void;
+  onRegenerate?: () => void; // custom sessions only: ready-made ones never change
   onLaunch: () => void;
 }
 
-export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: SummaryScreenProps) {
+export function SummaryScreen({ title, backLabel, minutes, rythme, plan, onBack, onRegenerate, onLaunch }: SummaryScreenProps) {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
-  const durationMinutes = config.durationMinutes || 30;
   const tours = (rounds: number) => `${rounds} ${rounds > 1 ? 'tours' : 'tour'}`;
 
   const stats = [
-    { value: String(durationMinutes), label: 'minutes' },
-    { value: config.rythme === 'equilibre' ? '30/30' : '40/20', label: config.rythme === 'equilibre' ? 'équilibré' : 'intense' },
+    { value: String(minutes), label: 'minutes' },
+    { value: rythme === 'equilibre' ? '30/30' : '40/20', label: rythme === 'equilibre' ? 'équilibré' : 'intense' },
     { value: String(plan.circuitExercises.length + plan.finishers.length), label: 'exercices' },
   ];
 
@@ -64,10 +68,10 @@ export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: 
     <div id="panel-summary" className="flex-1 flex flex-col gap-5">
       <button onClick={onBack} className="-ml-2.5 self-start h-11 pr-3 flex items-center gap-2 text-sand font-semibold text-[15px] cursor-pointer">
         <ArrowLeft className="w-[22px] h-[22px] text-white" />
-        Réglages
+        {backLabel}
       </button>
 
-      <h1 className="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">Ta séance</h1>
+      <h1 className="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">{title}</h1>
 
       <div className="grid grid-cols-3 bg-cream text-ink rounded-[18px] py-3.5">
         {stats.map((stat, i) => (
@@ -107,9 +111,11 @@ export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: 
       <PlanSection label={`Finisher · ${plan.totalFinishers} min`} items={plan.finishers} prefix="F" onSelect={setSelectedExercise} />
 
       <div className="sticky bottom-0 mt-auto -mx-5 px-5 pt-3 pb-1 bg-brick flex gap-2.5">
-        <button onClick={onRegenerate} title="Tirer une nouvelle séance avec les mêmes réglages" className={`h-15 px-[18px] rounded-[18px] text-[15px] ${outlineButton}`}>
-          Régénérer
-        </button>
+        {onRegenerate && (
+          <button onClick={onRegenerate} title="Tirer une nouvelle séance avec les mêmes réglages" className={`h-15 px-[18px] rounded-[18px] text-[15px] ${outlineButton}`}>
+            Régénérer
+          </button>
+        )}
         <button onClick={onLaunch} className={`flex-1 ${primaryButton}`}>
           <Play className="w-[18px] h-[18px] fill-current" />
           Commencer
