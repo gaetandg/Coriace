@@ -11,7 +11,7 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Deux rythmes** : équilibré (30 s / 30 s) ou intense (40 s / 20 s).
 - **Structure complète** : échauffement, circuit principal, finisher.
 - **Ciblage coureur** : gainage abdominal, endurance des mollets, adducteurs.
-- **Minuteur guidé** : bips sonores sur les 3 dernières secondes et aux changements d'étape.
+- **Minuteur guidé** : chrono géant lisible au sol, fond brique pendant l'effort et vert pendant la récupération, bips sur les 3 dernières secondes.
 - **Guide des exercices** : description, consignes clés et conseils pour chaque mouvement.
 - **Installable (PWA)** : s'ajoute à l'écran d'accueil et fonctionne hors ligne.
 
@@ -53,18 +53,18 @@ src/
 │   ├── useWorkoutSession.ts   # État de la séance : configuration, plan, minuteur, actions
 │   └── useBeep.ts             # Bips sonores (Web Audio API)
 ├── components/
-│   ├── Header.tsx, Footer.tsx
-│   ├── GuideScreen.tsx        # Onglet « Guide Prévention »
+│   ├── Header.tsx, Logo.tsx   # En-tête, logo et motif de couloirs
+│   ├── GuideScreen.tsx        # Onglet « Guide »
 │   ├── CompletedScreen.tsx    # Fin de séance
-│   ├── config/                # Écran de configuration
+│   ├── config/                # Accueil (réglages) et choix des exercices
 │   ├── summary/               # Résumé du plan et fiche détaillée d'un exercice
 │   └── player/                # Séance en cours : minuteur, prochaine étape, commandes, déroulé
-├── lib/                       # Fonctions utilitaires (regroupement du plan, formatage)
+├── lib/                       # Utilitaires (regroupement du plan, formatage, classes d'interface)
 ├── exercises.ts               # Base de données des exercices
 ├── workoutGenerator.ts        # Génération de la séance (échauffement, circuit, finisher)
 ├── types.ts                   # Types partagés
 ├── main.tsx                   # Point d'entrée React
-└── index.css                  # Thème et styles globaux
+└── index.css                  # Thème « Piste » : couleurs et polices
 public/                        # Icônes de l'application (PWA)
 ```
 

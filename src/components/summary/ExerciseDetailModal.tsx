@@ -1,97 +1,74 @@
 import { X } from 'lucide-react';
 import { Exercise } from '../../types';
-import { getBodyPart } from '../../workoutGenerator';
+
+const EQUIPMENT_LABELS: Record<Exercise['equipmentRequired'][number], string> = {
+  chaise: 'Chaise',
+  poids_8kg: 'Poids 8 kg',
+  corde_a_sauter: 'Corde à sauter',
+};
 
 interface ExerciseDetailModalProps {
   exercise: Exercise;
   onClose: () => void;
 }
 
+// Bottom sheet with the full instructions for one exercise.
 export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalProps) {
-  const bodyPart = getBodyPart(exercise);
+  const equipment = exercise.equipmentRequired.length > 0
+    ? exercise.equipmentRequired.map(eq => EQUIPMENT_LABELS[eq])
+    : ['Sans matériel'];
 
   return (
-    <div
-      className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fade-in"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-end justify-center" onClick={onClose}>
       <div
-        className="bg-[#121212] border border-white/10 rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl space-y-6 overflow-hidden max-h-[90vh] overflow-y-auto"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="exercise-detail-title"
+        className="relative w-full max-w-md max-h-[88dvh] overflow-y-auto bg-cream text-ink rounded-t-3xl px-6 pt-6 pb-8 flex flex-col gap-5"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close button top right */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 text-white/40 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-full transition-colors cursor-pointer focus:outline-none"
+          aria-label="Fermer la fiche"
+          className="absolute top-3 right-3 w-11 h-11 rounded-full flex items-center justify-center hover:bg-ink/10 cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
-        {/* Header */}
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-0.5 bg-[#FF6321]/15 border border-[#FF6321]/30 text-[#FF6321] text-[10px] font-bold uppercase rounded-md tracking-wider font-mono">
-              {exercise.target}
-            </span>
-            <span className="px-3 py-0.5 bg-white/5 border border-white/10 text-white/70 text-[10px] font-bold uppercase rounded-md tracking-wider font-mono">
-              {bodyPart === 'bras' ? '💪 Bras' : bodyPart === 'abdos' ? '🧘 Abdos' : '🦵 Jambes'}
-            </span>
-            {exercise.equipmentRequired.length > 0 ? (
-              exercise.equipmentRequired.map(eq => (
-                <span key={eq} className="px-3 py-0.5 bg-orange-400/15 border border-orange-400/30 text-orange-400 text-[10px] font-bold uppercase rounded-md tracking-wider font-mono">
-                  {eq === 'poids_8kg' ? 'Poids 8 kg' : eq === 'chaise' ? 'Chaise' : eq === 'corde_a_sauter' ? 'Corde à sauter' : eq}
-                </span>
-              ))
-            ) : (
-              <span className="px-3 py-0.5 bg-emerald-400/15 border border-emerald-400/30 text-emerald-400 text-[10px] font-bold uppercase rounded-md tracking-wider font-mono">
-                Sans matériel
-              </span>
-            )}
+        <div className="flex flex-col gap-1.5 pr-10">
+          <span className="text-sm font-semibold text-clay">{exercise.target}</span>
+          <h2 id="exercise-detail-title" className="font-display font-extrabold text-[30px] leading-tight tracking-tight">{exercise.name}</h2>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {equipment.map(label => (
+              <span key={label} className="px-3 py-1 rounded-full bg-ink/10 text-[13px] font-semibold">{label}</span>
+            ))}
           </div>
-          <h3 className="text-xl sm:text-2xl font-display font-black text-white tracking-tight leading-tight uppercase pr-8">
-            {exercise.name}
-          </h3>
         </div>
 
-        <div className="border-t border-white/10 pt-4 space-y-4 text-left">
-          {/* Description */}
-          <div className="space-y-1">
-            <h4 className="text-[10px] uppercase tracking-widest text-white/40 font-bold font-mono">Mouvement</h4>
-            <p className="text-xs sm:text-sm text-white/80 leading-relaxed font-sans">
-              {exercise.description}
-            </p>
-          </div>
-
-          {/* Tips */}
-          {exercise.tips && (
-            <div className="bg-white/3 border border-white/5 rounded-2xl p-4 space-y-1.5">
-              <h4 className="text-[10px] uppercase tracking-widest text-[#FF6321] font-extrabold font-mono flex items-center gap-1.5">
-                Conseil
-              </h4>
-              <p className="text-xs text-white/85 leading-relaxed font-sans">
-                {exercise.tips}
-              </p>
-            </div>
-          )}
-
-          {/* Instruction Highlight */}
-          {exercise.instructionHighlight && (
-            <div className="bg-[#FF6321]/5 border border-[#FF6321]/25 rounded-2xl p-4 space-y-1">
-              <h4 className="text-[10px] uppercase tracking-widest text-[#FF6321] font-bold font-mono flex items-center gap-1.5">
-                À retenir
-              </h4>
-              <p className="text-xs text-[#FF6321] font-bold leading-relaxed font-mono">
-                {exercise.instructionHighlight}
-              </p>
-            </div>
-          )}
+        <div className="flex flex-col gap-1">
+          <h3 className="text-sm font-semibold text-clay">Mouvement</h3>
+          <p className="text-base leading-relaxed">{exercise.description}</p>
         </div>
+
+        {exercise.tips && (
+          <div className="flex flex-col gap-1">
+            <h3 className="text-sm font-semibold text-clay">Conseil</h3>
+            <p className="text-base leading-relaxed">{exercise.tips}</p>
+          </div>
+        )}
+
+        {exercise.instructionHighlight && (
+          <div className="rounded-2xl bg-brick text-white px-4 py-3.5 flex flex-col gap-0.5">
+            <h3 className="text-sm font-semibold text-sand">À retenir</h3>
+            <p className="text-base font-semibold">{exercise.instructionHighlight}</p>
+          </div>
+        )}
 
         <button
           type="button"
           onClick={onClose}
-          className="w-full bg-[#FF6321] hover:bg-[#FF6321]/90 text-black font-extrabold py-3 rounded-xl transition-all uppercase tracking-widest text-xs cursor-pointer focus:outline-none"
+          className="h-14 rounded-[18px] bg-ink text-cream font-display font-extrabold text-lg cursor-pointer"
         >
           Fermer
         </button>

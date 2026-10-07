@@ -3,47 +3,32 @@ import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
 interface PlayerControlsProps {
   isPlaying: boolean;
   canGoBack: boolean;
+  groundClassName: string; // pause icon takes the ground color
   onPrev: () => void;
   onTogglePlay: () => void;
   onNext: () => void;
 }
 
-export function PlayerControls({ isPlaying, canGoBack, onPrev, onTogglePlay, onNext }: PlayerControlsProps) {
+const sideButton = 'w-14 h-14 rounded-full border-[1.5px] border-white/55 flex items-center justify-center cursor-pointer hover:bg-white/10 disabled:opacity-30 disabled:pointer-events-none';
+
+export function PlayerControls({ isPlaying, canGoBack, groundClassName, onPrev, onTogglePlay, onNext }: PlayerControlsProps) {
   return (
-    <div className="flex items-center justify-center gap-4 py-1">
-      <button
-        id="btn-player-prev"
-        onClick={onPrev}
-        disabled={!canGoBack}
-        className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
-      >
-        <ArrowLeft className="w-4 h-4" />
+    <div className="relative flex items-center justify-center gap-5">
+      <button id="btn-player-prev" onClick={onPrev} disabled={!canGoBack} aria-label="Étape précédente" className={sideButton}>
+        <ArrowLeft className="w-[22px] h-[22px]" />
       </button>
 
       <button
         id="btn-player-playpause"
         onClick={onTogglePlay}
-        className="px-8 sm:px-12 h-12 rounded-full bg-white text-black hover:bg-white/90 font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 transition-all transform active:scale-95 cursor-pointer font-sans"
+        aria-label={isPlaying ? 'Pause' : 'Reprendre'}
+        className={`w-20 h-20 rounded-full bg-cream ${groundClassName} flex items-center justify-center cursor-pointer active:scale-95 transition-transform`}
       >
-        {isPlaying ? (
-          <>
-            <Pause className="w-3.5 h-3.5 fill-black" />
-            <span>Pause</span>
-          </>
-        ) : (
-          <>
-            <Play className="w-3.5 h-3.5 fill-black" />
-            <span>Reprendre</span>
-          </>
-        )}
+        {isPlaying ? <Pause className="w-7 h-7 fill-current" /> : <Play className="w-7 h-7 fill-current ml-1" />}
       </button>
 
-      <button
-        id="btn-player-next"
-        onClick={onNext}
-        className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all cursor-pointer"
-      >
-        <ArrowRight className="w-4 h-4" />
+      <button id="btn-player-next" onClick={onNext} aria-label="Étape suivante" className={sideButton}>
+        <ArrowRight className="w-[22px] h-[22px]" />
       </button>
     </div>
   );

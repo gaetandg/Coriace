@@ -18,8 +18,9 @@ export function useBeep(enabled: boolean) {
     }
   };
 
-  const beep = (frequency: number, duration: number) => {
-    if (!enabled) return;
+  // `force` plays even when sound is off, e.g. to confirm it was just turned on.
+  const beep = (frequency: number, duration: number, force = false) => {
+    if (!enabled && !force) return;
     try {
       initAudio();
       const ctx = audioContextRef.current;

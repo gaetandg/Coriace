@@ -1,20 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-}
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
 
-@layer utilities {
-  .animate-pulse-slow {
-    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
+  /* Piste: brick track for effort, infield grass for rest, cream surfaces */
+  --color-brick: #A13D2B;
+  --color-grass: #2E5E3E;
+  --color-cream: #F6EBDD;
+  --color-cream-line: #E3CDBA;
+  --color-ink: #3B140C;
+  --color-clay: #7A3424;
+  --color-sand: #F6E0D6;
 }
 
 body {
-  background-color: #050505;
+  background-color: var(--color-brick);
   color: #ffffff;
   font-family: var(--font-sans);
 }

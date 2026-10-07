@@ -1,17 +1,25 @@
 import { WorkoutInterval } from '../../types';
 import { WorkoutSession } from '../../hooks/useWorkoutSession';
+import { LaneArcs } from '../Logo';
 import { CurrentIntervalCard } from './CurrentIntervalCard';
 import { NextUpPanel } from './NextUpPanel';
 import { PlayerControls } from './PlayerControls';
 import { SessionProgress } from './SessionProgress';
 import { StepList } from './StepList';
 
+const STAGE_LABELS: Record<WorkoutInterval['stage'], string> = {
+  warmup: 'Échauffement',
+  main: 'Circuit',
+  finisher: 'Finisher',
+};
+
 interface PlayerScreenProps {
   session: WorkoutSession;
   activeInterval: WorkoutInterval;
+  isBreak: boolean;
 }
 
-export function PlayerScreen({ session, activeInterval }: PlayerScreenProps) {
+export function PlayerScreen({ session, activeInterval, isBreak }: PlayerScreenProps) {
   const {
     intervals,
     currentIntervalIndex,
@@ -28,68 +36,47 @@ export function PlayerScreen({ session, activeInterval }: PlayerScreenProps) {
     handleJumpToBlock,
   } = session;
 
-  const isBreak = activeInterval.type === 'rest' || activeInterval.isRoundTransition || activeInterval.isBlockTransition;
+  const hasTwoBlocks = intervals.some(i => i.blockNumber === 2);
+  const stageLabel = activeInterval.stage === 'main' && hasTwoBlocks
+    ? `Bloc ${activeInterval.blockNumber === 2 ? 'B' : 'A'}`
+    : STAGE_LABELS[activeInterval.stage];
 
   return (
-    <div id="panel-player" className="space-y-4 md:space-y-6 animate-fade-in text-white">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-1">
-        <button
-          id="btn-quit-session"
-          onClick={resetWorkout}
-          className="text-xs text-white/50 hover:text-white flex items-center gap-2 bg-white/5 border border-white/10 hover:border-white/25 px-4 h-10 rounded-full transition-all cursor-pointer self-start font-sans"
-        >
-          Quitter la séance
+    <div id="panel-player" className="flex-1 flex flex-col gap-6">
+      <LaneArcs className="w-[300px] top-[150px] -right-[150px] opacity-[0.22]" />
+
+      <div className="relative flex items-center gap-2.5 font-semibold text-[15px]">
+        <span className="bg-cream text-ink px-3 py-1.5 rounded-full">{stageLabel}</span>
+        {activeInterval.roundNumber && (
+          <span className="text-sand">Tour {activeInterval.roundNumber} sur {activeBlockTotalRounds || 2}</span>
+        )}
+        <button id="btn-quit-session" onClick={resetWorkout} className="ml-auto h-11 px-1 text-sand underline underline-offset-4 cursor-pointer">
+          Quitter
         </button>
-
-        <div className="flex items-center gap-2 sm:self-center">
-          <span className={`text-[10px] sm:text-xs font-bold tracking-widest uppercase px-3.5 py-1.5 rounded-full border ${
-            activeInterval.stage === 'warmup'
-              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-              : activeInterval.stage === 'main'
-              ? 'bg-[#FF6321]/10 text-[#FF6321] border-[#FF6321]/20'
-              : 'bg-red-500/10 text-red-400 border-red-500/25'
-          }`}>
-            {activeInterval.stage === 'warmup' ? 'Échauffement' : activeInterval.stage === 'main' ? 'Circuit' : 'Finisher'}
-          </span>
-
-          {activeInterval.roundNumber && (
-            <span className="text-[10px] sm:text-xs font-bold bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-white/70">
-              Tour {activeInterval.roundNumber}/{activeBlockTotalRounds || 2}
-            </span>
-          )}
-        </div>
       </div>
 
-      {/* TWO PANEL GRID (Left: Player / Right: Step Playlist Checklist) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        {/* LEFT: Central Player card + controls */}
-        <div className="lg:col-span-2 space-y-4 md:space-y-6">
-          <CurrentIntervalCard
-            interval={activeInterval}
-            secondsRemaining={secondsRemaining}
-            totalRounds={activeBlockTotalRounds}
-            elapsedSeconds={progressMetrics.elapsedSeconds}
-            totalSeconds={progressMetrics.totalSeconds}
-          />
+      <CurrentIntervalCard interval={activeInterval} secondsRemaining={secondsRemaining} />
 
-          {nextUp && <NextUpPanel nextUp={nextUp} highlighted={!!isBreak} />}
+      {nextUp && <NextUpPanel nextUp={nextUp} detailed={isBreak} />}
 
-          <PlayerControls
-            isPlaying={isPlaying}
-            canGoBack={currentIntervalIndex > 0}
-            onPrev={handlePrevInterval}
-            onTogglePlay={togglePlayPause}
-            onNext={handleNextInterval}
-          />
+      <div className="mt-auto flex flex-col gap-6">
+        <PlayerControls
+          isPlaying={isPlaying}
+          canGoBack={currentIntervalIndex > 0}
+          groundClassName={isBreak ? 'text-grass' : 'text-brick'}
+          onPrev={handlePrevInterval}
+          onTogglePlay={togglePlayPause}
+          onNext={handleNextInterval}
+        />
 
-          <SessionProgress
-            totalBlocks={Math.round(intervals.length / 2)}
-            blockIndex={activeInterval.blockIndex}
-            secondsRemaining={secondsRemaining}
-          />
-        </div>
+        <SessionProgress
+          totalBlocks={Math.round(intervals.length / 2)}
+          blockIndex={activeInterval.blockIndex}
+          elapsedSeconds={progressMetrics.elapsedSeconds}
+          totalSeconds={progressMetrics.totalSeconds}
+          percentage={progressMetrics.percentage}
+        />
 
-        {/* RIGHT: ALL STEPS GROUP LIST INTERACTIVE PLAYLIST */}
         <StepList steps={blockSteps} activeBlockIndex={activeInterval.blockIndex} onJump={handleJumpToBlock} />
       </div>
     </div>

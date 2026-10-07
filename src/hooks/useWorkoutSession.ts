@@ -94,11 +94,14 @@ export function useWorkoutSession(notify: (message: string) => void) {
     return () => clearInterval(timer);
   }, [isPlaying, workoutState, currentIntervalIndex, soundEnabled, intervals]);
 
-  // Sound test triggering
-  const testBeeps = () => {
-    initAudio();
-    triggerAudioBeep(1200, 0.4);
-    notify('Bip joué. Monte le volume si tu ne l\'entends pas.');
+  // Turning sound on plays a beep so the runner can check the volume.
+  const toggleSound = () => {
+    const next = !soundEnabled;
+    setSoundEnabled(next);
+    if (next) {
+      initAudio();
+      triggerAudioBeep(1200, 0.4, true);
+    }
   };
 
   // --- NAVIGATION & CONTROLS ---
@@ -303,7 +306,7 @@ export function useWorkoutSession(notify: (message: string) => void) {
     secondsRemaining,
     isPlaying,
     soundEnabled,
-    setSoundEnabled,
+    toggleSound,
     activeInterval,
     progressMetrics,
     blockSteps,
@@ -312,7 +315,6 @@ export function useWorkoutSession(notify: (message: string) => void) {
     summaryPlanGroups,
     activeBlockTotalRounds,
     nextUp,
-    testBeeps,
     handleGenerateWorkoutPlan,
     handleLaunchWorkout,
     handleBackToConfig,

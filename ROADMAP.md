@@ -9,12 +9,9 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Nettoyage du code issu d'AI Studio, découpage en composants
 - [x] Réécriture de tous les textes : tutoiement, ton sobre et direct
 - [x] Nom : **Coriace · Renfo pour coureurs**
+- [x] Direction artistique « Piste » : fond brique (vert pendant la récupération), crème, Bricolage Grotesque + Instrument Sans, logo en trois couloirs
 
 ## À faire
-
-### Identité visuelle
-- [ ] Logo (l'icône actuelle est provisoire) — direction retenue : C · Piste (C formé de trois couloirs)
-- [ ] Direction artistique « Piste » (fond brique, crème, Bricolage Grotesque + Instrument Sans) : couleurs, typographies, remplacement des emojis-icônes (matériel, parties du corps) par de vraies icônes
 
 ### Guidage audio
 - [ ] Voix qui annonce le prochain exercice pendant les pauses (synthèse vocale du navigateur, voix française)

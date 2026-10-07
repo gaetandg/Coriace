@@ -1,50 +1,28 @@
-import { ChevronRight } from 'lucide-react';
 import { WorkoutInterval } from '../../types';
 
 interface NextUpPanelProps {
   nextUp: WorkoutInterval;
-  // During rest and transitions the panel is highlighted so the runner can get ready.
-  highlighted: boolean;
+  // During rest and transitions, show the full instructions so the runner can get ready.
+  detailed: boolean;
 }
 
-export function NextUpPanel({ nextUp, highlighted }: NextUpPanelProps) {
+export function NextUpPanel({ nextUp, detailed }: NextUpPanelProps) {
   return (
-    <div id="pnl-next-up" className={`border rounded-xl p-3.5 md:p-4 text-left transition duration-300 ${
-      highlighted
-        ? 'bg-[#FF6321]/5 border-[#FF6321]/20 shadow-md shadow-[#FF6321]/5'
-        : 'bg-white/5 border border-white/10 hover:border-[#FF6321]/30'
-    }`}>
-      <div className="flex items-start justify-between">
-        <div className="space-y-1 flex-1 pr-4">
-          <span className="text-white/40 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest block font-sans">
-            Ensuite
-          </span>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-display font-bold text-xs sm:text-sm text-white uppercase tracking-tight">{nextUp.title}</span>
-            <span className="px-2.5 py-0.5 bg-[#FF6321]/15 border border-[#FF6321]/30 text-[#FF6321] text-[8px] sm:text-[9px] font-bold uppercase tracking-wider rounded-full font-mono">{nextUp.target}</span>
-          </div>
-
-          {/* Rich Anticipation Detail */}
-          {nextUp.exercise && (
-            <div className="mt-2.5 space-y-1.5 text-xs text-white/70 font-sans border-t border-white/10 pt-2.5">
-              <p className="leading-relaxed">
-                {nextUp.exercise.description}
-              </p>
-              {nextUp.exercise.tips && (
-                <p className="text-white/50 text-[11px] leading-relaxed italic">
-                  {nextUp.exercise.tips}
-                </p>
-              )}
-              {nextUp.exercise.instructionHighlight && (
-                <p className="text-[#FF6321]/90 text-[11px] font-mono font-bold leading-relaxed">
-                  À retenir : {nextUp.exercise.instructionHighlight}
-                </p>
-              )}
-            </div>
-          )}
+    <div id="pnl-next-up" className="relative bg-cream text-ink rounded-[18px] px-4 py-3.5 flex flex-col gap-1">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[13px] font-semibold text-clay">Ensuite</span>
+          <span className="font-display font-bold text-[21px] leading-tight">{nextUp.title.replace('Échauffement : ', '')}</span>
         </div>
-        <ChevronRight className="w-4 h-4 text-[#FF6321] shrink-0 mt-0.5" />
+        <span className="text-sm text-clay text-right">{nextUp.target.split(' - ')[0]}</span>
       </div>
+
+      {detailed && nextUp.exercise && (
+        <div className="mt-2 pt-2.5 border-t border-cream-line flex flex-col gap-1.5 text-[15px] leading-relaxed">
+          <p>{nextUp.exercise.description}</p>
+          <p className="font-semibold">À retenir : {nextUp.exercise.instructionHighlight}</p>
+        </div>
+      )}
     </div>
   );
 }
