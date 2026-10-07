@@ -27,7 +27,7 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
         role="dialog"
         aria-modal="true"
         aria-labelledby="exercise-detail-title"
-        className="relative w-full max-w-md max-h-[88dvh] overflow-y-auto bg-cream text-ink rounded-t-3xl px-6 pt-6 pb-8 flex flex-col gap-5"
+        className="relative w-full max-w-md max-h-[88dvh] overflow-y-auto bg-cream text-ink rounded-t-3xl px-6 pt-6 pb-8 flex flex-col gap-5 *:shrink-0"
         onClick={(e) => e.stopPropagation()}
       >
         <button
