@@ -1,6 +1,7 @@
 import { TriangleAlert, X } from 'lucide-react';
 import { Exercise } from '../../types';
 import { useBackHandler } from '../../hooks/useBackHandler';
+import { ExerciseAnimation, hasAnimation } from '../ExerciseAnimation';
 
 const EQUIPMENT_LABELS: Record<Exercise['equipmentRequired'][number], string> = {
   chaise: 'Chaise',
@@ -47,6 +48,12 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
             ))}
           </div>
         </div>
+
+        {hasAnimation(exercise.id) && (
+          <div className="-mx-2 flex justify-center">
+            <ExerciseAnimation exerciseId={exercise.id} className="block w-full max-w-[320px]" />
+          </div>
+        )}
 
         <div className="flex flex-col gap-1">
           <h3 className="text-sm font-semibold text-clay">Mouvement</h3>

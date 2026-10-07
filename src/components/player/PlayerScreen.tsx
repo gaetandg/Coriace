@@ -55,9 +55,9 @@ export function PlayerScreen({ session, activeInterval, isBreak }: PlayerScreenP
         </button>
       </div>
 
-      <CurrentIntervalCard interval={activeInterval} secondsRemaining={secondsRemaining} />
+      <CurrentIntervalCard interval={activeInterval} secondsRemaining={secondsRemaining} playing={isPlaying} />
 
-      {nextUp && <NextUpPanel nextUp={nextUp} detailed={isBreak} />}
+      {nextUp && <NextUpPanel nextUp={nextUp} detailed={isBreak} playing={isPlaying} />}
 
       <div className="mt-auto flex flex-col gap-6">
         <PlayerControls

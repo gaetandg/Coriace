@@ -1,12 +1,14 @@
 import { WorkoutInterval } from '../../types';
+import { ExerciseAnimation, hasAnimation } from '../ExerciseAnimation';
 
 interface NextUpPanelProps {
   nextUp: WorkoutInterval;
   // During rest and transitions, show the full instructions so the runner can get ready.
   detailed: boolean;
+  playing: boolean;
 }
 
-export function NextUpPanel({ nextUp, detailed }: NextUpPanelProps) {
+export function NextUpPanel({ nextUp, detailed, playing }: NextUpPanelProps) {
   return (
     <div id="pnl-next-up" className="relative bg-cream text-ink rounded-[18px] px-4 py-3.5 flex flex-col gap-1">
       <div className="flex items-center justify-between gap-3">
@@ -19,6 +21,11 @@ export function NextUpPanel({ nextUp, detailed }: NextUpPanelProps) {
 
       {detailed && nextUp.exercise && (
         <div className="mt-2 pt-2.5 border-t border-cream-line flex flex-col gap-1.5 text-[15px] leading-relaxed">
+          {hasAnimation(nextUp.exercise.id) && (
+            <div className="flex justify-center">
+              <ExerciseAnimation exerciseId={nextUp.exercise.id} playing={playing} className="block w-full max-w-[250px]" />
+            </div>
+          )}
           <p>{nextUp.exercise.description}</p>
           <p className="font-semibold">À retenir : {nextUp.exercise.instructionHighlight}</p>
         </div>

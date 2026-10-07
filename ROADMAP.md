@@ -27,7 +27,8 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Première revue : ajout fessiers et ischios (pont fessier, abduction, soulevé de terre sur une jambe), fente bulgare, gainage latéral, dead bug ; retrait des crunchs et sit-ups
 - [x] Deuxième revue : variantes plus faciles et plus dures sur chaque fiche ; ajout de la corde (pas de course, sur un pied), sauts pieds joints, montée sur chaise, pont ischios, bird dog, équilibre sur un pied, montées de genoux ; bûcheron à la place des russian twists ; Copenhagen côté par côté à mi-temps
 - [ ] Faire relire la liste par un kiné
-- [ ] Illustrations de chaque exercice
+- [x] Animation de chaque exercice (personnage en volume, positions clés, décor)
+- [ ] Éditeur de poses pour retoucher les animations à la souris (page interne), export GIF pour les articles
 - [x] Circuits équilibrés et variés : groupes clés garantis, ordre aléatoire, deux exercices max par groupe ; « Régénérer » évite la séance précédente
 
 ### Séances

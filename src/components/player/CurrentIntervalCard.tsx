@@ -1,13 +1,15 @@
 import { WorkoutInterval } from '../../types';
 import { formatClock } from '../../lib/format';
+import { ExerciseAnimation, hasAnimation } from '../ExerciseAnimation';
 
 interface CurrentIntervalCardProps {
   interval: WorkoutInterval;
   secondsRemaining: number;
+  playing: boolean;
 }
 
 // Big countdown and what to do right now.
-export function CurrentIntervalCard({ interval, secondsRemaining }: CurrentIntervalCardProps) {
+export function CurrentIntervalCard({ interval, secondsRemaining, playing }: CurrentIntervalCardProps) {
   const progress = 1 - secondsRemaining / interval.duration;
   const phaseLabel = interval.isRoundTransition
     ? 'Changement de tour'
@@ -39,6 +41,11 @@ export function CurrentIntervalCard({ interval, secondsRemaining }: CurrentInter
             {interval.title.replace('Échauffement : ', '')}
           </h1>
           <span className="text-base text-sand">{interval.target}</span>
+          {hasAnimation(interval.exercise.id) && (
+            <div className="mt-3 bg-cream rounded-[18px] flex justify-center">
+              <ExerciseAnimation exerciseId={interval.exercise.id} playing={playing} className="block w-full max-w-[250px]" />
+            </div>
+          )}
           <p className="mt-2 text-lg font-semibold leading-snug">{interval.exercise.instructionHighlight}</p>
           <p className="text-[15px] leading-relaxed text-sand">{interval.exercise.description}</p>
         </div>
