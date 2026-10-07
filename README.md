@@ -54,3 +54,11 @@ src/
 ├── main.tsx              # Point d'entrée React
 └── index.css             # Thème et styles globaux
 ```
+
+## Déploiement
+
+L'application est déployée automatiquement sur GitHub Pages à chaque push sur `main`, via le workflow `.github/workflows/deploy.yml` : vérification des types, build, puis publication.
+
+Mise en place initiale (une seule fois) : dans **Settings → Pages** du dépôt, choisir **Source : GitHub Actions**.
+
+Adresse : https://gaetandg.github.io/PPG-marathon/
