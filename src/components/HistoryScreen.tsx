@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { HistoryEntry, sessionsInLastDays } from '../lib/history';
 import { primaryButton } from '../lib/ui';
@@ -11,9 +11,10 @@ interface HistoryScreenProps {
   history: HistoryEntry[];
   onBack: () => void;
   onClear: () => void;
+  account: ReactNode;
 }
 
-export function HistoryScreen({ history, onBack, onClear }: HistoryScreenProps) {
+export function HistoryScreen({ history, onBack, onClear, account }: HistoryScreenProps) {
   const [confirmClear, setConfirmClear] = useState(false);
   const stats = [
     { value: String(sessionsInLastDays(history, 7)), label: '7 derniers jours' },
@@ -38,6 +39,8 @@ export function HistoryScreen({ history, onBack, onClear }: HistoryScreenProps) 
           </div>
         ))}
       </div>
+
+      {account}
 
       {history.length === 0 ? (
         <p className="text-base text-sand">Aucune séance terminée pour l'instant. Elles apparaîtront ici.</p>

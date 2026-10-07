@@ -2,7 +2,9 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { generateWorkout } from '../workoutGenerator';
 import { SoundSettings, WorkoutConfig, WorkoutInterval } from '../types';
 import { SessionMode, loadPreferences, savePreferences } from '../lib/preferences';
-import { HistoryEntry, addHistoryEntry, clearHistory, loadHistory } from '../lib/history';
+import { HistoryEntry, addHistoryEntry, clearHistory, loadHistory, saveHistory } from '../lib/history';
+import { deleteRemoteHistory, pushHistoryEntry, syncHistory } from '../lib/historySync';
+import { supabase } from '../lib/supabase';
 import { PresetSession, buildPresetWorkout } from '../sessions';
 import { EXERCISE_DATABASE } from '../exercises';
 import { getBlockSteps, groupPlan } from '../lib/plan';
@@ -17,7 +19,8 @@ export type EquipmentKey = keyof WorkoutConfig['equipment'];
 export type { SoundSettings, SessionMode };
 
 // Workout configuration, generated plan and player state, with every action on them.
-export function useWorkoutSession(notify: (message: string) => void) {
+// `userId` is the signed-in account, whose history is kept in sync with this device's.
+export function useWorkoutSession(notify: (message: string) => void, userId: string | null = null) {
   // --- STATE ---
   // Saved settings are read once, when the app opens.
   const [initialPreferences] = useState(loadPreferences);
@@ -28,6 +31,24 @@ export function useWorkoutSession(notify: (message: string) => void) {
   // The ready-made session being run, or null for a custom one.
   const [activePreset, setActivePreset] = useState<PresetSession | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>(loadHistory);
+
+  // On sign-in (and each launch while signed in): send sessions only known here, fetch the others.
+  useEffect(() => {
+    if (!supabase || !userId) return;
+    let cancelled = false;
+    syncHistory(supabase, loadHistory())
+      .then(merged => {
+        if (cancelled) return;
+        saveHistory(merged);
+        setHistory(merged);
+      })
+      .catch(() => {
+        // Offline or server error: the local history stays as is and syncs next time.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
   const [intervals, setIntervals] = useState<WorkoutInterval[]>([]);
   const [currentIntervalIndex, setCurrentIntervalIndex] = useState<number>(0);
   const [secondsRemaining, setSecondsRemaining] = useState<number>(30);
@@ -230,13 +251,16 @@ export function useWorkoutSession(notify: (message: string) => void) {
       setIsPlaying(false);
       playCue(sessionEndCue());
       const plan = groupPlan(intervals);
-      setHistory(addHistoryEntry({
+      const entry = addHistoryEntry({
         name: activePreset?.name ?? 'Séance sur mesure',
         presetId: activePreset?.id,
         minutes: plannedMinutes,
         rythme: config.rythme,
         exerciseCount: plan.circuitExercises.length + plan.finishers.length,
-      }));
+      });
+      setHistory(prev => [entry, ...prev]);
+      // If this fails (offline), the next sync sends it.
+      if (supabase && userId) pushHistoryEntry(supabase, entry).catch(() => {});
     }
   };
 
@@ -332,6 +356,9 @@ export function useWorkoutSession(notify: (message: string) => void) {
     clearHistory: () => {
       clearHistory();
       setHistory([]);
+      if (supabase && userId) {
+        deleteRemoteHistory(supabase, userId).catch(() => notify("L'historique du compte n'a pas pu être effacé. Réessaie plus tard."));
+      }
     },
     workoutState,
     intervals,

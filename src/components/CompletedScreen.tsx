@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { WorkoutConfig } from '../types';
 import { plural } from './HistoryScreen';
 import { primaryButton } from '../lib/ui';
@@ -10,9 +11,10 @@ interface CompletedScreenProps {
   recentCount: number; // sessions in the last 7 days, this one included
   onRestart: () => void;
   onOpenHistory: () => void;
+  account: ReactNode;
 }
 
-export function CompletedScreen({ durationMinutes, exerciseCount, rythme, recentCount, onRestart, onOpenHistory }: CompletedScreenProps) {
+export function CompletedScreen({ durationMinutes, exerciseCount, rythme, recentCount, onRestart, onOpenHistory, account }: CompletedScreenProps) {
   const stats = [
     { value: String(durationMinutes), label: 'minutes' },
     { value: String(exerciseCount), label: 'exercices' },
@@ -38,6 +40,8 @@ export function CompletedScreen({ durationMinutes, exerciseCount, rythme, recent
           </div>
         ))}
       </div>
+
+      {account}
 
       <div className="relative mt-auto flex flex-col gap-2.5">
         <button onClick={onOpenHistory} className="h-12 font-semibold underline underline-offset-4 cursor-pointer">

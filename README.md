@@ -20,6 +20,7 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Circuits équilibrés et variés** : chaque circuit contient au moins un exercice de mollets, d'adducteurs, de fessiers et de gainage, au plus deux par groupe, sans deux exercices du même groupe à la suite. « Régénérer » évite les exercices de la séance précédente.
 - **Bouton retour du téléphone** : revient à l'écran précédent ; pendant une séance, il met en pause au lieu de quitter.
 - **Historique** : chaque séance terminée est enregistrée (date, nom, durée, rythme) ; l'accueil affiche le nombre de séances des 7 derniers jours.
+- **Compte Google (optionnel)** : en se connectant, l'historique est sauvegardé et synchronisé entre appareils (Supabase).
 - **Préférences retenues** : matériel, rythme, durée, exercices cochés et réglages du son sont gardés d'une visite à l'autre (dans le navigateur).
 - **Installable (PWA)** : s'ajoute à l'écran d'accueil et fonctionne hors ligne.
 
@@ -80,6 +81,16 @@ src/
 └── index.css                  # Thème « Piste » : couleurs et polices
 public/                        # Icônes de l'application (PWA)
 ```
+
+## Comptes (Supabase)
+
+La connexion se fait uniquement avec Google, via Supabase. Le projet et sa clé publique sont dans `src/config.ts` (valeurs publiques par conception ; on peut les remplacer avec `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY`). Le bouton de connexion n'apparaît que si Google est activé dans le projet.
+
+Mise en place, une seule fois, dans le tableau de bord Supabase :
+
+1. **SQL Editor** : exécuter `supabase/migrations/20261007000000_session_history.sql` (table de l'historique et règles d'accès : chacun ne voit que ses séances).
+2. **Authentication → Sign In / Providers** : désactiver *Email*, activer *Google* avec l'identifiant et le secret d'un client OAuth Google Cloud dont l'URI de redirection autorisée est `https://prfadpnawhrphxigiyag.supabase.co/auth/v1/callback`.
+3. **Authentication → URL Configuration** : *Site URL* `https://gaetandg.github.io/Coriace/`, et ajouter cette adresse (plus `http://localhost:3000/` pour le développement) aux *Redirect URLs*.
 
 ## Déploiement
 

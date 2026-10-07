@@ -10,6 +10,8 @@ import { SoundSheet } from './components/SoundSheet';
 import { useBackHandler } from './hooks/useBackHandler';
 import { HistoryScreen } from './components/HistoryScreen';
 import { sessionsInLastDays } from './lib/history';
+import { useAuth } from './hooks/useAuth';
+import { AccountCard } from './components/AccountCard';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<AppTab>('workout');
@@ -21,7 +23,8 @@ export default function App() {
     setTimeout(() => setFeedbackMessage(''), 3000);
   };
 
-  const session = useWorkoutSession(notify);
+  const auth = useAuth();
+  const session = useWorkoutSession(notify, auth.user?.id ?? null);
   const { config, workoutState, activeInterval, summaryPlanGroups } = session;
 
   // Phone back button, from the deepest level: sheets, guide, then the workout screens.
@@ -61,6 +64,7 @@ export default function App() {
             history={session.history}
             onBack={closeHistory}
             onClear={session.clearHistory}
+            account={<AccountCard auth={auth} />}
           />
         ) : (
           <>
@@ -91,6 +95,7 @@ export default function App() {
                 recentCount={sessionsInLastDays(session.history, 7)}
                 onRestart={session.resetWorkout}
                 onOpenHistory={() => setActiveTab('history')}
+                account={<AccountCard auth={auth} compact />}
               />
             )}
           </>

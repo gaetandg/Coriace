@@ -36,7 +36,7 @@ export function loadHistory(): HistoryEntry[] {
   }
 }
 
-function saveHistory(entries: HistoryEntry[]) {
+export function saveHistory(entries: HistoryEntry[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(entries.slice(0, MAX_ENTRIES)));
   } catch {
@@ -44,11 +44,11 @@ function saveHistory(entries: HistoryEntry[]) {
   }
 }
 
-export function addHistoryEntry(entry: Omit<HistoryEntry, 'id' | 'completedAt'>, now = new Date()): HistoryEntry[] {
-  const full: HistoryEntry = { ...entry, id: `${now.getTime()}`, completedAt: now.toISOString() };
-  const entries = [full, ...loadHistory()];
-  saveHistory(entries);
-  return entries;
+export function addHistoryEntry(entry: Omit<HistoryEntry, 'id' | 'completedAt'>, now = new Date()): HistoryEntry {
+  // Random suffix: ids must stay unique across devices once synced to an account.
+  const full: HistoryEntry = { ...entry, id: `${now.getTime()}-${Math.random().toString(36).slice(2, 8)}`, completedAt: now.toISOString() };
+  saveHistory([full, ...loadHistory()]);
+  return full;
 }
 
 export function clearHistory() {
