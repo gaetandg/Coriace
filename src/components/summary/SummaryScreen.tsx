@@ -110,7 +110,7 @@ export function SummaryScreen({ title, backLabel, minutes, rythme, plan, onBack,
         />
       )}
 
-      <PlanSection label={`Finisher · ${plan.totalFinishers} min`} items={plan.finishers} prefix="F" onSelect={setSelectedExercise} />
+      <PlanSection label={`Finisher · ${plan.totalFinishers} min`} items={plan.finishers} onSelect={setSelectedExercise} />
 
       <div className="sticky bottom-0 mt-auto -mx-5 px-5 pt-3 pb-1 bg-brick flex gap-2.5">
         {onRegenerate && (

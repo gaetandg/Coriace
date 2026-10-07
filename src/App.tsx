@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { useWorkoutSession } from './hooks/useWorkoutSession';
 import { Header } from './components/Header';
@@ -60,6 +60,23 @@ export default function App() {
     if (workoutState === 'summary') session.handleBackToConfig();
     if (workoutState === 'completed') session.resetWorkout();
   };
+
+  // Every new screen opens at the top. Coming back to the settings finds them where they were left.
+  const screen = activeTab === 'stats' ? 'stats' : workoutState;
+  const screenRef = useRef(screen);
+  const settingsScroll = useRef(0);
+  useEffect(() => {
+    // The app places the scroll itself; the browser would otherwise restore it on the back button.
+    history.scrollRestoration = 'manual';
+    const remember = () => { if (screenRef.current === 'config') settingsScroll.current = window.scrollY; };
+    window.addEventListener('scroll', remember, { passive: true });
+    return () => window.removeEventListener('scroll', remember);
+  }, []);
+  useLayoutEffect(() => {
+    if (screenRef.current === screen) return;
+    screenRef.current = screen;
+    window.scrollTo(0, screen === 'config' ? settingsScroll.current : 0);
+  }, [screen]);
 
   // Rest turns the screen green so effort and recovery read at a glance from the floor.
   const isBreak = activeTab === 'workout' && workoutState === 'active' && activeInterval?.type === 'rest';
