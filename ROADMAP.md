@@ -37,6 +37,10 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 ### Préférences
 - [x] Se souvenir des préférences d'une fois sur l'autre (matériel, rythme, durée, exercices cochés, son)
 
+### Comptes et statistiques
+- [ ] Mesure d'audience (analytics) : savoir quelles séances et quels écrans sont utilisés, dans le respect du RGPD (outil sans cookie ou consentement)
+- [ ] Connexion avec un compte, pour retrouver ses préférences, ses séances enregistrées et son historique sur tous ses appareils
+
 ### Plus tard
 - [ ] Applications Android et iPhone avec Capacitor (minuteur et voix qui continuent écran verrouillé)
 - [ ] Vérifier la disponibilité du nom « Coriace » avant publication sur les stores (marques INPI et EUIPO, classe 9)

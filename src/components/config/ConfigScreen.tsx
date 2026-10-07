@@ -12,8 +12,8 @@ import { LaneArcs } from '../Logo';
 const EQUIPMENT_OPTIONS: { key: EquipmentKey; id: string; label: string }[] = [
   { key: 'none', id: 'chk-eq-none', label: 'Aucun' },
   { key: 'chaise', id: 'chk-eq-chaise', label: 'Chaise' },
-  { key: 'poids_8kg', id: 'chk-eq-weight', label: 'Poids 8 kg' },
-  { key: 'corde_a_sauter', id: 'chk-eq-corde', label: 'Corde' },
+  { key: 'poids_8kg', id: 'chk-eq-weight', label: 'Poids 4–10 kg' },
+  { key: 'corde_a_sauter', id: 'chk-eq-corde', label: 'Corde à sauter' },
 ];
 
 const RYTHME_OPTIONS: { value: WorkoutConfig['rythme']; id: string; title: string; label: string }[] = [
@@ -97,7 +97,7 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
         <>
         <div className="relative flex flex-col gap-2.5">
           <span className={sectionLabel}>Matériel</span>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {EQUIPMENT_OPTIONS.map(option => {
               const selected = config.equipment[option.key];
               return (
@@ -106,12 +106,13 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
                   id={option.id}
                   aria-pressed={selected}
                   onClick={() => handleEquipmentChange(option.key)}
-                  className={`h-11 px-4 rounded-full font-semibold text-[15px] flex items-center gap-1.5 ${
-                    selected ? 'bg-cream text-ink cursor-pointer' : `${outlineButton}`
+                  className={`h-11 pl-4 pr-3 rounded-full font-semibold text-[15px] flex items-center justify-between gap-1.5 border-[1.5px] ${
+                    selected ? 'bg-cream text-ink border-cream cursor-pointer' : outlineButton
                   }`}
                 >
-                  {selected && <Check className="w-4 h-4" strokeWidth={3} />}
                   {option.label}
+                  {/* The tick always keeps its place so checking a chip doesn't move the text */}
+                  <Check className={`w-4 h-4 shrink-0 ${selected ? '' : 'invisible'}`} strokeWidth={3} />
                 </button>
               );
             })}

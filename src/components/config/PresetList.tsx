@@ -1,7 +1,7 @@
 import { ChevronRight } from 'lucide-react';
 import { PRESET_SESSIONS, PresetSession, presetEquipment } from '../../sessions';
 
-const EQUIPMENT_LABELS = { chaise: 'Chaise', poids_8kg: 'Poids 8 kg', corde_a_sauter: 'Corde' } as const;
+const EQUIPMENT_LABELS = { chaise: 'Chaise', poids_8kg: 'Poids 4–10 kg', corde_a_sauter: 'Corde à sauter' } as const;
 
 // Ready-made sessions; tapping one opens its summary.
 export function PresetList({ onStart }: { onStart: (preset: PresetSession) => void }) {

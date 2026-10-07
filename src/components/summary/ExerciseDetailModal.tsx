@@ -4,7 +4,7 @@ import { useBackHandler } from '../../hooks/useBackHandler';
 
 const EQUIPMENT_LABELS: Record<Exercise['equipmentRequired'][number], string> = {
   chaise: 'Chaise',
-  poids_8kg: 'Poids 8 kg',
+  poids_8kg: 'Poids 4–10 kg',
   corde_a_sauter: 'Corde à sauter',
 };
 
