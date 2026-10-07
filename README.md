@@ -11,7 +11,7 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Matériel** : sans matériel, chaise, poids de 8 kg, corde à sauter.
 - **Trois rythmes** : doux (20 s / 40 s), équilibré (30 s / 30 s, par défaut) ou intense (40 s / 20 s).
 - **Structure complète** : échauffement progressif (de la mobilité aux sautillements, sans répétition), un ou deux circuits courts (8 exercices au plus, 3 ou 4 tours ; les séances longues ont deux blocs plutôt qu'un circuit sans fin), finisher cardio et sauts, retour au calme avec étirements guidés.
-- **Déjà échauffé** : après un footing, on saute l'échauffement ; la séance garde sa durée, le circuit prend le temps libéré.
+- **Ne pas inclure d'échauffement** : après un footing par exemple ; la séance garde sa durée, le circuit prend le temps libéré.
 - **Ciblage coureur** : gainage abdominal, endurance des mollets, adducteurs.
 - **Minuteur guidé** : chrono géant lisible au sol, fond brique pendant l'effort et vert pendant la récupération.
 - **Guidage vocal** : annonce du prochain exercice et de sa consigne pendant les pauses, décompte « 3, 2, 1 » avant de repartir, « encore dix secondes », « change de côté ». Bips et voix réglables séparément.
