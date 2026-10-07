@@ -31,7 +31,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 ### Séances
 - [x] Six séances prédéfinies, exercices fixes dans un ordre fixe
 - [ ] Programme sur plusieurs semaines (enchaînement de séances selon la phase de préparation)
-- [ ] Historique des séances faites
+- [x] Historique des séances terminées, avec le nombre de séances des 7 derniers jours sur l'accueil
 - [ ] Créer ses propres séances (exercices et ordre choisis) et les enregistrer
 
 ### Préférences

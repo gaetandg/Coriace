@@ -1,4 +1,5 @@
 import { WorkoutConfig } from '../types';
+import { plural } from './HistoryScreen';
 import { primaryButton } from '../lib/ui';
 import { LaneArcs } from './Logo';
 
@@ -6,10 +7,12 @@ interface CompletedScreenProps {
   durationMinutes: number;
   exerciseCount: number;
   rythme: WorkoutConfig['rythme'];
+  recentCount: number; // sessions in the last 7 days, this one included
   onRestart: () => void;
+  onOpenHistory: () => void;
 }
 
-export function CompletedScreen({ durationMinutes, exerciseCount, rythme, onRestart }: CompletedScreenProps) {
+export function CompletedScreen({ durationMinutes, exerciseCount, rythme, recentCount, onRestart, onOpenHistory }: CompletedScreenProps) {
   const stats = [
     { value: String(durationMinutes), label: 'minutes' },
     { value: String(exerciseCount), label: 'exercices' },
@@ -23,7 +26,7 @@ export function CompletedScreen({ durationMinutes, exerciseCount, rythme, onRest
       <div className="relative mt-[120px] flex flex-col gap-3">
         <h1 className="font-display font-extrabold text-[56px] leading-[0.95] tracking-[-0.04em]">Séance<br />terminée</h1>
         <p className="text-lg leading-relaxed text-sand max-w-[310px]">
-          Bien joué. Vise deux séances par semaine pendant ta préparation.
+          Bien joué. {plural(recentCount, 'séance')} les 7 derniers jours.
         </p>
       </div>
 
@@ -36,9 +39,14 @@ export function CompletedScreen({ durationMinutes, exerciseCount, rythme, onRest
         ))}
       </div>
 
-      <button id="btn-completed-reset" onClick={onRestart} className={`relative mt-auto w-full ${primaryButton}`}>
-        Retour à l'accueil
-      </button>
+      <div className="relative mt-auto flex flex-col gap-2.5">
+        <button onClick={onOpenHistory} className="h-12 font-semibold underline underline-offset-4 cursor-pointer">
+          Voir l'historique
+        </button>
+        <button id="btn-completed-reset" onClick={onRestart} className={`w-full ${primaryButton}`}>
+          Retour à l'accueil
+        </button>
+      </div>
     </div>
   );
 }

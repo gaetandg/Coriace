@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { generateWorkout } from '../workoutGenerator';
 import { SoundSettings, WorkoutConfig, WorkoutInterval } from '../types';
 import { SessionMode, loadPreferences, savePreferences } from '../lib/preferences';
+import { HistoryEntry, addHistoryEntry, clearHistory, loadHistory } from '../lib/history';
 import { PresetSession, buildPresetWorkout } from '../sessions';
 import { EXERCISE_DATABASE } from '../exercises';
 import { getBlockSteps, groupPlan } from '../lib/plan';
@@ -26,6 +27,7 @@ export function useWorkoutSession(notify: (message: string) => void) {
   const [mode, setMode] = useState<SessionMode>(initialPreferences.mode);
   // The ready-made session being run, or null for a custom one.
   const [activePreset, setActivePreset] = useState<PresetSession | null>(null);
+  const [history, setHistory] = useState<HistoryEntry[]>(loadHistory);
   const [intervals, setIntervals] = useState<WorkoutInterval[]>([]);
   const [currentIntervalIndex, setCurrentIntervalIndex] = useState<number>(0);
   const [secondsRemaining, setSecondsRemaining] = useState<number>(30);
@@ -227,6 +229,14 @@ export function useWorkoutSession(notify: (message: string) => void) {
       setWorkoutState('completed');
       setIsPlaying(false);
       playCue(sessionEndCue());
+      const plan = groupPlan(intervals);
+      setHistory(addHistoryEntry({
+        name: activePreset?.name ?? 'Séance sur mesure',
+        presetId: activePreset?.id,
+        minutes: plannedMinutes,
+        rythme: config.rythme,
+        exerciseCount: plan.circuitExercises.length + plan.finishers.length,
+      }));
     }
   };
 
@@ -318,6 +328,11 @@ export function useWorkoutSession(notify: (message: string) => void) {
     activePreset,
     plannedMinutes,
     handleStartPreset,
+    history,
+    clearHistory: () => {
+      clearHistory();
+      setHistory([]);
+    },
     workoutState,
     intervals,
     currentIntervalIndex,

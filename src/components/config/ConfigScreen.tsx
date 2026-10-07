@@ -4,6 +4,8 @@ import { EXERCISE_DATABASE } from '../../exercises';
 import { EXERCISE_GROUPS } from '../../lib/groups';
 import { EquipmentKey, SessionMode, WorkoutSession } from '../../hooks/useWorkoutSession';
 import { PresetList } from './PresetList';
+import { RecentActivity } from '../RecentActivity';
+import { sessionsInLastDays } from '../../lib/history';
 import { Exercise, WorkoutConfig } from '../../types';
 import { ExerciseDetailModal } from '../summary/ExerciseDetailModal';
 import { outlineButton, primaryButton, sectionLabel, segmentedOption, segmentedTrack } from '../../lib/ui';
@@ -28,7 +30,7 @@ const MODE_OPTIONS: { value: SessionMode; label: string }[] = [
   { value: 'preset', label: 'Séances prédéfinies' },
 ];
 
-export function ConfigScreen({ session }: { session: WorkoutSession }) {
+export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSession; onOpenHistory: () => void }) {
   const {
     config,
     setConfig,
@@ -55,6 +57,10 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
       <h1 className="relative mt-1.5 font-display font-extrabold text-[44px] leading-none tracking-[-0.03em]">
         Prépare<br />ta séance
       </h1>
+
+      {session.history.length > 0 && (
+        <RecentActivity count={sessionsInLastDays(session.history, 7)} onOpen={onOpenHistory} />
+      )}
 
       <div className={`relative ${segmentedTrack}`}>
         {MODE_OPTIONS.map(option => (

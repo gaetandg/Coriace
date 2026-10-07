@@ -1,7 +1,7 @@
 import { Volume2, VolumeX } from 'lucide-react';
 import { Logo } from './Logo';
 
-export type AppTab = 'workout' | 'guide';
+export type AppTab = 'workout' | 'guide' | 'history';
 
 interface HeaderProps {
   activeTab: AppTab;

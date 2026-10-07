@@ -8,6 +8,8 @@ import { PlayerScreen } from './components/player/PlayerScreen';
 import { CompletedScreen } from './components/CompletedScreen';
 import { SoundSheet } from './components/SoundSheet';
 import { useBackHandler } from './hooks/useBackHandler';
+import { HistoryScreen } from './components/HistoryScreen';
+import { sessionsInLastDays } from './lib/history';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<AppTab>('workout');
@@ -31,6 +33,12 @@ export default function App() {
     notify('Séance en pause. Touche « Quitter » pour l\'arrêter.');
   });
   useBackHandler(activeTab === 'guide', () => setActiveTab('workout'));
+  // Leaving the history after a session goes home rather than back to the completion screen.
+  const closeHistory = () => {
+    setActiveTab('workout');
+    if (workoutState === 'completed') session.resetWorkout();
+  };
+  useBackHandler(activeTab === 'history', closeHistory);
   useBackHandler(showSound, () => setShowSound(false));
 
   // Rest turns the screen green so effort and recovery read at a glance from the floor.
@@ -48,9 +56,15 @@ export default function App() {
 
         {activeTab === 'guide' ? (
           <GuideScreen onOpenWorkout={() => setActiveTab('workout')} />
+        ) : activeTab === 'history' ? (
+          <HistoryScreen
+            history={session.history}
+            onBack={closeHistory}
+            onClear={session.clearHistory}
+          />
         ) : (
           <>
-            {workoutState === 'config' && <ConfigScreen session={session} />}
+            {workoutState === 'config' && <ConfigScreen session={session} onOpenHistory={() => setActiveTab('history')} />}
 
             {workoutState === 'summary' && summaryPlanGroups && (
               <SummaryScreen
@@ -74,7 +88,9 @@ export default function App() {
                 durationMinutes={session.plannedMinutes}
                 exerciseCount={summaryPlanGroups.circuitExercises.length + summaryPlanGroups.finishers.length}
                 rythme={config.rythme}
+                recentCount={sessionsInLastDays(session.history, 7)}
                 onRestart={session.resetWorkout}
+                onOpenHistory={() => setActiveTab('history')}
               />
             )}
           </>
