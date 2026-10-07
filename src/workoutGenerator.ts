@@ -194,14 +194,20 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
     mainMinutes = circuitLength * numRounds;
   }
 
+  // Each change of round or block adds 30 s of rest: take that time off the warm-up and
+  // finisher so the session lasts the duration that was asked for.
+  const transitions = numBlocksOpt === 2 ? (numRounds1 - 1) + (numRounds2 - 1) + 1 : numRounds - 1;
+  const transitionMinutes = Math.floor((transitions * 30) / 60);
+
   // Recalculate warmup and finisher to fit exactly with the remainder
-  const leftoverMinutes = T - mainMinutes;
+  const leftoverMinutes = Math.max(2, T - mainMinutes - transitionMinutes);
   warmupMinutes = Math.max(2, Math.ceil(leftoverMinutes * 0.6));
   finisherMinutes = leftoverMinutes - warmupMinutes;
   if (finisherMinutes < 1) {
     warmupMinutes--;
-    finisherMinutes = T - mainMinutes - warmupMinutes;
+    finisherMinutes = leftoverMinutes - warmupMinutes;
   }
+  const totalBlocks = warmupMinutes + mainMinutes + finisherMinutes;
 
   // We want to construct circuit exercises with NO duplicates if possible
   const usedIds = new Set<string>();
@@ -249,7 +255,7 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
   let intervalCounter = 0;
 
   // Let's compile the intervals.
-  for (let blockIdx = 0; blockIdx < T; blockIdx++) {
+  for (let blockIdx = 0; blockIdx < totalBlocks; blockIdx++) {
     let stage: WorkoutStage;
     let exercise: Exercise;
     let roundNumber: number | undefined;
@@ -376,7 +382,7 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
     });
 
     // Rest Interval - Only add if NOT the very last block of the session
-    if (blockIdx < T - 1) {
+    if (blockIdx < totalBlocks - 1) {
       let restTitle = 'Récupération';
       let restDescription = 'Respire et bois une gorgée si besoin.';
       if (stage === 'warmup') {

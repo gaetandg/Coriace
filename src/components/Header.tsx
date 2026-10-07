@@ -6,11 +6,11 @@ export type AppTab = 'workout' | 'guide';
 interface HeaderProps {
   activeTab: AppTab;
   onTabChange: (tab: AppTab) => void;
-  soundEnabled: boolean;
-  onToggleSound: () => void;
+  soundOn: boolean;
+  onOpenSound: () => void;
 }
 
-export function Header({ activeTab, onTabChange, soundEnabled, onToggleSound }: HeaderProps) {
+export function Header({ activeTab, onTabChange, soundOn, onOpenSound }: HeaderProps) {
   return (
     <header className="relative flex items-center justify-between">
       <div className="flex items-center gap-2.5">
@@ -28,11 +28,11 @@ export function Header({ activeTab, onTabChange, soundEnabled, onToggleSound }: 
         </button>
         <button
           id="btn-toggle-sound"
-          onClick={onToggleSound}
-          aria-label={soundEnabled ? 'Couper le son' : 'Activer le son'}
-          className={`w-11 h-11 rounded-full flex items-center justify-center ${soundEnabled ? 'border-[1.5px] border-white/55' : 'bg-ink/40'} cursor-pointer`}
+          onClick={onOpenSound}
+          aria-label="Réglages du son"
+          className={`w-11 h-11 rounded-full flex items-center justify-center ${soundOn ? 'border-[1.5px] border-white/55' : 'bg-ink/40'} cursor-pointer`}
         >
-          {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+          {soundOn ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
         </button>
       </div>
     </header>

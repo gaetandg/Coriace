@@ -1,12 +1,20 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { generateWorkout } from '../workoutGenerator';
 import { WorkoutConfig, WorkoutInterval } from '../types';
 import { EXERCISE_DATABASE } from '../exercises';
 import { getBlockSteps, groupPlan } from '../lib/plan';
 import { useBeep } from './useBeep';
+import { useSpeech } from './useSpeech';
+import { useWakeLock } from './useWakeLock';
+import { Cue, intervalStartCue, sessionEndCue, sessionStartCue, tickCue } from '../lib/cues';
 
 export type WorkoutState = 'config' | 'summary' | 'active' | 'completed';
 export type EquipmentKey = keyof WorkoutConfig['equipment'];
+
+export interface SoundSettings {
+  beeps: boolean;
+  voice: boolean;
+}
 
 // Workout configuration, generated plan and player state, with every action on them.
 export function useWorkoutSession(notify: (message: string) => void) {
@@ -29,9 +37,13 @@ export function useWorkoutSession(notify: (message: string) => void) {
   const [currentIntervalIndex, setCurrentIntervalIndex] = useState<number>(0);
   const [secondsRemaining, setSecondsRemaining] = useState<number>(30);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [sound, setSound] = useState<SoundSettings>({ beeps: true, voice: true });
+  // Bumped whenever the countdown must restart from `secondsRemaining` without the interval changing.
+  const [timerRun, setTimerRun] = useState(0);
 
-  const { initAudio, beep: triggerAudioBeep } = useBeep(soundEnabled);
+  const { initAudio, beep: triggerAudioBeep } = useBeep(sound.beeps);
+  const speech = useSpeech(sound.voice);
+  useWakeLock(workoutState === 'active');
 
   // --- INTERVAL & TIMER HOOKS ---
   const activeInterval = useMemo<WorkoutInterval | null>(() => {
@@ -68,40 +80,63 @@ export function useWorkoutSession(notify: (message: string) => void) {
 
   const blockSteps = useMemo(() => getBlockSteps(intervals), [intervals]);
 
-  // Handle ticking timer
+  const playCue = (cue: Cue | null) => {
+    if (!cue) return;
+    const voiceOn = sound.voice && speech.supported;
+    if (cue.beep) triggerAudioBeep(cue.beep.frequency, cue.beep.duration);
+    if (cue.say && voiceOn) speech.speak(cue.say);
+    else if (cue.fallbackBeep) triggerAudioBeep(cue.fallbackBeep.frequency, cue.fallbackBeep.duration);
+  };
+
+  // Countdown: derived from an end timestamp so it stays accurate even if ticks are delayed.
+  const secondsRef = useRef(secondsRemaining);
+  secondsRef.current = secondsRemaining;
   useEffect(() => {
-    if (!isPlaying || workoutState !== 'active' || intervals.length === 0) return;
+    if (!isPlaying || workoutState !== 'active') return;
+    const endAt = Date.now() + secondsRef.current * 1000;
+    const timer = window.setInterval(() => {
+      setSecondsRemaining(Math.max(0, Math.ceil((endAt - Date.now()) / 1000)));
+    }, 200);
+    return () => window.clearInterval(timer);
+  }, [isPlaying, workoutState, currentIntervalIndex, timerRun]);
 
-    const timer = setInterval(() => {
-      setSecondsRemaining(prev => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          // Transition to next interval
-          handleNextInterval();
-          return 0;
-        }
-
-        const nextSec = prev - 1;
-        // BEEP MANAGEMENT: Play short beep on 3, 2, 1 seconds left
-        if (soundEnabled && (nextSec === 3 || nextSec === 2 || nextSec === 1)) {
-          triggerAudioBeep(880, 0.15);
-        }
-
-        return nextSec;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [isPlaying, workoutState, currentIntervalIndex, soundEnabled, intervals]);
-
-  // Turning sound on plays a beep so the runner can check the volume.
-  const toggleSound = () => {
-    const next = !soundEnabled;
-    setSoundEnabled(next);
-    if (next) {
-      initAudio();
-      triggerAudioBeep(1200, 0.4, true);
+  // Cues and moving on: each interval start and each second is handled once.
+  const startedIndexRef = useRef(-1);
+  const lastTickRef = useRef('');
+  useEffect(() => {
+    if (workoutState !== 'active' || !isPlaying || !activeInterval) return;
+    const tickKey = `${currentIntervalIndex}:${secondsRemaining}`;
+    if (startedIndexRef.current !== currentIntervalIndex) {
+      startedIndexRef.current = currentIntervalIndex;
+      lastTickRef.current = tickKey;
+      playCue(intervalStartCue(intervals, currentIntervalIndex));
+      return;
     }
+    if (lastTickRef.current === tickKey) return;
+    lastTickRef.current = tickKey;
+    if (secondsRemaining <= 0) {
+      handleNextInterval();
+    } else {
+      playCue(tickCue(activeInterval, secondsRemaining));
+    }
+  }, [workoutState, isPlaying, currentIntervalIndex, secondsRemaining]);
+
+  const setSoundOption = (key: keyof SoundSettings, value: boolean) => {
+    setSound(prev => ({ ...prev, [key]: value }));
+    if (key === 'voice' && !value) speech.cancel();
+  };
+
+  // Plays whatever is switched on so the runner can check the volume.
+  const testSound = () => {
+    initAudio();
+    if (sound.beeps) triggerAudioBeep(1200, 0.4);
+    if (sound.voice) speech.speak('Le son fonctionne.');
+  };
+
+  const goToInterval = (index: number) => {
+    setCurrentIntervalIndex(index);
+    setSecondsRemaining(intervals[index].duration);
+    setTimerRun(run => run + 1);
   };
 
   // --- NAVIGATION & CONTROLS ---
@@ -118,11 +153,10 @@ export function useWorkoutSession(notify: (message: string) => void) {
     initAudio();
     setWorkoutState('active');
     setIsPlaying(true);
-
-    // Play starting high beep
-    setTimeout(() => {
-      triggerAudioBeep(1320, 0.6);
-    }, 100);
+    setTimerRun(run => run + 1);
+    // Spoken inside the tap: iOS only allows speech that starts from a user gesture.
+    startedIndexRef.current = 0;
+    playCue(sessionStartCue(intervals));
   };
 
   const handleBackToConfig = () => {
@@ -199,49 +233,39 @@ export function useWorkoutSession(notify: (message: string) => void) {
     });
   };
 
+  // The start cue of the new interval is played by the cue effect.
   const handleNextInterval = () => {
     if (currentIntervalIndex < intervals.length - 1) {
-      const nextIdx = currentIntervalIndex + 1;
-      setCurrentIntervalIndex(nextIdx);
-      setSecondsRemaining(intervals[nextIdx].duration);
-      // Play high change-of-stage beep
-      triggerAudioBeep(1200, 0.5);
+      goToInterval(currentIntervalIndex + 1);
     } else {
-      // Workout Completed!
       setWorkoutState('completed');
       setIsPlaying(false);
-      triggerAudioBeep(1500, 0.8);
+      playCue(sessionEndCue());
     }
   };
 
   const handlePrevInterval = () => {
-    if (currentIntervalIndex > 0) {
-      const prevIdx = currentIntervalIndex - 1;
-      setCurrentIntervalIndex(prevIdx);
-      setSecondsRemaining(intervals[prevIdx].duration);
-      triggerAudioBeep(980, 0.3);
-    }
+    if (currentIntervalIndex > 0) goToInterval(currentIntervalIndex - 1);
   };
 
   const handleJumpToBlock = (blockIdx: number) => {
     initAudio();
     const targetIdx = blockIdx * 2;
-    if (targetIdx < intervals.length) {
-      setCurrentIntervalIndex(targetIdx);
-      setSecondsRemaining(intervals[targetIdx].duration);
-      triggerAudioBeep(1100, 0.25);
-    }
+    if (targetIdx < intervals.length) goToInterval(targetIdx);
   };
 
   const togglePlayPause = () => {
     initAudio();
+    if (isPlaying) speech.cancel();
     setIsPlaying(prev => !prev);
     triggerAudioBeep(1000, 0.15);
   };
 
   const resetWorkout = () => {
+    speech.cancel();
     setIsPlaying(false);
     setCurrentIntervalIndex(0);
+    startedIndexRef.current = -1;
     setWorkoutState('config');
   };
 
@@ -305,8 +329,10 @@ export function useWorkoutSession(notify: (message: string) => void) {
     currentIntervalIndex,
     secondsRemaining,
     isPlaying,
-    soundEnabled,
-    toggleSound,
+    sound,
+    setSoundOption,
+    testSound,
+    speechSupported: speech.supported,
     activeInterval,
     progressMetrics,
     blockSteps,

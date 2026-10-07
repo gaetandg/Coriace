@@ -6,10 +6,12 @@ import { ConfigScreen } from './components/config/ConfigScreen';
 import { SummaryScreen } from './components/summary/SummaryScreen';
 import { PlayerScreen } from './components/player/PlayerScreen';
 import { CompletedScreen } from './components/CompletedScreen';
+import { SoundSheet } from './components/SoundSheet';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<AppTab>('workout');
   const [feedbackMessage, setFeedbackMessage] = useState<string>('');
+  const [showSound, setShowSound] = useState(false);
 
   const notify = (message: string) => {
     setFeedbackMessage(message);
@@ -28,8 +30,8 @@ export default function App() {
         <Header
           activeTab={activeTab}
           onTabChange={setActiveTab}
-          soundEnabled={session.soundEnabled}
-          onToggleSound={session.toggleSound}
+          soundOn={session.sound.beeps || (session.sound.voice && session.speechSupported)}
+          onOpenSound={() => setShowSound(true)}
         />
 
         {activeTab === 'guide' ? (
@@ -63,6 +65,16 @@ export default function App() {
           </>
         )}
       </div>
+
+      {showSound && (
+        <SoundSheet
+          sound={session.sound}
+          speechSupported={session.speechSupported}
+          onChange={session.setSoundOption}
+          onTest={session.testSound}
+          onClose={() => setShowSound(false)}
+        />
+      )}
 
       {feedbackMessage && (
         <div role="status" className="fixed left-1/2 -translate-x-1/2 bottom-24 z-50 max-w-[90vw] bg-ink text-cream font-semibold text-sm px-5 py-3 rounded-full shadow-lg">

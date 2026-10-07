@@ -14,11 +14,12 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 ## À faire
 
 ### Guidage audio
-- [ ] Voix qui annonce le prochain exercice pendant les pauses (synthèse vocale du navigateur, voix française)
-- [ ] Comptes à rebours vocaux avant le début et avant la fin de chaque exercice
-- [ ] Réglages pour activer ou couper chaque élément sonore
-- [ ] Garder l'écran allumé pendant la séance (Wake Lock API)
-- [ ] Corriger la durée réelle des séances : les 30 s ajoutées à chaque changement de tour font dépasser la durée choisie (une séance de 45 min dure environ 47 min)
+- [x] Voix qui annonce le prochain exercice et sa consigne pendant les pauses
+- [x] Décompte vocal « 3, 2, 1 » avant chaque exercice, bips avant la fin, « encore dix secondes », « change de côté »
+- [x] Réglages séparés pour les bips et la voix
+- [x] Écran maintenu allumé pendant la séance
+- [x] Durée réelle des séances corrigée (à 30 s près)
+- [ ] Choix de la voix et du débit, si les voix par défaut ne plaisent pas
 
 ### Exercices
 - [x] Classer les exercices par groupe sur l'écran de préparation
@@ -38,4 +39,4 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 
 ## Problèmes connus
 
-- En mode développement uniquement, le minuteur peut sauter un intervalle et doubler les bips (effet du `StrictMode` de React sur la logique du minuteur). À corriger lors du travail sur le guidage audio.
+- Sur iPhone en PWA, le minuteur et la voix s'arrêtent si l'écran se verrouille (l'écran reste allumé pendant la séance, mais un verrouillage manuel coupe tout). La version native (Capacitor) règlera ce point.

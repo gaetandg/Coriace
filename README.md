@@ -11,7 +11,10 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Deux rythmes** : équilibré (30 s / 30 s) ou intense (40 s / 20 s).
 - **Structure complète** : échauffement, circuit principal, finisher.
 - **Ciblage coureur** : gainage abdominal, endurance des mollets, adducteurs.
-- **Minuteur guidé** : chrono géant lisible au sol, fond brique pendant l'effort et vert pendant la récupération, bips sur les 3 dernières secondes.
+- **Minuteur guidé** : chrono géant lisible au sol, fond brique pendant l'effort et vert pendant la récupération.
+- **Guidage vocal** : annonce du prochain exercice et de sa consigne pendant les pauses, décompte « 3, 2, 1 » avant de repartir, « encore dix secondes », « change de côté ». Bips et voix réglables séparément.
+- **Écran maintenu allumé** pendant la séance (si le navigateur le permet).
+- **Durée respectée** : la séance dure le temps choisi, à 30 secondes près.
 - **Guide des exercices** : description, consignes clés et conseils pour chaque mouvement.
 - **Installable (PWA)** : s'ajoute à l'écran d'accueil et fonctionne hors ligne.
 
@@ -21,7 +24,7 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - [Vite](https://vitejs.dev/)
 - [Tailwind CSS 4](https://tailwindcss.com/)
 - [Lucide](https://lucide.dev/) pour les icônes
-- Web Audio API pour les signaux sonores
+- Web Audio API pour les bips, Web Speech API pour la voix, Screen Wake Lock API pour garder l'écran allumé
 - [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) pour l'installation et le hors ligne
 
 ## Lancer le projet en local
@@ -50,8 +53,10 @@ L'application est alors disponible sur http://localhost:3000.
 src/
 ├── App.tsx                    # Assemble l'en-tête, les écrans et le pied de page
 ├── hooks/
-│   ├── useWorkoutSession.ts   # État de la séance : configuration, plan, minuteur, actions
-│   └── useBeep.ts             # Bips sonores (Web Audio API)
+│   ├── useWorkoutSession.ts   # État de la séance : configuration, plan, minuteur, annonces, actions
+│   ├── useBeep.ts             # Bips sonores (Web Audio API)
+│   ├── useSpeech.ts           # Voix française (Web Speech API)
+│   └── useWakeLock.ts         # Écran maintenu allumé
 ├── components/
 │   ├── Header.tsx, Logo.tsx   # En-tête, logo et motif de couloirs
 │   ├── GuideScreen.tsx        # Onglet « Guide »
@@ -59,7 +64,7 @@ src/
 │   ├── config/                # Accueil (réglages) et choix des exercices
 │   ├── summary/               # Résumé du plan et fiche détaillée d'un exercice
 │   └── player/                # Séance en cours : minuteur, prochaine étape, commandes, déroulé
-├── lib/                       # Utilitaires (regroupement du plan, formatage, classes d'interface)
+├── lib/                       # Annonces de séance (cues.ts), groupes d'exercices, plan, formatage, classes d'interface
 ├── exercises.ts               # Base de données des exercices
 ├── workoutGenerator.ts        # Génération de la séance (échauffement, circuit, finisher)
 ├── types.ts                   # Types partagés
