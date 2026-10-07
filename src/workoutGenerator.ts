@@ -263,8 +263,9 @@ interface MinuteSlot {
   isBlockTransition?: boolean;
 }
 
+// Long warm-ups go round the moves again; the id names the move, so its animation follows.
 const warmupExercise = (index: number): Exercise => ({
-  id: `warmup_${index}`,
+  id: `warmup_${index % WARM_UP_EXERCISES.length}`,
   equipmentRequired: [],
   ...WARM_UP_EXERCISES[index % WARM_UP_EXERCISES.length],
 });
