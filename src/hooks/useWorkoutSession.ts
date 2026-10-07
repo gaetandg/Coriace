@@ -175,7 +175,7 @@ export function useWorkoutSession(notify: (message: string) => void) {
 
   const handleRegeneratePlan = () => {
     initAudio();
-    const generated = generateWorkout(config);
+    const generated = generateWorkout(config, intervals);
     setIntervals(generated);
     setCurrentIntervalIndex(0);
     setSecondsRemaining(generated[0]?.duration || 30);

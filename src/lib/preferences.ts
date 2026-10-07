@@ -33,7 +33,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
     selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id),
   },
   sound: { beeps: true, voice: true },
-  mode: 'preset',
+  mode: 'custom',
 };
 
 const DURATIONS = [15, 20, 30, 45, 60];

@@ -26,12 +26,13 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Classer les exercices par groupe sur l'écran de préparation
 - [x] Première revue : ajout fessiers et ischios (pont fessier, abduction, soulevé de terre sur une jambe), fente bulgare, gainage latéral, dead bug ; retrait des crunchs et sit-ups
 - [ ] Revue approfondie avec un regard de coach ou de kiné : dosage, progressions, variantes plus faciles et plus dures
-- [x] Circuits équilibrés : mollets, gainage, adducteurs et fessiers d'abord, en alternant les zones
+- [x] Circuits équilibrés et variés : groupes clés garantis, ordre aléatoire, deux exercices max par groupe ; « Régénérer » évite la séance précédente
 
 ### Séances
 - [x] Six séances prédéfinies, exercices fixes dans un ordre fixe
 - [ ] Programme sur plusieurs semaines (enchaînement de séances selon la phase de préparation)
 - [ ] Historique des séances faites
+- [ ] Créer ses propres séances (exercices et ordre choisis) et les enregistrer
 
 ### Préférences
 - [x] Se souvenir des préférences d'une fois sur l'autre (matériel, rythme, durée, exercices cochés, son)

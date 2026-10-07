@@ -17,7 +17,8 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Écran maintenu allumé** pendant la séance (si le navigateur le permet).
 - **Durée respectée** : la séance dure le temps choisi, à 30 secondes près.
 - **Guide des exercices** : description, consignes clés et conseils pour chaque mouvement.
-- **Circuits équilibrés** : chaque circuit pioche d'abord dans les mollets, le gainage, les adducteurs et les fessiers.
+- **Circuits équilibrés et variés** : chaque circuit contient au moins un exercice de mollets, d'adducteurs, de fessiers et de gainage, au plus deux par groupe, sans deux exercices du même groupe à la suite. « Régénérer » évite les exercices de la séance précédente.
+- **Bouton retour du téléphone** : revient à l'écran précédent ; pendant une séance, il met en pause au lieu de quitter.
 - **Préférences retenues** : matériel, rythme, durée, exercices cochés et réglages du son sont gardés d'une visite à l'autre (dans le navigateur).
 - **Installable (PWA)** : s'ajoute à l'écran d'accueil et fonctionne hors ligne.
 

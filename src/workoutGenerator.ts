@@ -67,7 +67,10 @@ function shuffle<T>(array: T[]): T[] {
   return result;
 }
 
-export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
+// `previous` is the session being replaced: its exercises are avoided while others remain,
+// so "Régénérer" gives a visibly different session.
+export function generateWorkout(config: WorkoutConfig, previous: WorkoutInterval[] = []): WorkoutInterval[] {
+  const avoidIds = new Set(previous.filter(i => i.stage !== 'warmup' && i.exercise).map(i => i.exercise!.id));
   const { equipment, rythme } = config;
   const T = config.durationMinutes || 30; // Chosen total duration in minutes
 
@@ -207,35 +210,26 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
   const circuit2Exercises: Exercise[] = [];
 
   if (numBlocksOpt === 2) {
-    const c1 = createCircuitExercises(circuitLength1, pools, usedIds, availableWorkoutExercises);
+    const c1 = createCircuitExercises(circuitLength1, pools, usedIds, avoidIds, availableWorkoutExercises);
     circuit1Exercises.push(...c1);
-    const c2 = createCircuitExercises(circuitLength2, pools, usedIds, availableWorkoutExercises);
+    const c2 = createCircuitExercises(circuitLength2, pools, usedIds, avoidIds, availableWorkoutExercises);
     circuit2Exercises.push(...c2);
   } else {
-    const c = createCircuitExercises(circuitLength, pools, usedIds, availableWorkoutExercises);
+    const c = createCircuitExercises(circuitLength, pools, usedIds, avoidIds, availableWorkoutExercises);
     circuitExercises.push(...c);
   }
 
-  // 2. Select finisher exercises from available/selected database
-  const finisherExercises: Exercise[] = [];
-
-  const cardioFinisher = availableWorkoutExercises.find(ex => ex.id === 'jumping_jacks') || 
-                         availableWorkoutExercises.find(ex => ex.category === 'general') || 
-                         availableWorkoutExercises[0];
-  
-  let abdosFinisher = availableWorkoutExercises.find(ex => ex.id === 'plank_commando') || 
-                      availableWorkoutExercises.find(ex => ex.category === 'abdos') || 
-                      availableWorkoutExercises[1 % availableWorkoutExercises.length];
-
-  let finalBurnerFinisher = availableWorkoutExercises.find(ex => ex.id === 'wall_sit') || 
-                            availableWorkoutExercises.find(ex => ex.category === 'general') || 
-                            availableWorkoutExercises[2 % availableWorkoutExercises.length];
-
-  finisherExercises.push(cardioFinisher, abdosFinisher, finalBurnerFinisher);
-
+  // 2. Finisher: cardio, then thighs, then core, drawn among exercises not used in the circuit.
   const selectedFinishers: Exercise[] = [];
+  const finisherGroups: ExerciseGroup[] = ['cardio', 'cuisses', 'gainage'];
   for (let f = 0; f < finisherMinutes; f++) {
-    selectedFinishers.push(finisherExercises[f % finisherExercises.length]);
+    const group = finisherGroups[f % finisherGroups.length];
+    const exercise =
+      pickFromGroup(pools, group, usedIds, avoidIds) ??
+      availableWorkoutExercises.find(ex => !usedIds.has(ex.id)) ??
+      availableWorkoutExercises[f % availableWorkoutExercises.length];
+    selectedFinishers.push(exercise);
+    usedIds.add(exercise.id);
   }
 
   const blocks: CircuitBlock[] = numBlocksOpt === 2
@@ -397,37 +391,90 @@ function findBestCircuitConfig(M: number): { circuitLength: number; numRounds: n
 /**
  * Distributes exercises across legs, arms, and abs targets.
  */
-// Order in which groups are drawn into a circuit: the runner-specific groups come first and
-// come back more often, and body areas alternate from one exercise to the next.
-const CIRCUIT_GROUP_SEQUENCE: ExerciseGroup[] = [
-  'mollets', 'gainage', 'adducteurs', 'fessiers', 'cuisses',
-  'mollets', 'gainage', 'adducteurs', 'haut_du_corps', 'fessiers', 'cardio',
-];
+// Every circuit includes these groups when they have selected exercises.
+const KEY_GROUPS: ExerciseGroup[] = ['mollets', 'adducteurs', 'fessiers', 'gainage'];
+
+// How likely each group is to fill the remaining places of a circuit.
+const GROUP_WEIGHTS: Record<ExerciseGroup, number> = {
+  mollets: 3, gainage: 3, adducteurs: 2, fessiers: 2, cuisses: 2, haut_du_corps: 1, cardio: 1,
+};
+
+const MAX_PER_GROUP = 2;
+
+const randomItem = <T,>(items: T[]): T => items[Math.floor(Math.random() * items.length)];
+
+// A random unused exercise of the group, preferring ones not in the session being replaced.
+function pickFromGroup(
+  pools: Map<ExerciseGroup, Exercise[]>,
+  group: ExerciseGroup,
+  usedIds: Set<string>,
+  avoidIds: Set<string>
+): Exercise | undefined {
+  const unused = (pools.get(group) ?? []).filter(ex => !usedIds.has(ex.id));
+  const fresh = unused.filter(ex => !avoidIds.has(ex.id));
+  return fresh.length > 0 ? randomItem(fresh) : unused.length > 0 ? randomItem(unused) : undefined;
+}
+
+// Shuffles so that two exercises of the same group never follow each other when avoidable.
+function spreadGroups(exercises: Exercise[]): Exercise[] {
+  const remaining = shuffle(exercises);
+  const result: Exercise[] = [];
+  while (remaining.length > 0) {
+    const previousGroup = result[result.length - 1]?.group;
+    // Take from the most represented groups first so the last places don't end up doubled.
+    const counts = new Map<ExerciseGroup, number>();
+    remaining.forEach(ex => counts.set(ex.group, (counts.get(ex.group) ?? 0) + 1));
+    const candidates = remaining.filter(ex => ex.group !== previousGroup);
+    const pool = candidates.length > 0 ? candidates : remaining;
+    const maxCount = Math.max(...pool.map(ex => counts.get(ex.group)!));
+    const next = randomItem(pool.filter(ex => counts.get(ex.group) === maxCount));
+    result.push(next);
+    remaining.splice(remaining.indexOf(next), 1);
+  }
+  return result;
+}
 
 function createCircuitExercises(
   circuitLength: number,
   pools: Map<ExerciseGroup, Exercise[]>,
   usedIds: Set<string>,
+  avoidIds: Set<string>,
   fallbackPool: Exercise[]
 ): Exercise[] {
-  const result: Exercise[] = [];
-  let cursor = 0;
-  while (result.length < circuitLength) {
-    // Walk the sequence to the next group that still has an unused exercise.
-    let chosen: Exercise | undefined;
-    for (let step = 0; step < CIRCUIT_GROUP_SEQUENCE.length && !chosen; step++) {
-      const group = CIRCUIT_GROUP_SEQUENCE[(cursor + step) % CIRCUIT_GROUP_SEQUENCE.length];
-      chosen = pools.get(group)?.find(ex => !usedIds.has(ex.id));
-      if (chosen) cursor = (cursor + step + 1) % CIRCUIT_GROUP_SEQUENCE.length;
-    }
-    // Every selected exercise is used: repeat, preferring ones not yet in this circuit.
-    if (!chosen) {
-      const notInCircuit = fallbackPool.filter(ex => !result.includes(ex));
-      const pool = notInCircuit.length > 0 ? notInCircuit : fallbackPool;
-      chosen = pool[result.length % pool.length];
-    }
-    result.push(chosen);
-    usedIds.add(chosen.id);
+  const chosen: Exercise[] = [];
+  const take = (exercise: Exercise) => {
+    chosen.push(exercise);
+    usedIds.add(exercise.id);
+  };
+
+  // 1. One exercise from each key group, in random order.
+  for (const group of shuffle(KEY_GROUPS)) {
+    if (chosen.length >= circuitLength) break;
+    const exercise = pickFromGroup(pools, group, usedIds, avoidIds);
+    if (exercise) take(exercise);
   }
-  return result;
+
+  // 2. Remaining places: a weighted random group, then a random exercise in it.
+  while (chosen.length < circuitLength) {
+    const withUnused = [...pools.keys()].filter(group => pools.get(group)!.some(ex => !usedIds.has(ex.id)));
+    if (withUnused.length === 0) break;
+    // At most two exercises per group in a circuit while other groups can fill it.
+    const notFull = withUnused.filter(group => chosen.filter(ex => ex.group === group).length < MAX_PER_GROUP);
+    const candidates = notFull.length > 0 ? notFull : withUnused;
+    // Groups that still have exercises not done in the replaced session come first.
+    const withFresh = candidates.filter(group => pools.get(group)!.some(ex => !usedIds.has(ex.id) && !avoidIds.has(ex.id)));
+    const groups = withFresh.length > 0 ? withFresh : candidates;
+    const total = groups.reduce((sum, group) => sum + GROUP_WEIGHTS[group], 0);
+    let ticket = Math.random() * total;
+    const group = groups.find(g => (ticket -= GROUP_WEIGHTS[g]) < 0) ?? groups[groups.length - 1];
+    take(pickFromGroup(pools, group, usedIds, avoidIds)!);
+  }
+
+  // 3. Every selected exercise is used: repeat, preferring ones not yet in this circuit.
+  while (chosen.length < circuitLength) {
+    const notInCircuit = fallbackPool.filter(ex => !chosen.includes(ex));
+    take(randomItem(notInCircuit.length > 0 ? notInCircuit : fallbackPool));
+  }
+
+  return spreadGroups(chosen);
 }

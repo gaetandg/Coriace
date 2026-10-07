@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { Exercise } from '../../types';
+import { useBackHandler } from '../../hooks/useBackHandler';
 
 const EQUIPMENT_LABELS: Record<Exercise['equipmentRequired'][number], string> = {
   chaise: 'Chaise',
@@ -14,6 +15,7 @@ interface ExerciseDetailModalProps {
 
 // Bottom sheet with the full instructions for one exercise.
 export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalProps) {
+  useBackHandler(true, onClose);
   const equipment = exercise.equipmentRequired.length > 0
     ? exercise.equipmentRequired.map(eq => EQUIPMENT_LABELS[eq])
     : ['Sans matériel'];

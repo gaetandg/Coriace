@@ -67,6 +67,39 @@ describe('generateWorkout', () => {
     }
   });
 
+  it('never puts two exercises of the same group in a row inside a circuit', () => {
+    for (let draw = 0; draw < 50; draw++) {
+      const groups = firstRound(generateWorkout(config())).map(i => i.exercise!.group);
+      groups.slice(1).forEach((group, k) => expect(group).not.toBe(groups[k]));
+    }
+  });
+
+  it('keeps at most two exercises of a group in a 30 min circuit', () => {
+    for (let draw = 0; draw < 50; draw++) {
+      const groups = firstRound(generateWorkout(config())).map(i => i.exercise!.group);
+      for (const group of new Set(groups)) expect(groups.filter(g => g === group).length).toBeLessThanOrEqual(2);
+    }
+  });
+
+  it('changes the order of the groups from one draw to the next', () => {
+    const orders = new Set<string>();
+    for (let draw = 0; draw < 20; draw++) {
+      orders.add(firstRound(generateWorkout(config())).map(i => i.exercise!.group).join(','));
+    }
+    expect(orders.size).toBeGreaterThan(5);
+  });
+
+  // Key groups have few exercises (3 for glutes), so a group may have to repeat one.
+  it('regenerates a mostly different circuit', () => {
+    for (let draw = 0; draw < 20; draw++) {
+      const first = generateWorkout(config({ durationMinutes: 30 }));
+      const second = generateWorkout(config({ durationMinutes: 30 }), first);
+      const before = new Set(first.filter(i => i.stage !== 'warmup' && i.exercise).map(i => i.exercise!.id));
+      const repeated = firstRound(second).filter(i => before.has(i.exercise!.id));
+      expect(repeated.length).toBeLessThanOrEqual(2);
+    }
+  });
+
   it('only uses exercises allowed by the equipment', () => {
     const intervals = generateWorkout(config({ equipment: { none: true, chaise: false, poids_8kg: false, corde_a_sauter: false } }));
     const needingEquipment = intervals.filter(i => i.stage === 'main' && i.exercise && i.exercise.equipmentRequired.length > 0);

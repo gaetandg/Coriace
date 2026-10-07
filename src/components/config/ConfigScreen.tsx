@@ -24,8 +24,8 @@ const RYTHME_OPTIONS: { value: WorkoutConfig['rythme']; id: string; title: strin
 const DURATIONS = [15, 20, 30, 45, 60];
 
 const MODE_OPTIONS: { value: SessionMode; label: string }[] = [
-  { value: 'preset', label: 'Séances prédéfinies' },
   { value: 'custom', label: 'Sur mesure' },
+  { value: 'preset', label: 'Séances prédéfinies' },
 ];
 
 export function ConfigScreen({ session }: { session: WorkoutSession }) {

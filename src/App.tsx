@@ -7,6 +7,7 @@ import { SummaryScreen } from './components/summary/SummaryScreen';
 import { PlayerScreen } from './components/player/PlayerScreen';
 import { CompletedScreen } from './components/CompletedScreen';
 import { SoundSheet } from './components/SoundSheet';
+import { useBackHandler } from './hooks/useBackHandler';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<AppTab>('workout');
@@ -20,6 +21,17 @@ export default function App() {
 
   const session = useWorkoutSession(notify);
   const { config, workoutState, activeInterval, summaryPlanGroups } = session;
+
+  // Phone back button, from the deepest level: sheets, guide, then the workout screens.
+  useBackHandler(workoutState === 'summary', session.handleBackToConfig);
+  useBackHandler(workoutState === 'completed', session.resetWorkout);
+  useBackHandler(workoutState === 'active', () => {
+    // Leaving a session by accident would lose it: pause instead.
+    if (session.isPlaying) session.togglePlayPause();
+    notify('Séance en pause. Touche « Quitter » pour l\'arrêter.');
+  });
+  useBackHandler(activeTab === 'guide', () => setActiveTab('workout'));
+  useBackHandler(showSound, () => setShowSound(false));
 
   // Rest turns the screen green so effort and recovery read at a glance from the floor.
   const isBreak = activeTab === 'workout' && workoutState === 'active' && activeInterval?.type === 'rest';
