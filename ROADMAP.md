@@ -48,6 +48,14 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Sans compte : proposer de se connecter en fin de séance pour sauvegarder son historique (l'historique local est repris à la connexion)
 - [ ] Export vers Strava : envoyer chaque séance terminée comme activité « Renforcement musculaire » (API Strava, connexion Strava du coureur)
 
+### Articles (SEO et GEO)
+- [ ] Section d'articles sur la course à pied et le renfo, publiés à intervalle régulier, rédigés par IA et relus avant publication
+- [ ] Définir le ton (tutoiement, sobre et direct, comme l'app), la liste de sujets et un calendrier
+- [ ] Pages HTML statiques générées au build (une page par article, titre, description, données structurées `Article`, sitemap) : l'app actuelle est une page unique que les moteurs lisent mal
+- [ ] Nom de domaine propre plutôt que github.io, pour que le référencement profite à la marque
+- [ ] Publication par une tâche planifiée qui propose l'article en pull request : rien n'est publié sans relecture (Google pénalise les contenus produits en masse sans valeur ajoutée)
+- [ ] Chaque article renvoie vers une séance de l'app adaptée au sujet
+
 ### Plus tard
 - [ ] Applications Android et iPhone avec Capacitor (minuteur et voix qui continuent écran verrouillé)
 - [ ] Vérifier la disponibilité du nom « Coriace » avant publication sur les stores (marques INPI et EUIPO, classe 9)
