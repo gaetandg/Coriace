@@ -40,12 +40,12 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
             {exercise.equipmentRequired.length > 0 ? (
               exercise.equipmentRequired.map(eq => (
                 <span key={eq} className="px-3 py-0.5 bg-orange-400/15 border border-orange-400/30 text-orange-400 text-[10px] font-bold uppercase rounded-md tracking-wider font-mono">
-                  🛠️ {eq === 'poids_8kg' ? 'Poids 8kg' : eq === 'chaise' ? 'Chaise' : eq === 'corde_a_sauter' ? 'Corde à sauter' : eq}
+                  {eq === 'poids_8kg' ? 'Poids 8 kg' : eq === 'chaise' ? 'Chaise' : eq === 'corde_a_sauter' ? 'Corde à sauter' : eq}
                 </span>
               ))
             ) : (
               <span className="px-3 py-0.5 bg-emerald-400/15 border border-emerald-400/30 text-emerald-400 text-[10px] font-bold uppercase rounded-md tracking-wider font-mono">
-                🍃 Poids de corps
+                Sans matériel
               </span>
             )}
           </div>
@@ -57,7 +57,7 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
         <div className="border-t border-white/10 pt-4 space-y-4 text-left">
           {/* Description */}
           <div className="space-y-1">
-            <h4 className="text-[10px] uppercase tracking-widest text-white/40 font-bold font-mono">Description du mouvement</h4>
+            <h4 className="text-[10px] uppercase tracking-widest text-white/40 font-bold font-mono">Mouvement</h4>
             <p className="text-xs sm:text-sm text-white/80 leading-relaxed font-sans">
               {exercise.description}
             </p>
@@ -67,7 +67,7 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
           {exercise.tips && (
             <div className="bg-white/3 border border-white/5 rounded-2xl p-4 space-y-1.5">
               <h4 className="text-[10px] uppercase tracking-widest text-[#FF6321] font-extrabold font-mono flex items-center gap-1.5">
-                <span>💡</span> Conseils d'exécution
+                Conseil
               </h4>
               <p className="text-xs text-white/85 leading-relaxed font-sans">
                 {exercise.tips}
@@ -79,7 +79,7 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
           {exercise.instructionHighlight && (
             <div className="bg-[#FF6321]/5 border border-[#FF6321]/25 rounded-2xl p-4 space-y-1">
               <h4 className="text-[10px] uppercase tracking-widest text-[#FF6321] font-bold font-mono flex items-center gap-1.5">
-                <span>🚨</span> Consigne d'or
+                À retenir
               </h4>
               <p className="text-xs text-[#FF6321] font-bold leading-relaxed font-mono">
                 {exercise.instructionHighlight}
@@ -93,7 +93,7 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
           onClick={onClose}
           className="w-full bg-[#FF6321] hover:bg-[#FF6321]/90 text-black font-extrabold py-3 rounded-xl transition-all uppercase tracking-widest text-xs cursor-pointer focus:outline-none"
         >
-          Compris, fermer
+          Fermer
         </button>
       </div>
     </div>

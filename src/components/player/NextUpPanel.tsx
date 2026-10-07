@@ -17,7 +17,7 @@ export function NextUpPanel({ nextUp, highlighted }: NextUpPanelProps) {
       <div className="flex items-start justify-between">
         <div className="space-y-1 flex-1 pr-4">
           <span className="text-white/40 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest block font-sans">
-            {highlighted ? '🚀 Prochaine Étape (À anticiper)' : 'Prochaine Étape'}
+            Ensuite
           </span>
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-display font-bold text-xs sm:text-sm text-white uppercase tracking-tight">{nextUp.title}</span>
@@ -28,18 +28,16 @@ export function NextUpPanel({ nextUp, highlighted }: NextUpPanelProps) {
           {nextUp.exercise && (
             <div className="mt-2.5 space-y-1.5 text-xs text-white/70 font-sans border-t border-white/10 pt-2.5">
               <p className="leading-relaxed">
-                <span className="font-semibold text-white/90">Cible & But :</span> {nextUp.exercise.description}
+                {nextUp.exercise.description}
               </p>
               {nextUp.exercise.tips && (
-                <p className="text-white/50 text-[11px] leading-relaxed italic flex items-start gap-1">
-                  <span className="shrink-0 text-orange-400">💡</span>
-                  <span>{nextUp.exercise.tips}</span>
+                <p className="text-white/50 text-[11px] leading-relaxed italic">
+                  {nextUp.exercise.tips}
                 </p>
               )}
               {nextUp.exercise.instructionHighlight && (
-                <p className="text-[#FF6321]/90 text-[11px] font-mono font-bold leading-relaxed flex items-start gap-1">
-                  <span className="shrink-0">🚨</span>
-                  <span>Consigne : {nextUp.exercise.instructionHighlight}</span>
+                <p className="text-[#FF6321]/90 text-[11px] font-mono font-bold leading-relaxed">
+                  À retenir : {nextUp.exercise.instructionHighlight}
                 </p>
               )}
             </div>

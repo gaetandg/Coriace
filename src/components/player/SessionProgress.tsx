@@ -9,7 +9,7 @@ export function SessionProgress({ totalBlocks, blockIndex, secondsRemaining }: S
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between text-[11px] sm:text-xs text-white/50 px-1 font-bold tracking-wider uppercase">
-        <span>Progression globale ({totalBlocks} blocs de 1 min)</span>
+        <span>Progression</span>
         <span className="font-mono text-[#FF6321] text-xs font-bold">Minute {blockIndex + 1} / {totalBlocks}</span>
       </div>
       <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">

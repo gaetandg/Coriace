@@ -3,182 +3,182 @@ import { Exercise } from './types';
 export const EXERCISE_DATABASE: Exercise[] = [
   {
     id: 'copenhagen_plank',
-    name: 'Copenhagen Plank',
-    target: 'Adducteurs (Intérieur des cuisses) - Spécifique Marathon',
-    description: 'Allongé sur le côté, place le pied du dessus sur une chaise. Soulève le bassin pour aligner le corps. Jambe du dessous suspendue. Alterne le côté gauche/droit à chaque tour.',
+    name: 'Copenhagen plank',
+    target: 'Adducteurs',
+    description: 'Allongé sur le côté, pose le pied du dessus sur l\'assise d\'une chaise. Soulève le bassin pour aligner tête, bassin et pieds. La jambe du dessous reste dans le vide. Change de côté à chaque tour.',
     equipmentRequired: ['chaise'],
     category: 'specific_adductor',
-    tips: 'Sentez la contraction sur l\'intérieur de la cuisse supérieure. Gardez le corps parfaitement rectiligne sans cambrer.',
-    instructionHighlight: 'Alignement tête-bassin-pied impeccable.'
+    tips: 'L\'effort se sent à l\'intérieur de la cuisse posée sur la chaise. Trop dur : pose le genou sur la chaise au lieu du pied.',
+    instructionHighlight: 'Corps aligné, bassin haut.'
   },
   {
     id: 'calves_standing_slow',
-    name: 'Extensions de mollets debout (Tempo Lent)',
-    target: 'Mollets (Gastrocnémiens) - Spécifique Marathon',
-    description: 'Sur une marche, monte sur la pointe des pieds en 1 seconde, puis redescends très lentement en 3 à 4 secondes (travail excentrique). Sur une seule jambe si possible.',
+    name: 'Mollets debout, descente lente',
+    target: 'Mollets (gastrocnémiens)',
+    description: 'Sur une marche, talons dans le vide. Monte sur la pointe des pieds en 1 seconde, redescends en 3 à 4 secondes. Sur une jambe si tu peux.',
     equipmentRequired: [],
     category: 'specific_calf',
-    tips: 'Le freinage excentrique (la descente) à vitesse lente est le secret pour bétonner les tendons d\'Achille et éviter la fatigue après le 30ème kilomètre.',
-    instructionHighlight: 'Fréquence lente ordonnée : 1s de montée, 4s de descente.'
+    tips: 'C\'est la descente qui compte : ce travail excentrique renforce le mollet et le tendon d\'Achille.',
+    instructionHighlight: '1 s pour monter, 4 s pour descendre.'
   },
   {
     id: 'calves_seated',
-    name: 'Extensions de mollets assis',
-    target: 'Mollets (Soléaire - endurance de force) - Spécifique Marathon',
-    description: 'Assis sur une chaise, pose ton poids de 8kg sur tes cuisses. Monte au maximum sur la pointe des pieds, puis redescends. Enchaîne les répétitions.',
+    name: 'Mollets assis',
+    target: 'Mollets (soléaire)',
+    description: 'Assis sur une chaise, le poids de 8 kg posé sur les cuisses près des genoux. Monte sur la pointe des pieds le plus haut possible, puis redescends. Enchaîne.',
     equipmentRequired: ['chaise', 'poids_8kg'],
     category: 'specific_calf',
-    tips: 'Le soléaire stabilise activement la cheville à chaque foulée. Cet exercice prévient directement la tétanie ou les crampes des mollets.',
-    instructionHighlight: 'Gardez le dos droit et contrôlez la descente.'
+    tips: 'Genoux pliés, c\'est surtout le soléaire qui travaille. C\'est lui qui tient la cheville à chaque foulée.',
+    instructionHighlight: 'Amplitude complète, descente contrôlée.'
   },
   {
     id: 'squat_sumo',
-    name: 'Squat Sumo',
-    target: 'Adducteurs & Quadriceps - Spécifique Marathon',
-    description: 'Écarte les pieds plus largement que les épaules, pointes à 45° vers l\'extérieur. Descends en gardant le dos droit. Possibilité de tenir le poids de 8kg contre la poitrine.',
+    name: 'Squat sumo',
+    target: 'Adducteurs et quadriceps',
+    description: 'Pieds plus écartés que les épaules, pointes tournées vers l\'extérieur. Descends en gardant le buste droit, puis remonte. Option : tiens le poids de 8 kg contre la poitrine.',
     equipmentRequired: [],
     category: 'specific_adductor',
-    tips: 'Descendez les fesses vers le bas en ouvrant bien vos genoux dans l\'axe de vos orteils pour étirer et renforcer les adducteurs.',
-    instructionHighlight: 'Genoux alignés avec les orteils, buste redressé.'
+    tips: 'Pousse les genoux vers l\'extérieur pour qu\'ils restent dans l\'axe des pieds.',
+    instructionHighlight: 'Genoux dans l\'axe des pieds, buste droit.'
   },
   {
     id: 'lateral_lunges',
     name: 'Fentes latérales',
-    target: 'Adducteurs & Stabilité du genou - Spécifique Marathon',
-    description: 'Fais un grand pas sur le côté, fléchis la jambe qui a fait le pas en gardant l\'autre bien tendue, puis pousse fort pour revenir au centre.',
+    target: 'Adducteurs et stabilité du genou',
+    description: 'Fais un grand pas sur le côté. Plie la jambe qui avance, garde l\'autre tendue, puis pousse pour revenir au centre. Alterne les côtés.',
     equipmentRequired: [],
     category: 'specific_adductor',
-    tips: 'Poussez bien vos fesses en arrière sur la jambe active. Cet exercice améliore la stabilité latérale du genou lors de la fatigue.',
-    instructionHighlight: 'Garder l\'autre jambe parfaitement tendue.'
+    tips: 'Envoie les fesses en arrière sur la jambe pliée, comme pour t\'asseoir.',
+    instructionHighlight: 'Jambe opposée tendue.'
   },
   {
     id: 'crunchs',
-    name: 'Crunchs (Abdos)',
-    target: 'Sangle abdominale (Grand droit)',
-    description: 'Allongé sur le dos, genoux fléchis, les mains effleurant les tempes. Enroule le haut du buste vers l\'avant en contractant les abdos et en gardant le bas du dos plaqué au sol. Expire à la montée.',
+    name: 'Crunchs',
+    target: 'Abdominaux (grand droit)',
+    description: 'Sur le dos, genoux pliés, mains près des tempes. Enroule le haut du dos en gardant le bas du dos au sol. Souffle en montant.',
     equipmentRequired: [],
     category: 'abdos',
-    tips: 'Ne tirez pas sur la nuque avec vos mains. Le mouvement vient uniquement de la contraction des muscles abdominaux.',
-    instructionHighlight: 'Plaquer le bas du dos au sol et expirer en montant.'
+    tips: 'Ne tire pas sur la nuque : ce sont les abdos qui travaillent, pas les bras.',
+    instructionHighlight: 'Bas du dos au sol, souffle en montant.'
   },
   {
     id: 'plank_commando',
-    name: 'Gainage Planche dynamique / Commando',
-    target: 'Sangle abdominale profonde (Transverse) et stabilité',
-    description: 'En position de planche sur les avant-bras, monte une main après l\'autre pour passer en position de pompe, puis redescends sur les avant-bras. Garde le bassin le plus fixe possible.',
+    name: 'Planche commando',
+    target: 'Gainage profond (transverse)',
+    description: 'En planche sur les avant-bras. Monte sur une main puis sur l\'autre pour passer bras tendus, puis redescends sur les avant-bras. Alterne le bras qui commence.',
     equipmentRequired: [],
     category: 'abdos',
-    tips: 'Imaginez une tasse de café posée sur votre dos : votre bassin ne doit pas osciller de gauche à droite pendant la transition.',
-    instructionHighlight: 'Bassin ultra stable, pas d\'oscillation.'
+    tips: 'Écarte un peu les pieds pour être plus stable. Le bassin ne doit pas se balancer.',
+    instructionHighlight: 'Bassin immobile.'
   },
   {
     id: 'russian_twists',
-    name: 'Russian Twists avec poids (Abdos)',
-    target: 'Abdominaux obliques (Stabilité de la rotation de course)',
-    description: 'Assis au sol, buste légèrement incliné en arrière, jambes décollées ou talons posés. Tiens le poids de 8kg à deux mains et balance-le de gauche à droite en pivotant les épaules.',
+    name: 'Russian twists lestés',
+    target: 'Obliques',
+    description: 'Assis, buste incliné en arrière, talons au sol ou pieds décollés. Tiens le poids de 8 kg à deux mains et tourne le buste d\'un côté puis de l\'autre.',
     equipmentRequired: ['poids_8kg'],
     category: 'abdos',
-    tips: 'Faites pivoter de gauche à droite l\'ensemble du haut du corps (épaules comprises) pour cibler efficacement les obliques, garants de la stabilité du bassin.',
-    instructionHighlight: 'Rotation complète des épaules, pas seulement des bras.'
+    tips: 'Tourne les épaules, pas seulement les bras. Trop dur : garde les talons au sol.',
+    instructionHighlight: 'Les épaules suivent le poids.'
   },
   {
     id: 'situps',
-    name: 'Abdos complets (Sit-ups)',
-    target: 'Sangle abdominale (Fléchisseurs de hanche & Grand droit)',
-    description: 'Allongé sur le dos, les plantes de pieds l\'une contre l\'autre en papillon ou genoux pliés. Remontez entièrement le buste pour venir toucher vos pieds ou vos genoux avec vos mains, puis contrôlez la descente.',
+    name: 'Sit-ups',
+    target: 'Abdominaux et fléchisseurs de hanche',
+    description: 'Sur le dos, genoux pliés. Remonte le buste jusqu\'à toucher les genoux, puis redescends en déroulant le dos.',
     equipmentRequired: [],
     category: 'abdos',
-    tips: 'Engagez les abdominaux dès le début du mouvement et évitez de donner un coup d\'élan violent avec vos bras. Gardez le dos rond lors de la descente pour amortir vertèbre après vertèbre.',
-    instructionHighlight: 'Remonter entièrement le buste en contrôlant la descente.'
+    tips: 'Pas d\'élan avec les bras. Redescends vertèbre par vertèbre.',
+    instructionHighlight: 'Descente lente et contrôlée.'
   },
   {
     id: 'squat_classic',
-    name: 'Squat classique',
-    target: 'Général (Quadriceps & Fessiers)',
-    description: 'Pieds largeur des épaules. Descends les fesses vers l\'arrière comme pour t\'asseoir. Option : tenir le poids de 8kg contre la poitrine pour augmenter la résistance.',
+    name: 'Squat',
+    target: 'Quadriceps et fessiers',
+    description: 'Pieds largeur d\'épaules. Descends en envoyant les fesses en arrière, comme pour t\'asseoir, puis remonte. Option : tiens le poids de 8 kg contre la poitrine.',
     equipmentRequired: [],
     category: 'general',
-    tips: 'Gardez le poids dans les talons et le regard droit devant vous. Très efficace pour renforcer les quadriceps essentiels lors des descentes.',
-    instructionHighlight: 'Dos plat, genoux qui ne dépassent pas la pointe des pieds.'
+    tips: 'Garde le poids du corps sur les talons et le regard devant toi.',
+    instructionHighlight: 'Dos droit, talons au sol.'
   },
   {
     id: 'alternating_lunges',
     name: 'Fentes alternées',
-    target: 'Général (Ischios & Stabilité unilatérale)',
-    description: 'Fais un pas en avant (ou en arrière), descends le genou arrière près du sol en gardant le buste droit. Alterne gauche et droite.',
+    target: 'Quadriceps, fessiers et équilibre',
+    description: 'Fais un grand pas en avant et descends jusqu\'à ce que le genou arrière frôle le sol, puis reviens. Alterne les jambes.',
     equipmentRequired: [],
     category: 'general',
-    tips: 'Focalisez-vous sur le contrôle de l\'équilibre unilatéral, reproduisant les contraintes d\'impact d\'une foulée de course.',
-    instructionHighlight: 'Angle de 90° sur les deux genoux, buste vertical.'
+    tips: 'Garde le buste vertical et le genou avant dans l\'axe du pied.',
+    instructionHighlight: 'Les deux genoux à 90°.'
   },
   {
     id: 'wall_sit',
-    name: 'La Chaise (Option mollets)',
-    target: 'Général (Isométrie) + Mollets',
-    description: 'Dos au mur, cuisses parallèles au sol (90°). Pour corser l\'exercice, décolle alternativement le talon gauche puis le talon droit du sol pendant la position.',
+    name: 'Chaise contre un mur',
+    target: 'Quadriceps et mollets',
+    description: 'Dos contre le mur, cuisses parallèles au sol. Tiens la position. Pour corser, décolle un talon puis l\'autre.',
     equipmentRequired: [],
     category: 'general',
-    tips: 'L\'effort isométrique est idéal pour renforcer l\'endurance musculaire des quadriceps en protégeant les articulations. L\'option mollets active le soléaire.',
-    instructionHighlight: 'Appuyez tout le dos au mur, cuisses parallèles au sol.'
+    tips: 'Tout le dos reste en contact avec le mur.',
+    instructionHighlight: 'Cuisses parallèles au sol.'
   },
   {
     id: 'pushups',
     name: 'Pompes',
-    target: 'Général (Haut du corps & Gainage)',
-    description: 'Face au sol, mains largeur des épaules. Descends la poitrine au sol en gardant le corps bien aligné (sur les pieds ou sur les genoux si besoin de moduler).',
+    target: 'Haut du corps et gainage',
+    description: 'Mains sous les épaules, corps gainé. Descends la poitrine près du sol, puis pousse. Sur les genoux si besoin.',
     equipmentRequired: [],
     category: 'general',
-    tips: 'Gardez les coudes rentrés à environ 45 degrés plutôt qu\'écartés sur les côtés, cela protège les épaules.',
-    instructionHighlight: 'Maintenir un gainage de planche complet du début à la fin.'
+    tips: 'Coudes à environ 45° du corps, pas écartés à l\'horizontale : tes épaules te remercieront.',
+    instructionHighlight: 'Corps droit du début à la fin.'
   },
   {
     id: 'jumping_jacks',
-    name: 'Jumping Jacks',
-    target: 'Général (Cardio & Activation mollets)',
-    description: 'Saute en écartant les pieds et en croisant les mains au-dessus de la tête, puis reviens en position initiale de manière dynamique.',
+    name: 'Jumping jacks',
+    target: 'Cardio et mollets',
+    description: 'Saute en écartant les pieds et en levant les bras au-dessus de la tête, puis reviens pieds joints, bras le long du corps.',
     equipmentRequired: [],
     category: 'general',
-    tips: 'Réceptionnez-vous doucement sur la pointe des pieds pour amortir l\'impact et travailler activement l\'élasticité du tendon d\'Achille.',
-    instructionHighlight: 'Rebond souple et synchronisation des mouvements.'
+    tips: 'Atterris en souplesse sur l\'avant du pied.',
+    instructionHighlight: 'Réceptions légères.'
   },
   {
     id: 'calf_raise_isometric_low',
-    name: 'Seated Calf Raise (Poids du corps - Isométrie basse)',
-    target: 'Mollets (Soléaire) - Spécifique Marathon',
-    description: 'Accroupis-toi le plus bas possible (squat complet), les fesses près des talons. Dans cette position, décolle les talons du sol pour monter au maximum sur les pointes de pieds, tiens 2 secondes, puis repose les talons.',
+    name: 'Mollets en squat profond',
+    target: 'Mollets (soléaire)',
+    description: 'Accroupis-toi au plus bas, fesses près des talons. Monte sur la pointe des pieds, tiens 2 secondes, repose les talons. Enchaîne.',
     equipmentRequired: [],
     category: 'specific_calf',
-    tips: 'Cet exercice fléchit le genou au maximum, ce qui isole complètement le soléaire (le muscle profond du mollet). C\'est ce muscle qui absorbe jusqu\'à 8 fois ton poids du corps à chaque impact en course à pied.',
-    instructionHighlight: 'Genoux fléchis au maximum, monter et tenir 2s sur les pointes.'
+    tips: 'Genoux très pliés, c\'est le soléaire qui travaille. Tiens-toi à un meuble si l\'équilibre est difficile.',
+    instructionHighlight: 'Tiens 2 s en haut.'
   },
   {
     id: 'sauts_corde_bas',
-    name: 'Sauts à la corde (Vrais ou imaginaires)',
-    target: 'Tendon d\'Achille (Raideur tendineuse) - Spécifique Marathon',
-    description: 'Fais de tout petits sauts sur place sur la pointe des pieds, jambes quasi tendues. Les talons ne doivent jamais toucher le sol. Vise la rapidité et le rebond. (Utilise ta corde à sauter si activée, sinon fais des sauts imaginaires).',
+    name: 'Sauts à la corde',
+    target: 'Tendon d\'Achille et mollets',
+    description: 'Petits sauts rapides sur l\'avant du pied, jambes presque tendues. Les talons ne touchent pas le sol.',
     equipmentRequired: ['corde_a_sauter'],
     category: 'specific_calf',
-    tips: 'Cela entraîne la "raideur tendineuse" du tendon d\'Achille. Plus ton tendon est élastique et tonique, moins tes mollets se fatiguent vite après des heures de course, ce qui repousse l\'apparition des crampes.',
-    instructionHighlight: 'Petits sauts rapides jambes quasi tendues, talons décollés.'
+    tips: 'Cherche des rebonds courts et réguliers : le tendon d\'Achille travaille comme un ressort.',
+    instructionHighlight: 'Talons décollés, rebonds courts.'
   },
   {
     id: 'marche_talons_inversion',
-    name: 'Marche sur les talons (Inversion)',
-    target: 'Jambier antérieur (Tibia devant) - Spécifique Marathon',
-    description: 'Décolle complètement l\'avant des pieds du sol et marche uniquement sur les talons pendant toute la durée recommandée.',
+    name: 'Marche sur les talons',
+    target: 'Jambier antérieur (devant du tibia)',
+    description: 'Lève l\'avant des pieds et marche uniquement sur les talons.',
     equipmentRequired: [],
     category: 'specific_calf',
-    tips: 'Cela renforce le jambier antérieur (le muscle devant le tibia). Souvent, les crampes aux mollets surviennent à cause d\'un déséquilibre si le muscle de devant est trop faible par rapport au mollet.',
-    instructionHighlight: 'Garder l\'avant des pieds décollé au maximum et marcher sur les talons.'
+    tips: 'Ce muscle travaille à l\'opposé du mollet. Le renforcer équilibre le bas de la jambe.',
+    instructionHighlight: 'Pointes de pieds le plus haut possible.'
   },
   {
     id: 'shift_squat_goblet',
-    name: 'Squat Goblet latéral (Shift Squat)',
-    target: 'Adducteurs & Hanches (Bassin) - Spécifique Marathon',
-    description: 'Prends ton poids de 8kg contre ta poitrine. Écarte les pieds un peu plus que la largeur des épaules. Descends en squat, puis, une fois en bas, transfère le poids de ton corps sur la jambe gauche, reviens au centre, puis transfère sur la jambe droite, reviens au centre et remonte.',
+    name: 'Squat goblet latéral',
+    target: 'Adducteurs et hanches',
+    description: 'Poids de 8 kg contre la poitrine, pieds un peu plus écartés que les épaules. Descends en squat. En bas, décale le poids du corps sur la jambe gauche, reviens au centre, puis sur la jambe droite, reviens au centre et remonte.',
     equipmentRequired: ['poids_8kg'],
     category: 'specific_adductor',
-    tips: 'Ce léger transfert de poids en position basse force l\'adducteur de la jambe opposée à s\'étirer et à se contracter pour stabiliser le bassin. C\'est ultra-efficace pour blinder les hanches.',
-    instructionHighlight: 'Poids de 8kg à la poitrine, fesses basses durant tout le transfert latéral.'
+    tips: 'Reste bas pendant tout le transfert : les adducteurs travaillent pour stabiliser le bassin.',
+    instructionHighlight: 'Fesses basses pendant le transfert.'
   }
 ];

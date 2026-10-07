@@ -38,7 +38,7 @@ export function PlayerScreen({ session, activeInterval }: PlayerScreenProps) {
           onClick={resetWorkout}
           className="text-xs text-white/50 hover:text-white flex items-center gap-2 bg-white/5 border border-white/10 hover:border-white/25 px-4 h-10 rounded-full transition-all cursor-pointer self-start font-sans"
         >
-          ✖ Abandonner l'entraînement
+          Quitter la séance
         </button>
 
         <div className="flex items-center gap-2 sm:self-center">
@@ -49,12 +49,12 @@ export function PlayerScreen({ session, activeInterval }: PlayerScreenProps) {
               ? 'bg-[#FF6321]/10 text-[#FF6321] border-[#FF6321]/20'
               : 'bg-red-500/10 text-red-400 border-red-500/25'
           }`}>
-            {activeInterval.stage === 'warmup' ? '🔥 Échauffement' : activeInterval.stage === 'main' ? '⚡ Circuit Principal' : '🏁 Le Finisher'}
+            {activeInterval.stage === 'warmup' ? 'Échauffement' : activeInterval.stage === 'main' ? 'Circuit' : 'Finisher'}
           </span>
 
           {activeInterval.roundNumber && (
             <span className="text-[10px] sm:text-xs font-bold bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-white/70">
-              ROND {activeInterval.roundNumber}/{activeBlockTotalRounds || 2}
+              Tour {activeInterval.roundNumber}/{activeBlockTotalRounds || 2}
             </span>
           )}
         </div>

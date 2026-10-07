@@ -98,7 +98,7 @@ export function useWorkoutSession(notify: (message: string) => void) {
   const testBeeps = () => {
     initAudio();
     triggerAudioBeep(1200, 0.4);
-    notify('🔊 Test réussi : Bip sonore activé !');
+    notify('Bip joué. Monte le volume si tu ne l\'entends pas.');
   };
 
   // --- NAVIGATION & CONTROLS ---
@@ -132,7 +132,7 @@ export function useWorkoutSession(notify: (message: string) => void) {
     setIntervals(generated);
     setCurrentIntervalIndex(0);
     setSecondsRemaining(generated[0]?.duration || 30);
-    notify('🔄 Séance ré-organisée de façon optimale !');
+    notify('Nouvel ordre des exercices.');
   };
 
   // Find compatible exercises for selected configuration (equipment based)
@@ -163,7 +163,7 @@ export function useWorkoutSession(notify: (message: string) => void) {
         // Prevent deselecting if it is the last compatible one
         const compatibleSelectedCount = compatibleExercises.filter(ex => selected.includes(ex.id)).length;
         if (compatibleSelectedCount <= 1 && selected.includes(id)) {
-          notify('⚠️ Sélectionnez au moins un exercice compatible !');
+          notify('Garde au moins un exercice.');
           return prev;
         }
         nextSelected = selected.filter(x => x !== id);

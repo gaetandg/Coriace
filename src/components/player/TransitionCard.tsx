@@ -22,7 +22,7 @@ export function TransitionCard({ progress, headerLeft, headerRight, fromLabel, t
       <div className="flex items-center gap-3">
         <div className="px-3 py-1.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 rounded-lg flex flex-col items-center justify-center shrink-0 min-w-[64px]">
           <span className="text-[8px] uppercase tracking-wide opacity-75">{fromLabel}</span>
-          <span className="text-xs font-bold leading-none mt-1">Acquis ✓</span>
+          <span className="text-xs font-bold leading-none mt-1">Fait ✓</span>
         </div>
 
         <div className="flex-1 space-y-1 text-center">
@@ -37,7 +37,7 @@ export function TransitionCard({ progress, headerLeft, headerRight, fromLabel, t
 
         <div className={`px-3 py-1.5 ${nextClassName} rounded-lg flex flex-col items-center justify-center shrink-0 min-w-[64px] animate-pulse`}>
           <span className="text-[8px] uppercase tracking-wide opacity-75">{toLabel}</span>
-          <span className="text-xs font-bold leading-none mt-1">Suivant ➔</span>
+          <span className="text-xs font-bold leading-none mt-1">À suivre</span>
         </div>
       </div>
     </div>

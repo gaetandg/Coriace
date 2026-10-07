@@ -4,49 +4,49 @@ import { WorkoutConfig, WorkoutInterval, Exercise, WorkoutStage } from './types'
 // Let's define the fixed warm-up exercises (using no equipment, to keep it universal)
 const WARM_UP_EXERCISES: Omit<Exercise, 'id'>[] = [
   {
-    name: 'Réveil articulaire global',
-    target: 'Articulations (Chevilles, Genoux, Bassin)',
-    description: 'Rotations douces des chevilles, des genoux puis des hanches. Enroulement du dos pour réveiller le corps en douceur.',
+    name: 'Mobilisation articulaire',
+    target: 'Chevilles, genoux, hanches',
+    description: 'Fais des cercles avec les chevilles, les genoux puis les hanches. Termine en enroulant doucement le dos.',
     equipmentRequired: [],
     category: 'general',
-    tips: 'Allez-y très tranquillement. L\'objectif est de lubrifier les articulations et de faire monter très lentement le rythme cardiaque.',
-    instructionHighlight: 'Amplitude douce, respiration libre.'
+    tips: 'Va doucement : le but est de te réchauffer, pas de te fatiguer.',
+    instructionHighlight: 'Mouvements amples et lents.'
   },
   {
-    name: 'Squats classiques souples',
-    target: 'Éveil musculaire (Fessiers/Quadriceps)',
-    description: 'Pieds écartés largeur d\'épaules. Descendez doucement à mi-amplitude, étirez les fesses vers l\'arrière et remontez.',
+    name: 'Squats légers',
+    target: 'Fessiers et quadriceps',
+    description: 'Pieds largeur d\'épaules. Descends à mi-hauteur et remonte, sans forcer.',
     equipmentRequired: [],
     category: 'general',
-    tips: 'Pas de poids à ce stade. Gardez le mouvement fluide pour activer les cuisses.',
-    instructionHighlight: 'Dos bien plat, regard horizontal.'
+    tips: 'Sans poids. Garde un rythme fluide.',
+    instructionHighlight: 'Dos droit, regard devant.'
   },
   {
-    name: 'Mobilisation active des Adducteurs',
-    target: 'Activation (Adducteurs)',
-    description: 'Pieds très larges. Transférez le poids du corps d\'une jambe sur l\'autre en fente latérale très douce, sans insister sur la flexion.',
+    name: 'Mobilisation des adducteurs',
+    target: 'Adducteurs',
+    description: 'Pieds très écartés. Bascule le poids du corps d\'une jambe sur l\'autre en fente latérale légère.',
     equipmentRequired: [],
     category: 'specific_adductor',
-    tips: 'Sentez l\'étirement dynamique doux sur l\'intérieur de la cuisse tendue.',
-    instructionHighlight: 'Talon opposé plaqué au sol.'
+    tips: 'Tu dois sentir un léger étirement à l\'intérieur de la cuisse tendue.',
+    instructionHighlight: 'Talons au sol.'
   },
   {
-    name: 'Gainage Planche active',
-    target: 'Réveil de la sangle abdominale',
-    description: 'En planche sur les avant-bras ou sur les genoux. Rentrez le nombril et serrez les abdominaux sans bloquer la respiration.',
+    name: 'Planche',
+    target: 'Abdominaux',
+    description: 'En planche sur les avant-bras, ou sur les genoux. Rentre le ventre et respire normalement.',
     equipmentRequired: [],
     category: 'abdos',
-    tips: 'Activez le transverse en aspirant le nombril vers la colonne.',
-    instructionHighlight: 'Pas de fesses en l\'air, dos neutre.'
+    tips: 'Serre les abdos et les fessiers.',
+    instructionHighlight: 'Dos plat, fesses alignées.'
   },
   {
-    name: 'Jumping Jacks progressifs',
-    target: 'Cardio & Réaction Mollets',
-    description: 'Sautez légèrement en écartant les pieds. Atterrissage très souple sur la pointe des pieds uniquement.',
+    name: 'Jumping jacks légers',
+    target: 'Cardio et mollets',
+    description: 'Petits jumping jacks, réceptions souples sur l\'avant du pied.',
     equipmentRequired: [],
     category: 'general',
-    tips: 'Le rebond sur l\'avant-pied active spécifiquement les mollets et prépare les tendons d\'Achille.',
-    instructionHighlight: 'Amorti élastique par les mollets.'
+    tips: 'Augmente le rythme petit à petit.',
+    instructionHighlight: 'Réceptions légères.'
   }
 ];
 
@@ -374,22 +374,20 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
 
     // Rest Interval - Only add if NOT the very last block of the session
     if (blockIdx < T - 1) {
-      let restTitle = 'Récupération active';
-      let restDescription = 'Respirez profondément, buvez une gorgée d\'eau si besoin.';
+      let restTitle = 'Récupération';
+      let restDescription = 'Respire et bois une gorgée si besoin.';
       if (stage === 'warmup') {
-        restTitle = 'Récupération Échauffement';
-        restDescription = 'Transition douce. Relâchez les articulations.';
+        restDescription = 'Relâche les jambes et les épaules.';
       } else if (stage === 'finisher') {
-        restTitle = 'Récupération Finisher';
-        restDescription = 'Presque fini ! Reprenez votre souffle pour l\'ultime effort !';
+        restDescription = 'Reprends ton souffle.';
       }
 
       if (isRoundTransition && roundTransitionFrom && roundTransitionTo) {
-        restTitle = `🏆 Transition de Round : Rond ${roundTransitionFrom} ⇒ Rond ${roundTransitionTo}`;
-        restDescription = `Félicitations ! Vous avez complété le Rond ${roundTransitionFrom}. Profitez de cette récupération prolongée (+30s !) pour bien relâcher les muscles avant d'attaquer le Rond ${roundTransitionTo}.`;
+        restTitle = `Fin du tour ${roundTransitionFrom}`;
+        restDescription = `30 secondes de récupération en plus avant le tour ${roundTransitionTo}.`;
       } else if (isBlockTransition) {
-        restTitle = `⚡ Transition de Bloc : Bloc A ⇒ Bloc B`;
-        restDescription = `Superbe ! Le Bloc A est validé. Prenez le temps de souffler (+30s de récupération prolongée) avant de démarrer le Bloc B !`;
+        restTitle = 'Fin du bloc A';
+        restDescription = '30 secondes de récupération en plus avant le bloc B.';
       }
 
       intervals.push({
@@ -399,7 +397,7 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
         type: 'rest',
         title: restTitle,
         description: restDescription,
-        target: isRoundTransition ? 'Changement de Rond (+30s)' : isBlockTransition ? 'Changement de Bloc (+30s)' : 'Récupération & Hydratation',
+        target: isRoundTransition ? 'Changement de tour (+30 s)' : isBlockTransition ? 'Changement de bloc (+30 s)' : 'Récupération',
         duration: currentRestTime,
         exercise: null,
         roundNumber,

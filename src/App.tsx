@@ -57,7 +57,7 @@ export default function App() {
           )}
 
           {workoutState === 'completed' && (
-            <CompletedScreen durationMinutes={config.durationMinutes || 30} onRestart={session.resetWorkout} />
+            <CompletedScreen durationMinutes={config.durationMinutes || 30} rythme={config.rythme} onRestart={session.resetWorkout} />
           )}
         </main>
       )}

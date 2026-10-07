@@ -105,23 +105,23 @@ export function StepList({ steps, activeBlockIndex, onJump }: StepListProps) {
   const blockBSteps = hasSeparateBlocks ? mainSteps.filter(s => s.blockNumber === 2) : [];
 
   const groups: { key: string; label: string; headingClassName: string; prefix: string; steps: BlockStep[] }[] = [
-    { key: 'warmup', label: '🔥 Echauffement', headingClassName: 'text-emerald-400/80', prefix: '', steps: warmupSteps },
+    { key: 'warmup', label: 'Échauffement', headingClassName: 'text-emerald-400/80', prefix: '', steps: warmupSteps },
     ...(hasSeparateBlocks
       ? [
-          { key: 'blockA', label: '⚡ Bloc A', headingClassName: 'text-[#FF6321]/80', prefix: 'A', steps: blockASteps },
-          { key: 'blockB', label: '⚡ Bloc B', headingClassName: 'text-orange-400', prefix: 'B', steps: blockBSteps },
+          { key: 'blockA', label: 'Bloc A', headingClassName: 'text-[#FF6321]/80', prefix: 'A', steps: blockASteps },
+          { key: 'blockB', label: 'Bloc B', headingClassName: 'text-orange-400', prefix: 'B', steps: blockBSteps },
         ]
-      : [{ key: 'main', label: '⚡ Circuit Principal', headingClassName: 'text-[#FF6321]/80', prefix: '', steps: mainSteps }]),
-    { key: 'finisher', label: '🏁 Le Finisher', headingClassName: 'text-red-400', prefix: 'F', steps: finisherSteps },
+      : [{ key: 'main', label: 'Circuit', headingClassName: 'text-[#FF6321]/80', prefix: '', steps: mainSteps }]),
+    { key: 'finisher', label: 'Finisher', headingClassName: 'text-red-400', prefix: 'F', steps: finisherSteps },
   ];
 
   return (
     <div className="bg-[#0a0a0a] border border-white/10 rounded-3xl p-5 md:p-6 space-y-4 max-h-[660px] overflow-y-auto flex flex-col text-left">
       <div className="border-b border-white/10 pb-3 flex flex-col">
         <h3 className="text-xs font-extrabold uppercase tracking-widest text-[#FF6321]">
-          📋 Déroulé de la Séance
+          Déroulé
         </h3>
-        <p className="text-[10px] text-white/40 mt-1">Cliquez sur une étape pour y sauter directement</p>
+        <p className="text-[10px] text-white/40 mt-1">Touche une étape pour y aller.</p>
       </div>
 
       <div className="space-y-4">
@@ -129,7 +129,7 @@ export function StepList({ steps, activeBlockIndex, onJump }: StepListProps) {
           {groups.filter(g => g.steps.length > 0).map(group => (
             <div key={group.key} className="space-y-1.5">
               <span className={`text-[10px] font-extrabold uppercase tracking-widest ${group.headingClassName} flex items-center gap-1`}>
-                {group.label} ({group.steps.length} min)
+                {group.label} · {group.steps.length} min
               </span>
               <div className="space-y-1">
                 {group.steps.map(s => (

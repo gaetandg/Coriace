@@ -8,9 +8,9 @@ import { WorkoutConfig } from '../../types';
 
 const EQUIPMENT_OPTIONS: { key: EquipmentKey; id: string; emoji: string; label: string; detail: string }[] = [
   { key: 'none', id: 'chk-eq-none', emoji: '🧘', label: 'Aucun matériel', detail: 'Poids du corps' },
-  { key: 'chaise', id: 'chk-eq-chaise', emoji: '🪑', label: 'Chaise robuste', detail: 'Copenhagen Plank' },
-  { key: 'poids_8kg', id: 'chk-eq-weight', emoji: '🏋️', label: 'Poids de 8kg', detail: 'Haltère, kettlebell, eau' },
-  { key: 'corde_a_sauter', id: 'chk-eq-corde', emoji: '🪢', label: 'Corde à sauter', detail: 'Option sauts & élastique' },
+  { key: 'chaise', id: 'chk-eq-chaise', emoji: '🪑', label: 'Chaise', detail: 'Solide et stable' },
+  { key: 'poids_8kg', id: 'chk-eq-weight', emoji: '🏋️', label: 'Poids de 8 kg', detail: 'Haltère, kettlebell ou bidon' },
+  { key: 'corde_a_sauter', id: 'chk-eq-corde', emoji: '🪢', label: 'Corde à sauter', detail: 'Pour les sauts' },
 ];
 
 const RYTHME_OPTIONS: {
@@ -25,8 +25,8 @@ const RYTHME_OPTIONS: {
   {
     value: 'equilibre',
     id: 'rad-rythme-equilibre',
-    title: 'Mode Équilibré (30s / 30s)',
-    description: "30 secondes d'effort concentré suivies de 30 secondes de récupération active. Évite l'excès d'acide lactique tout en prolongeant l'impact aérobie.",
+    title: 'Équilibré · 30 s / 30 s',
+    description: "30 secondes d'effort, 30 secondes de récupération. Le bon choix pour commencer.",
     selectedCard: 'bg-white/10 border-emerald-500 shadow-lg shadow-emerald-950/10',
     selectedDot: 'border-emerald-500 bg-emerald-500',
     titleColor: 'text-emerald-400',
@@ -34,8 +34,8 @@ const RYTHME_OPTIONS: {
   {
     value: 'intense',
     id: 'rad-rythme-intense',
-    title: 'Mode Intense (40s / 20s)',
-    description: "40 secondes d'effort intensifié pour seulement 20 secondes de repos. Simule la détresse neuromusculaire de fin de marathon.",
+    title: 'Intense · 40 s / 20 s',
+    description: "40 secondes d'effort, 20 secondes de récupération. Plus exigeant : tu travailles sous fatigue.",
     selectedCard: 'bg-white/10 border-[#FF6321] shadow-lg shadow-orange-950/10',
     selectedDot: 'border-[#FF6321] bg-[#FF6321]',
     titleColor: 'text-[#FF6321]',
@@ -45,13 +45,13 @@ const RYTHME_OPTIONS: {
 const BLOCK_OPTIONS = [
   {
     value: 1,
-    title: '1 Seul Circuit',
-    description: 'Un seul circuit répété sur plusieurs rounds. Idéal pour mémoriser les gestes.',
+    title: 'Un circuit',
+    description: 'Les mêmes exercices répétés sur plusieurs tours. Plus facile à mémoriser.',
   },
   {
     value: 2,
-    title: '2 Circuits Distincts (Bloc A & B)',
-    description: "Sépare la séance en deux blocs différents, sans doublons d'un bloc à l'autre. Moins monotone !",
+    title: 'Deux circuits',
+    description: 'Un bloc A puis un bloc B, avec des exercices différents. Plus varié.',
   },
 ];
 
@@ -93,19 +93,19 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
     <div id="panel-config" className="bg-[#0a0a0a] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-8 animate-fade-in">
       <div className="text-center max-w-xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-1.5 bg-[#FF6321]/15 text-[#FF6321] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-[#FF6321]/20">
-          <Flame className="w-3.5 h-3.5" /> Programme de {durationMinutes} minutes spécifique
+          <Flame className="w-3.5 h-3.5" /> Séance de {durationMinutes} min
         </div>
         <h2 className="text-3xl sm:text-4xl font-display font-black tracking-tight text-white uppercase">
-          Préparez votre corps face au 30è KM
+          Prépare ta séance
         </h2>
         <p className="text-xs sm:text-sm text-white/55 leading-relaxed font-sans max-w-lg mx-auto">
-          Cette séance de préparation physique à domicile va assembler automatiquement un circuit adapté d'échauffement, de renforcement de haute précision (mollets, adducteurs, gainage) et de finisher postural.
+          Choisis ton matériel, ton rythme et la durée. La séance enchaîne un échauffement, un circuit de renforcement (mollets, adducteurs, gainage) et un finisher.
         </p>
       </div>
 
       {/* EQUIPMENT CHOICES checkboxes */}
       <div className="space-y-4">
-        <SectionLabel>1. Matériel disponible à la maison</SectionLabel>
+        <SectionLabel>1. Matériel</SectionLabel>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {EQUIPMENT_OPTIONS.map(option => {
             const selected = config.equipment[option.key];
@@ -140,7 +140,7 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
 
       {/* PACE SELECTION TIMERS */}
       <div className="space-y-4">
-        <SectionLabel>2. Choix du rythme de l'entraînement</SectionLabel>
+        <SectionLabel>2. Rythme</SectionLabel>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {RYTHME_OPTIONS.map(option => {
             const selected = config.rythme === option.value;
@@ -170,7 +170,7 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
 
       {/* DURATION SELECTION */}
       <div className="space-y-4">
-        <SectionLabel>3. Durée totale de la séance</SectionLabel>
+        <SectionLabel>3. Durée</SectionLabel>
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="space-y-1">
@@ -178,7 +178,7 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
                 {durationMinutes} minutes
               </span>
               <span className="text-xs text-white/55 block font-sans">
-                Comprend l'échauffement spécifique et le finisher d'intensité.
+                Échauffement et finisher compris.
               </span>
             </div>
             {/* Presets */}
@@ -212,10 +212,10 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
               className="w-full h-1.5 bg-white/15 rounded-lg appearance-none cursor-pointer accent-[#FF6321]"
             />
             <div className="flex justify-between text-[10px] text-white/40 font-mono uppercase tracking-wider">
-              <span>15 Min (Express)</span>
-              <span>30 Min (Idéal)</span>
-              <span>45 Min (Avancé)</span>
-              <span>60 Min (Expert)</span>
+              <span>15 min</span>
+              <span>30 min</span>
+              <span>45 min</span>
+              <span>60 min</span>
             </div>
           </div>
         </div>
@@ -223,7 +223,7 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
 
       {/* BLOCKS SELECTION */}
       <div className="space-y-4">
-        <SectionLabel>3b. Organisation du circuit principal</SectionLabel>
+        <SectionLabel>4. Circuit</SectionLabel>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {BLOCK_OPTIONS.map(option => {
             const selected = numBlocks === option.value;
@@ -256,14 +256,14 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
       {/* INDIVIDUAL EXERCISE SELECTION CHECKBOXES */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <SectionLabel>4. Exercices possibles à inclure ({previewExercises.length} sélectionnés)</SectionLabel>
+          <SectionLabel>5. Exercices ({previewExercises.length} sélectionnés)</SectionLabel>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => handleSelectAllExercises(true)}
               className="text-[10px] text-[#FF6321] hover:underline uppercase tracking-wider font-extrabold cursor-pointer"
             >
-              Tout inclure
+              Tout cocher
             </button>
             <span className="text-white/20 text-xs">|</span>
             <button
@@ -271,7 +271,7 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
               onClick={() => handleSelectAllExercises(false)}
               className="text-[10px] text-[#FF6321] hover:underline uppercase tracking-wider font-extrabold cursor-pointer"
             >
-              Tout exclure
+              Tout décocher
             </button>
           </div>
         </div>
@@ -319,7 +319,7 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
           onClick={testBeeps}
           className="text-xs text-white/60 hover:text-white flex items-center gap-2 bg-white/5 hover:bg-white/10 w-full sm:w-auto px-5 h-12 rounded-full border border-white/10 hover:border-white/20 transition-all font-bold uppercase tracking-wider justify-center cursor-pointer"
         >
-          <Volume2 className="w-4 h-4 text-[#FF6321]" /> Tester le bip audio
+          <Volume2 className="w-4 h-4 text-[#FF6321]" /> Tester le son
         </button>
 
         <button
@@ -327,7 +327,7 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
           onClick={handleGenerateWorkoutPlan}
           className="w-full sm:w-auto bg-[#FF6321] hover:bg-[#FF6321]/95 text-black font-extrabold px-10 h-14 rounded-full shadow-lg shadow-[#FF6321]/15 transition-all transform active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-widest cursor-pointer"
         >
-          <Activity className="w-4 h-4 shrink-0" /> Generer le plan de seance
+          <Activity className="w-4 h-4 shrink-0" /> Créer la séance
         </button>
       </div>
     </div>

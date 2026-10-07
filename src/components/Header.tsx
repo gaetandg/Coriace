@@ -29,7 +29,7 @@ export function Header({ activeTab, onTabChange, soundEnabled, onToggleSound }: 
               Marathon PPG Coach
             </h1>
             <span className="text-[10px] text-white/50 tracking-widest font-black uppercase block">
-              Session Active
+              Renforcement musculaire
             </span>
           </div>
         </div>
@@ -40,7 +40,7 @@ export function Header({ activeTab, onTabChange, soundEnabled, onToggleSound }: 
               Séance
             </button>
             <button id="tab-guide" onClick={() => onTabChange('guide')} className={tabClassName('guide')}>
-              Guide Prévention
+              Guide
             </button>
           </div>
 

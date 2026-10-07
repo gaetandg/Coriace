@@ -6,29 +6,23 @@ import { PlanGroups } from '../../lib/plan';
 import { ExerciseDetailModal } from './ExerciseDetailModal';
 
 interface PlanSectionProps {
-  emoji: string;
   headingClassName: string;
   label: string;
-  hint?: string;
   gridClassName?: string;
   children: ReactNode;
 }
 
 function PlanSection({
-  emoji,
   headingClassName,
   label,
-  hint = 'Cliquez pour voir les consignes',
   gridClassName = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2',
   children,
 }: PlanSectionProps) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2 border-b border-white/10 pb-1.5">
-        <span className="text-sm">{emoji}</span>
-        <h3 className={`text-xs uppercase ${headingClassName} font-bold tracking-widest flex items-center justify-between w-full`}>
-          <span>{label}</span>
-          <span className="text-[10px] text-white/40 normal-case font-normal font-sans">{hint}</span>
+        <h3 className={`text-xs uppercase ${headingClassName} font-bold tracking-widest`}>
+          {label}
         </h3>
       </div>
       <div className={gridClassName}>
@@ -55,7 +49,7 @@ function PlanItemCard({ item, onSelect, badge, title, titleClassName, target, ta
       type="button"
       onClick={() => item.exercise && onSelect(item.exercise)}
       className="bg-white/3 p-3 rounded-xl border border-white/5 hover:bg-white/8 hover:border-white/12 active:scale-98 transition-all cursor-pointer text-left w-full group relative focus:outline-none focus:ring-1 focus:ring-[#FF6321] min-w-0 text-xs"
-      title="Cliquez pour voir les consignes de l'exercice"
+      title="Voir les consignes"
     >
       <div className={`flex items-start ${gapClassName} min-w-0 w-full`}>
         {badge}
@@ -130,36 +124,36 @@ interface SummaryScreenProps {
 export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: SummaryScreenProps) {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
   const durationMinutes = config.durationMinutes || 30;
-  const roundsLabel = (rounds: number) => `${rounds} ${rounds > 1 ? 'Rounds' : 'Round'} du Circuit`;
+  const roundsLabel = (rounds: number) => `${rounds} ${rounds > 1 ? 'tours' : 'tour'}`;
 
   return (
     <div id="panel-summary" className="bg-[#0a0a0a] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 animate-fade-in text-white">
       <div className="text-center max-w-xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-1.5 bg-[#FF6321]/15 text-[#FF6321] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-[#FF6321]/20">
-          📋 Confirmation de séance
+          Ta séance
         </div>
         <h2 className="text-2xl sm:text-3xl font-display font-black tracking-tight uppercase">
-          Résumé du Plan de Séance d'Entraînement
+          Récapitulatif
         </h2>
         <p className="text-xs sm:text-sm text-white/55 leading-relaxed font-sans">
-          Voici l'ordonnancement optimal de vos {durationMinutes} minutes de PPG spécifique. Vous pouvez ré-organiser les exercices ou retourner ajuster vos choix.
+          Touche un exercice pour voir les consignes. Tu peux mélanger l'ordre ou revenir aux réglages.
         </p>
       </div>
 
       {/* STATS OVERVIEW CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center">
-          <span className="text-[10px] text-white/40 uppercase font-black font-mono tracking-widest block">Durée Totale</span>
+          <span className="text-[10px] text-white/40 uppercase font-black font-mono tracking-widest block">Durée</span>
           <span className="text-xl font-bold font-display text-white">{durationMinutes} minutes</span>
         </div>
         <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center">
-          <span className="text-[10px] text-white/40 uppercase font-black font-mono tracking-widest block">Rythme d'effort</span>
+          <span className="text-[10px] text-white/40 uppercase font-black font-mono tracking-widest block">Rythme</span>
           <span className="text-xl font-bold font-display text-[#FF6321] uppercase text-xs sm:text-sm md:text-base lg:text-xl">
-            {config.rythme === 'equilibre' ? 'Équilibré (30s/30s)' : 'Intense (40s/20s)'}
+            {config.rythme === 'equilibre' ? 'Équilibré · 30/30' : 'Intense · 40/20'}
           </span>
         </div>
         <div className="bg-[#FF6321]/5 border border-[#FF6321]/20 p-4 rounded-xl text-center">
-          <span className="text-[10px] text-[#FF6321]/80 uppercase font-black font-mono tracking-widest block">Exercices Distincts</span>
+          <span className="text-[10px] text-[#FF6321]/80 uppercase font-black font-mono tracking-widest block">Exercices différents</span>
           <span className="text-xl font-bold font-display text-white">
             {plan.circuitExercises.length + plan.finishers.length} exercices
           </span>
@@ -170,10 +164,8 @@ export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: 
       <div className="space-y-4">
         {/* stage 1: Warmup */}
         <PlanSection
-          emoji="🔥"
           headingClassName="text-emerald-400"
-          label={`Phase Échauffement : Progressive (${plan.totalWarmup} minutes)`}
-          hint="Cliquez sur un exercice pour voir les consignes"
+          label={`Échauffement · ${plan.totalWarmup} min`}
         >
           {plan.warmups.map((item, idx) => (
             <PlanItemCard
@@ -195,26 +187,23 @@ export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: 
           {plan.hasTwoBlocks ? (
             <>
               <PlanSection
-                emoji="⚡"
                 headingClassName="text-[#FF6321]"
-                label={`Circuit Bloc A : ${roundsLabel(plan.numRounds1)} (${plan.circuit1Exercises.length * plan.numRounds1} minutes)`}
+                label={`Bloc A · ${roundsLabel(plan.numRounds1)} · ${plan.circuit1Exercises.length * plan.numRounds1} min`}
               >
                 {circuitCards(plan.circuit1Exercises, setSelectedExercise, CIRCUIT_STYLES.blockA)}
               </PlanSection>
 
               <PlanSection
-                emoji="⚡"
                 headingClassName="text-orange-400"
-                label={`Circuit Bloc B : ${roundsLabel(plan.numRounds2)} (${plan.circuit2Exercises.length * plan.numRounds2} minutes)`}
+                label={`Bloc B · ${roundsLabel(plan.numRounds2)} · ${plan.circuit2Exercises.length * plan.numRounds2} min`}
               >
                 {circuitCards(plan.circuit2Exercises, setSelectedExercise, CIRCUIT_STYLES.blockB)}
               </PlanSection>
             </>
           ) : (
             <PlanSection
-              emoji="⚡"
               headingClassName="text-[#FF6321]"
-              label={`Circuit Principal : ${roundsLabel(plan.numRounds)} (${plan.totalMainCircuit * plan.numRounds} minutes)`}
+              label={`Circuit · ${roundsLabel(plan.numRounds)} · ${plan.totalMainCircuit * plan.numRounds} min`}
             >
               {circuitCards(plan.circuitExercises, setSelectedExercise, CIRCUIT_STYLES.main)}
             </PlanSection>
@@ -223,9 +212,8 @@ export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: 
 
         {/* stage 3: Finisher */}
         <PlanSection
-          emoji="🏁"
           headingClassName="text-red-400"
-          label={`Dernière ligne droite : Le Finisher (${plan.totalFinishers} minutes)`}
+          label={`Finisher · ${plan.totalFinishers} min`}
           gridClassName="grid grid-cols-1 sm:grid-cols-3 gap-2"
         >
           {plan.finishers.map((item, idx) => (
@@ -251,7 +239,7 @@ export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: 
           onClick={onBack}
           className="w-full sm:w-auto text-xs text-white/70 hover:text-white flex items-center gap-2 bg-white/5 hover:bg-white/10 px-6 h-12 rounded-full border border-white/10 hover:border-white/20 transition-all font-bold uppercase tracking-wider justify-center cursor-pointer font-sans"
         >
-          <ArrowLeft className="w-4 h-4 text-[#FF6321]" /> Modifier la configuration
+          <ArrowLeft className="w-4 h-4 text-[#FF6321]" /> Modifier les réglages
         </button>
 
         <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
@@ -259,9 +247,9 @@ export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: 
             type="button"
             onClick={onRegenerate}
             className="w-full sm:w-auto text-xs text-white/70 hover:text-white flex items-center gap-2 bg-white/5 hover:bg-white/10 px-5 h-12 rounded-full border border-white/10 hover:border-white/20 transition-all font-bold uppercase tracking-wider justify-center cursor-pointer font-sans"
-            title="Mélanger l'ordre des exercices pour une nouvelle séance aléatoire"
+            title="Tirer un nouvel ordre des exercices"
           >
-            🔄 Régénérer l'ordre
+            Mélanger l'ordre
           </button>
 
           <button
@@ -269,7 +257,7 @@ export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: 
             onClick={onLaunch}
             className="w-full sm:w-auto bg-[#FF6321] hover:bg-[#FF6321]/95 text-black font-extrabold px-10 h-12 rounded-full shadow-lg shadow-[#FF6321]/15 transition-all transform active:scale-95 flex items-center justify-center gap-2 text-xs uppercase tracking-widest cursor-pointer font-sans animate-pulse"
           >
-            <Play className="w-4 h-4 fill-black shrink-0" /> Lancer l'entraînement !
+            <Play className="w-4 h-4 fill-black shrink-0" /> Commencer
           </button>
         </div>
       </div>

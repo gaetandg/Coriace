@@ -63,36 +63,36 @@ export function CurrentIntervalCard({ interval, secondsRemaining, totalRounds, e
           <div className="text-center space-y-0.5 sm:space-y-1 relative">
             {interval.roundNumber && (
               <span className="text-[10px] sm:text-xs font-bold text-amber-400 uppercase tracking-widest block font-mono leading-none pb-0.5">
-                ROUND {interval.roundNumber}/{rounds}
+                Tour {interval.roundNumber}/{rounds}
               </span>
             )}
             <span className={`text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] block transition ${phaseTextColor}`}>
-              {isTransition ? 'Transition' : interval.type === 'work' ? 'Travail' : 'Récupération'}
+              {isTransition ? 'Changement' : interval.type === 'work' ? 'Effort' : 'Récupération'}
             </span>
             <span className="text-3xl sm:text-5xl md:text-6xl font-display font-black leading-none tracking-tighter text-[#FF6321] block">
               {secondsRemaining < 10 ? `00:0${secondsRemaining}` : `00:${secondsRemaining}`}
             </span>
             <span className="text-[9px] sm:text-[10px] text-white/40 font-mono block uppercase tracking-wider">
-              TEMPS {formatTime(elapsedSeconds)} / {formatTime(totalSeconds)}
+              Temps {formatTime(elapsedSeconds)} / {formatTime(totalSeconds)}
             </span>
           </div>
         </div>
 
         {/* Present Exercise Details */}
         <div className="space-y-2 sm:space-y-4 max-w-xl mx-auto">
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="px-3.5 py-1 bg-[#FF6321]/15 border border-[#FF6321]/30 text-[#FF6321] text-[9px] sm:text-[10px] font-bold uppercase rounded-full tracking-wider font-mono">
-              Cible : {interval.target}
-            </span>
-            {interval.exercise && (() => {
-              const bPart = getBodyPart(interval.exercise);
-              return (
+          {interval.exercise && (() => {
+            const bPart = getBodyPart(interval.exercise);
+            return (
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <span className="px-3.5 py-1 bg-[#FF6321]/15 border border-[#FF6321]/30 text-[#FF6321] text-[9px] sm:text-[10px] font-bold uppercase rounded-full tracking-wider font-mono">
+                  Cible : {interval.target}
+                </span>
                 <span className="px-3.5 py-1 bg-white/5 border border-white/10 text-white/85 text-[9px] sm:text-[10px] font-bold uppercase rounded-full tracking-wider font-mono flex items-center gap-1">
                   {bodyPartEmoji(bPart)} {bPart.toUpperCase()}
                 </span>
-              );
-            })()}
-          </div>
+              </div>
+            );
+          })()}
           <h3 className="text-xl sm:text-3xl md:text-4xl font-display font-bold text-white tracking-tight leading-none uppercase">
             {interval.title}
           </h3>
@@ -103,11 +103,11 @@ export function CurrentIntervalCard({ interval, secondsRemaining, totalRounds, e
           {interval.isRoundTransition && interval.roundTransitionFrom && interval.roundTransitionTo && (
             <TransitionCard
               progress={progress}
-              headerLeft={`Rond ${interval.roundTransitionFrom} / ${rounds} Terminé`}
-              headerRight={`Rond ${interval.roundTransitionTo} / ${rounds} Suivant`}
-              fromLabel={`ROND ${interval.roundTransitionFrom}`}
-              toLabel={`ROND ${interval.roundTransitionTo}`}
-              caption="Changement de Round"
+              headerLeft={`Tour ${interval.roundTransitionFrom}/${rounds} terminé`}
+              headerRight={`Tour ${interval.roundTransitionTo}/${rounds} ensuite`}
+              fromLabel={`Tour ${interval.roundTransitionFrom}`}
+              toLabel={`Tour ${interval.roundTransitionTo}`}
+              caption="+30 s de récupération"
               headerClassName="text-amber-400"
               captionClassName="text-amber-400/95"
               nextClassName="bg-[#FF6321]/15 border border-[#FF6321]/30 text-[#FF6321]"
@@ -117,11 +117,11 @@ export function CurrentIntervalCard({ interval, secondsRemaining, totalRounds, e
           {interval.isBlockTransition && (
             <TransitionCard
               progress={progress}
-              headerLeft="Bloc A Terminé"
-              headerRight="Bloc B Suivant"
-              fromLabel="BLOC A"
-              toLabel="BLOC B"
-              caption="Changement de Bloc (+30s)"
+              headerLeft="Bloc A terminé"
+              headerRight="Bloc B ensuite"
+              fromLabel="Bloc A"
+              toLabel="Bloc B"
+              caption="+30 s de récupération"
               headerClassName="text-orange-400"
               captionClassName="text-orange-400"
               nextClassName="bg-orange-400/15 border border-orange-400/30 text-orange-400"
@@ -134,7 +134,7 @@ export function CurrentIntervalCard({ interval, secondsRemaining, totalRounds, e
           <div className="hidden sm:flex bg-white/5 border border-white/10 rounded-xl p-4 text-left max-w-xl mx-auto items-start gap-4">
             <span className="text-xl shrink-0">💡</span>
             <div className="space-y-0.5">
-              <span className="font-bold text-xs uppercase tracking-wider text-white">Conseil de Prévention</span>
+              <span className="font-bold text-xs uppercase tracking-wider text-white">Conseil</span>
               <p className="text-xs text-white/60 leading-relaxed font-sans">
                 {interval.exercise.tips}
               </p>
@@ -150,9 +150,9 @@ export function CurrentIntervalCard({ interval, secondsRemaining, totalRounds, e
           <div className="hidden sm:flex bg-white/5 border border-white/10 rounded-xl p-4 text-left max-w-xl mx-auto items-start gap-4">
             <span className="text-xl shrink-0">💧</span>
             <div className="space-y-0.5">
-              <span className="font-bold text-xs uppercase tracking-wider text-white font-sans">Hydratation & Relâchement</span>
+              <span className="font-bold text-xs uppercase tracking-wider text-white font-sans">Pendant la pause</span>
               <p className="text-xs text-white/60 leading-relaxed font-sans">
-                Profitez du temps imparti pour relâcher vos muscles et décrisper vos trapèzes. Inspirez profondément pour oxygéner vos fibres.
+                Lis le prochain exercice et mets-toi en place.
               </p>
             </div>
           </div>
