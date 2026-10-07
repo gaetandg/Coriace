@@ -11,3 +11,6 @@ export function formatClock(totalSecs: number) {
   const secs = totalSecs % 60;
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
+
+// "1 séance", "3 séances"
+export const plural = (count: number, word: string) => `${count} ${word}${count > 1 ? 's' : ''}`;

@@ -8,7 +8,7 @@ import { PlayerScreen } from './components/player/PlayerScreen';
 import { CompletedScreen } from './components/CompletedScreen';
 import { SoundSheet } from './components/SoundSheet';
 import { useBackHandler } from './hooks/useBackHandler';
-import { HistoryScreen } from './components/HistoryScreen';
+import { StatsScreen } from './components/stats/StatsScreen';
 import { sessionsInLastDays } from './lib/history';
 import { useAuth } from './hooks/useAuth';
 import { AccountCard } from './components/AccountCard';
@@ -17,7 +17,7 @@ import { AccountSheet } from './components/AccountSheet';
 const accountInitial = (user: User | null) =>
   user ? ((user.user_metadata?.full_name as string | undefined) || user.email || '?').charAt(0).toUpperCase() : '';
 
-type AppTab = 'workout' | 'history';
+type AppTab = 'workout' | 'stats';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<AppTab>('workout');
@@ -34,7 +34,7 @@ export default function App() {
   const session = useWorkoutSession(notify, auth.user?.id ?? null);
   const { config, workoutState, activeInterval, summaryPlanGroups } = session;
 
-  // Phone back button, from the deepest level: sheets, history, then the workout screens.
+  // Phone back button, from the deepest level: sheets, stats, then the workout screens.
   useBackHandler(workoutState === 'summary', session.handleBackToConfig);
   useBackHandler(workoutState === 'completed', session.resetWorkout);
   useBackHandler(workoutState === 'active', () => {
@@ -42,12 +42,12 @@ export default function App() {
     if (session.isPlaying) session.togglePlayPause();
     notify('Séance en pause. Touche « Quitter » pour l\'arrêter.');
   });
-  // Leaving the history after a session goes home rather than back to the completion screen.
-  const closeHistory = () => {
+  // Leaving the stats after a session goes home rather than back to the completion screen.
+  const closeStats = () => {
     setActiveTab('workout');
     if (workoutState === 'completed') session.resetWorkout();
   };
-  useBackHandler(activeTab === 'history', closeHistory);
+  useBackHandler(activeTab === 'stats', closeStats);
   useBackHandler(showSound, () => setShowSound(false));
   useBackHandler(showAccount, () => setShowAccount(false));
 
@@ -58,22 +58,24 @@ export default function App() {
     <div className={`min-h-dvh overflow-x-clip text-white transition-colors duration-500 ${isBreak ? 'bg-grass' : 'bg-brick'}`}>
       <div className="relative w-full max-w-md min-h-dvh mx-auto px-5 pt-5 pb-6 flex flex-col gap-[22px]">
         <Header
+          statsOpen={activeTab === 'stats'}
+          onToggleStats={() => (activeTab === 'stats' ? closeStats() : setActiveTab('stats'))}
           soundOn={session.sound.beeps || (session.sound.voice && session.speechSupported)}
           onOpenSound={() => setShowSound(true)}
           accountInitial={auth.enabled ? accountInitial(auth.user) : null}
           onOpenAccount={() => setShowAccount(true)}
         />
 
-        {activeTab === 'history' ? (
-          <HistoryScreen
+        {activeTab === 'stats' ? (
+          <StatsScreen
             history={session.history}
-            onBack={closeHistory}
+            onBack={closeStats}
             onClear={session.clearHistory}
             account={<AccountCard auth={auth} />}
           />
         ) : (
           <>
-            {workoutState === 'config' && <ConfigScreen session={session} onOpenHistory={() => setActiveTab('history')} />}
+            {workoutState === 'config' && <ConfigScreen session={session} onOpenHistory={() => setActiveTab('stats')} />}
 
             {workoutState === 'summary' && summaryPlanGroups && (
               <SummaryScreen
@@ -99,7 +101,7 @@ export default function App() {
                 rythme={config.rythme}
                 recentCount={sessionsInLastDays(session.history, 7)}
                 onRestart={session.resetWorkout}
-                onOpenHistory={() => setActiveTab('history')}
+                onOpenStats={() => setActiveTab('stats')}
                 account={<AccountCard auth={auth} compact />}
               />
             )}
@@ -120,7 +122,7 @@ export default function App() {
       {showAccount && (
         <AccountSheet
           auth={auth}
-          onOpenHistory={() => { setShowAccount(false); setActiveTab('history'); }}
+          onOpenStats={() => { setShowAccount(false); setActiveTab('stats'); }}
           onClose={() => setShowAccount(false)}
         />
       )}

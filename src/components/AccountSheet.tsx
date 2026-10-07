@@ -2,12 +2,12 @@ import { Auth } from '../hooks/useAuth';
 
 interface AccountSheetProps {
   auth: Auth;
-  onOpenHistory: () => void;
+  onOpenStats: () => void;
   onClose: () => void;
 }
 
 // Bottom sheet opened from the header: Google sign-in, or the signed-in account.
-export function AccountSheet({ auth, onOpenHistory, onClose }: AccountSheetProps) {
+export function AccountSheet({ auth, onOpenStats, onClose }: AccountSheetProps) {
   const user = auth.user;
   const name = user?.user_metadata?.full_name as string | undefined;
 
@@ -31,10 +31,10 @@ export function AccountSheet({ auth, onOpenHistory, onClose }: AccountSheetProps
             <p className="text-[15px] leading-snug">Ton historique est sauvegardé sur ton compte et synchronisé entre tes appareils.</p>
             <div className="flex flex-col gap-2.5">
               <button
-                onClick={onOpenHistory}
+                onClick={onOpenStats}
                 className="h-14 rounded-[18px] border-[1.5px] border-ink/40 font-semibold cursor-pointer"
               >
-                Voir l'historique
+                Voir tes stats
               </button>
               <button
                 id="btn-sign-out"

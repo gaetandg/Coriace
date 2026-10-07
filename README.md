@@ -19,7 +19,7 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Guide des exercices** : description, consignes clés et conseils pour chaque mouvement.
 - **Circuits équilibrés et variés** : chaque circuit contient au moins un exercice de mollets, d'adducteurs, de fessiers et de gainage, au plus deux par groupe, sans deux exercices du même groupe à la suite. « Régénérer » évite les exercices de la séance précédente.
 - **Bouton retour du téléphone** : revient à l'écran précédent ; pendant une séance, il met en pause au lieu de quitter.
-- **Historique** : chaque séance terminée est enregistrée (date, nom, durée, rythme) ; l'accueil affiche le nombre de séances des 7 derniers jours.
+- **Statistiques** : bouton en haut à droite. Séances sur 7 et 30 jours, minutes, semaines d'affilée, moyenne par semaine, graphique des séances par semaine (12 semaines, repère à 2 par semaine), séances les plus faites et historique complet. L'accueil affiche le nombre de séances des 7 derniers jours.
 - **Compte Google (optionnel)** : bouton compte en haut à droite ; en se connectant, l'historique est sauvegardé et synchronisé entre appareils (Supabase).
 - **Préférences retenues** : matériel, rythme, durée, exercices cochés et réglages du son sont gardés d'une visite à l'autre (dans le navigateur).
 - **Installable (PWA)** : s'ajoute à l'écran d'accueil et fonctionne hors ligne.
@@ -67,12 +67,12 @@ src/
 ├── components/
 │   ├── Header.tsx, Logo.tsx   # En-tête, logo et motif de couloirs
 │   ├── CompletedScreen.tsx    # Fin de séance
-│   ├── HistoryScreen.tsx      # Historique des séances terminées
+│   ├── stats/                 # Statistiques : chiffres clés, graphiques, historique
 │   ├── AccountCard.tsx, AccountSheet.tsx  # Connexion Google et compte
 │   ├── config/                # Accueil (réglages) et choix des exercices
 │   ├── summary/               # Résumé du plan et fiche détaillée d'un exercice
 │   └── player/                # Séance en cours : minuteur, prochaine étape, commandes, déroulé
-├── lib/                       # Annonces (cues.ts), préférences, historique, groupes d'exercices, plan, formatage, classes d'interface
+├── lib/                       # Annonces (cues.ts), préférences, historique, statistiques, groupes d'exercices, plan, formatage, classes d'interface
 ├── exercises.ts               # Base de données des exercices
 ├── workoutGenerator.ts        # Séance sur mesure et construction des intervalles
 ├── sessions.ts                # Séances prédéfinies

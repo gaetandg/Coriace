@@ -1,7 +1,9 @@
-import { UserRound, Volume2, VolumeX } from 'lucide-react';
+import { ChartColumn, UserRound, Volume2, VolumeX } from 'lucide-react';
 import { Logo } from './Logo';
 
 interface HeaderProps {
+  statsOpen: boolean;
+  onToggleStats: () => void;
   soundOn: boolean;
   onOpenSound: () => void;
   // null when accounts aren't available; otherwise the initial of the signed-in runner, or '' when signed out.
@@ -9,23 +11,32 @@ interface HeaderProps {
   onOpenAccount: () => void;
 }
 
-export function Header({ soundOn, onOpenSound, accountInitial, onOpenAccount }: HeaderProps) {
+export function Header({ statsOpen, onToggleStats, soundOn, onOpenSound, accountInitial, onOpenAccount }: HeaderProps) {
   return (
     <header className="relative flex items-center justify-between">
       <div className="flex items-center gap-2">
         <Logo size={42} />
         <div className="flex flex-col">
           <span className="font-display font-extrabold text-[23px] leading-tight tracking-tight">Coriace</span>
-          <span className="text-[13px] leading-tight text-sand min-[350px]:whitespace-nowrap">Le renfo pour les coureurs</span>
+          <span className="text-[13px] leading-tight text-sand min-[375px]:whitespace-nowrap">Le renfo pour les coureurs</span>
         </div>
       </div>
 
       <div className="flex items-center gap-1">
         <button
+          id="btn-stats"
+          onClick={onToggleStats}
+          aria-label="Statistiques"
+          aria-pressed={statsOpen}
+          className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer ${statsOpen ? 'bg-cream text-ink' : 'border-[1.5px] border-white/55'}`}
+        >
+          <ChartColumn className="w-5 h-5" />
+        </button>
+        <button
           id="btn-toggle-sound"
           onClick={onOpenSound}
           aria-label="Réglages du son"
-          className={`w-11 h-11 rounded-full flex items-center justify-center ${soundOn ? 'border-[1.5px] border-white/55' : 'bg-ink/40'} cursor-pointer`}
+          className={`w-10 h-10 rounded-full flex items-center justify-center ${soundOn ? 'border-[1.5px] border-white/55' : 'bg-ink/40'} cursor-pointer`}
         >
           {soundOn ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
         </button>
@@ -34,7 +45,7 @@ export function Header({ soundOn, onOpenSound, accountInitial, onOpenAccount }: 
             id="btn-account"
             onClick={onOpenAccount}
             aria-label="Compte"
-            className={`w-11 h-11 rounded-full flex items-center justify-center cursor-pointer ${accountInitial ? 'bg-cream text-ink font-display font-extrabold text-lg' : 'border-[1.5px] border-white/55'}`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer ${accountInitial ? 'bg-cream text-ink font-display font-extrabold text-lg' : 'border-[1.5px] border-white/55'}`}
           >
             {accountInitial || <UserRound className="w-5 h-5" />}
           </button>

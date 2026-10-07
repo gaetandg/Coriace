@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { WorkoutConfig } from '../types';
-import { plural } from './HistoryScreen';
+import { plural } from '../lib/format';
 import { primaryButton } from '../lib/ui';
 import { LaneArcs } from './Logo';
 
@@ -10,11 +10,11 @@ interface CompletedScreenProps {
   rythme: WorkoutConfig['rythme'];
   recentCount: number; // sessions in the last 7 days, this one included
   onRestart: () => void;
-  onOpenHistory: () => void;
+  onOpenStats: () => void;
   account: ReactNode;
 }
 
-export function CompletedScreen({ durationMinutes, exerciseCount, rythme, recentCount, onRestart, onOpenHistory, account }: CompletedScreenProps) {
+export function CompletedScreen({ durationMinutes, exerciseCount, rythme, recentCount, onRestart, onOpenStats, account }: CompletedScreenProps) {
   const stats = [
     { value: String(durationMinutes), label: 'minutes' },
     { value: String(exerciseCount), label: 'exercices' },
@@ -44,8 +44,8 @@ export function CompletedScreen({ durationMinutes, exerciseCount, rythme, recent
       {account}
 
       <div className="relative mt-auto flex flex-col gap-2.5">
-        <button onClick={onOpenHistory} className="h-12 font-semibold underline underline-offset-4 cursor-pointer">
-          Voir l'historique
+        <button onClick={onOpenStats} className="h-12 font-semibold underline underline-offset-4 cursor-pointer">
+          Voir tes stats
         </button>
         <button id="btn-completed-reset" onClick={onRestart} className={`w-full ${primaryButton}`}>
           Retour à l'accueil
