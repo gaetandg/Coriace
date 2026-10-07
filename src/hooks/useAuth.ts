@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import { track } from '../lib/analytics';
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from '../config';
 
 // Asks the project whether Google sign-in is switched on, so the button never leads to an error.
@@ -32,6 +33,7 @@ export function useAuth() {
   }, []);
 
   const signIn = () => {
+    track('connexion-google');
     // Google sends the runner back to the app's home page, where the session is picked up.
     supabase?.auth.signInWithOAuth({
       provider: 'google',

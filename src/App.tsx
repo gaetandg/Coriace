@@ -13,6 +13,7 @@ import { sessionsInLastDays } from './lib/history';
 import { useAuth } from './hooks/useAuth';
 import { AccountCard } from './components/AccountCard';
 import { AccountSheet } from './components/AccountSheet';
+import { track } from './lib/analytics';
 
 const accountInitial = (user: User | null) =>
   user ? ((user.user_metadata?.full_name as string | undefined) || user.email || '?').charAt(0).toUpperCase() : '';
@@ -48,6 +49,7 @@ export default function App() {
     if (workoutState === 'completed') session.resetWorkout();
   };
   useBackHandler(activeTab === 'stats', closeStats);
+  const openStats = () => { setActiveTab('stats'); track('statistiques'); };
   useBackHandler(showSound, () => setShowSound(false));
   useBackHandler(showAccount, () => setShowAccount(false));
 
@@ -87,11 +89,11 @@ export default function App() {
         <Header
           onHome={goHome}
           statsOpen={activeTab === 'stats'}
-          onToggleStats={() => (activeTab === 'stats' ? closeStats() : setActiveTab('stats'))}
+          onToggleStats={() => (activeTab === 'stats' ? closeStats() : openStats())}
           soundOn={session.sound.beeps || (session.sound.voice && session.speechSupported)}
-          onOpenSound={() => setShowSound(true)}
+          onOpenSound={() => { setShowSound(true); track('reglages-son'); }}
           accountInitial={auth.enabled ? accountInitial(auth.user) : null}
-          onOpenAccount={() => setShowAccount(true)}
+          onOpenAccount={() => { setShowAccount(true); track('compte'); }}
         />
 
         {activeTab === 'stats' ? (
@@ -103,7 +105,7 @@ export default function App() {
           />
         ) : (
           <>
-            {workoutState === 'config' && <ConfigScreen session={session} onOpenHistory={() => setActiveTab('stats')} />}
+            {workoutState === 'config' && <ConfigScreen session={session} onOpenHistory={openStats} />}
 
             {workoutState === 'summary' && summaryPlanGroups && (
               <SummaryScreen
@@ -129,7 +131,7 @@ export default function App() {
                 rythme={config.rythme}
                 recentCount={sessionsInLastDays(session.history, 7)}
                 onRestart={session.resetWorkout}
-                onOpenStats={() => setActiveTab('stats')}
+                onOpenStats={openStats}
                 account={<AccountCard auth={auth} compact />}
               />
             )}
@@ -150,7 +152,7 @@ export default function App() {
       {showAccount && (
         <AccountSheet
           auth={auth}
-          onOpenStats={() => { setShowAccount(false); setActiveTab('stats'); }}
+          onOpenStats={() => { setShowAccount(false); openStats(); }}
           onClose={() => setShowAccount(false)}
         />
       )}

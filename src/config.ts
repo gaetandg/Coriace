@@ -4,3 +4,7 @@
 // Environment variables can point a local build at another project.
 export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://prfadpnawhrphxigiyag.supabase.co';
 export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_3LEt_6gdMHC9gufGs2b-Zw_Glo4nfTO';
+
+// Umami Cloud website id for audience measurement (cookieless, no personal data). Public by
+// design, like any analytics snippet. Empty: nothing is loaded and nothing is measured.
+export const UMAMI_WEBSITE_ID = import.meta.env.VITE_UMAMI_WEBSITE_ID || '';

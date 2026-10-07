@@ -44,7 +44,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Se souvenir des préférences d'une fois sur l'autre (matériel, rythme, durée, exercices cochés, son)
 
 ### Comptes et statistiques
-- [ ] Mesure d'audience (analytics) : savoir quelles séances et quels écrans sont utilisés, dans le respect du RGPD (outil sans cookie ou consentement)
+- [x] Mesure d'audience avec Umami (sans cookie) : séances préparées, lancées, terminées, quittées, écrans ouverts — à activer avec l'identifiant du site
 - [x] Connexion Google (Supabase) et synchronisation de l'historique entre appareils, accessible depuis l'en-tête
 - [ ] Synchroniser aussi les préférences et les séances enregistrées
 - [x] Sans compte : proposer de se connecter en fin de séance pour sauvegarder son historique (l'historique local est repris à la connexion)

@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { TriangleAlert, X } from 'lucide-react';
+import { track } from '../../lib/analytics';
 import { Exercise } from '../../types';
 import { useBackHandler } from '../../hooks/useBackHandler';
 import { ExerciseAnimation, hasAnimation } from '../ExerciseAnimation';
@@ -17,6 +19,7 @@ interface ExerciseDetailModalProps {
 // Bottom sheet with the full instructions for one exercise.
 export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalProps) {
   useBackHandler(true, onClose);
+  useEffect(() => { track('fiche-exercice', { exercice: exercise.id }); }, [exercise.id]);
   const equipment = exercise.equipmentRequired.length > 0
     ? exercise.equipmentRequired.map(eq => EQUIPMENT_LABELS[eq])
     : ['Sans matériel'];

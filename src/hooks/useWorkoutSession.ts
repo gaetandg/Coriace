@@ -1,3 +1,4 @@
+import { track } from '../lib/analytics';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { generateWorkout } from '../workoutGenerator';
 import { SoundSettings, WorkoutConfig, WorkoutInterval } from '../types';
@@ -166,6 +167,14 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
   };
 
   // --- NAVIGATION & CONTROLS ---
+  // What audience measurement records about a session: its kind, never anything personal.
+  const sessionInfo = (preset: PresetSession | null = activePreset) => ({
+    seance: preset?.id ?? 'sur-mesure',
+    minutes: preset?.durationMinutes ?? config.durationMinutes ?? 30,
+    rythme: config.rythme,
+    deja_echauffe: !preset && !!config.skipWarmup,
+  });
+
   const showPlan = (generated: WorkoutInterval[], preset: PresetSession | null) => {
     initAudio();
     setIntervals(generated);
@@ -173,6 +182,7 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     setCurrentIntervalIndex(0);
     setSecondsRemaining(generated[0]?.duration || 30);
     setWorkoutState('summary');
+    track('seance-preparee', sessionInfo(preset));
   };
 
   // Custom sessions need at least one checked exercise usable with the equipment.
@@ -196,6 +206,7 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     // Spoken inside the tap: iOS only allows speech that starts from a user gesture.
     startedIndexRef.current = 0;
     playCue(sessionStartCue(intervals));
+    track('seance-lancee', sessionInfo());
   };
 
   const handleBackToConfig = () => {
@@ -209,6 +220,7 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     setCurrentIntervalIndex(0);
     setSecondsRemaining(generated[0]?.duration || 30);
     notify('Nouvelle séance générée.');
+    track('seance-regeneree', sessionInfo());
   };
 
   // Find compatible exercises for selected configuration (equipment based)
@@ -266,6 +278,7 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
         exercises: intervals.filter(i => i.type === 'work' && (i.stage === 'main' || i.stage === 'finisher') && i.exercise).map(i => i.exercise!.id),
       });
       setHistory(prev => [entry, ...prev]);
+      track('seance-terminee', sessionInfo());
       // If this fails (offline), the next sync sends it.
       if (supabase && userId) pushHistoryEntry(supabase, entry).catch(() => {});
     }
@@ -289,6 +302,9 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
   };
 
   const resetWorkout = () => {
+    if (workoutState === 'active') {
+      track('seance-quittee', { ...sessionInfo(), progression: Math.round((100 * currentIntervalIndex) / Math.max(1, intervals.length)) });
+    }
     speech.cancel();
     setIsPlaying(false);
     setCurrentIntervalIndex(0);
