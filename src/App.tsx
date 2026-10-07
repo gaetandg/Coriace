@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { useWorkoutSession } from './hooks/useWorkoutSession';
-import { AppTab, Header } from './components/Header';
-import { GuideScreen } from './components/GuideScreen';
+import { Header } from './components/Header';
 import { ConfigScreen } from './components/config/ConfigScreen';
 import { SummaryScreen } from './components/summary/SummaryScreen';
 import { PlayerScreen } from './components/player/PlayerScreen';
@@ -17,6 +16,8 @@ import { AccountSheet } from './components/AccountSheet';
 
 const accountInitial = (user: User | null) =>
   user ? ((user.user_metadata?.full_name as string | undefined) || user.email || '?').charAt(0).toUpperCase() : '';
+
+type AppTab = 'workout' | 'history';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<AppTab>('workout');
@@ -33,7 +34,7 @@ export default function App() {
   const session = useWorkoutSession(notify, auth.user?.id ?? null);
   const { config, workoutState, activeInterval, summaryPlanGroups } = session;
 
-  // Phone back button, from the deepest level: sheets, guide, then the workout screens.
+  // Phone back button, from the deepest level: sheets, history, then the workout screens.
   useBackHandler(workoutState === 'summary', session.handleBackToConfig);
   useBackHandler(workoutState === 'completed', session.resetWorkout);
   useBackHandler(workoutState === 'active', () => {
@@ -41,7 +42,6 @@ export default function App() {
     if (session.isPlaying) session.togglePlayPause();
     notify('Séance en pause. Touche « Quitter » pour l\'arrêter.');
   });
-  useBackHandler(activeTab === 'guide', () => setActiveTab('workout'));
   // Leaving the history after a session goes home rather than back to the completion screen.
   const closeHistory = () => {
     setActiveTab('workout');
@@ -58,17 +58,13 @@ export default function App() {
     <div className={`min-h-dvh overflow-x-clip text-white transition-colors duration-500 ${isBreak ? 'bg-grass' : 'bg-brick'}`}>
       <div className="relative w-full max-w-md min-h-dvh mx-auto px-5 pt-5 pb-6 flex flex-col gap-[22px]">
         <Header
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
           soundOn={session.sound.beeps || (session.sound.voice && session.speechSupported)}
           onOpenSound={() => setShowSound(true)}
           accountInitial={auth.enabled ? accountInitial(auth.user) : null}
           onOpenAccount={() => setShowAccount(true)}
         />
 
-        {activeTab === 'guide' ? (
-          <GuideScreen onOpenWorkout={() => setActiveTab('workout')} />
-        ) : activeTab === 'history' ? (
+        {activeTab === 'history' ? (
           <HistoryScreen
             history={session.history}
             onBack={closeHistory}

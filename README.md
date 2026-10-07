@@ -66,7 +66,6 @@ src/
 │   └── useWakeLock.ts         # Écran maintenu allumé
 ├── components/
 │   ├── Header.tsx, Logo.tsx   # En-tête, logo et motif de couloirs
-│   ├── GuideScreen.tsx        # Onglet « Guide »
 │   ├── CompletedScreen.tsx    # Fin de séance
 │   ├── HistoryScreen.tsx      # Historique des séances terminées
 │   ├── AccountCard.tsx, AccountSheet.tsx  # Connexion Google et compte

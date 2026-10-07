@@ -64,6 +64,14 @@ export function AccountSheet({ auth, onOpenHistory, onClose }: AccountSheetProps
           </>
         )}
 
+        {user && (
+          <p className="text-[13px] text-clay">
+            <a href="conditions.html" className="underline">Conditions d'utilisation</a>
+            {' · '}
+            <a href="confidentialite.html" className="underline">Confidentialité</a>
+          </p>
+        )}
+
         <button onClick={onClose} className="h-14 rounded-[18px] bg-ink/10 font-display font-extrabold text-lg cursor-pointer">
           Fermer
         </button>
