@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react';
+import { Check, ChevronRight } from 'lucide-react';
 import { BlockStep } from '../../lib/plan';
 
 interface StepListProps {
@@ -32,6 +32,7 @@ export function StepList({ steps, activeBlockIndex, onJump }: StepListProps) {
       </summary>
 
       <div className="flex flex-col gap-4 pb-2">
+        <p className="text-sm text-sand">Touche une étape pour y aller directement.</p>
         {groups.filter(g => g.steps.length > 0).map(group => (
           <div key={group.key} className="flex flex-col gap-1">
             <span className="text-sm font-semibold text-sand">{group.label} · {group.steps.length} min</span>
@@ -53,6 +54,7 @@ export function StepList({ steps, activeBlockIndex, onJump }: StepListProps) {
                   </span>
                   <span className="flex-1 min-w-0 truncate font-medium">{step.title.replace('Échauffement : ', '')}</span>
                   <span className={`text-sm truncate ${isActive ? 'text-clay' : 'text-sand'}`}>{step.target.split(' - ')[0]}</span>
+                  {!isActive && <ChevronRight className="w-4 h-4 shrink-0 text-sand" aria-hidden="true" />}
                 </button>
               );
             })}

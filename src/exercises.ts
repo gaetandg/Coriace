@@ -8,6 +8,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Allongé sur le côté, pose le pied du dessus sur l\'assise d\'une chaise. Soulève le bassin pour aligner tête, bassin et pieds. La jambe du dessous reste dans le vide. Change de côté à chaque tour.',
     equipmentRequired: ['chaise'],
     category: 'specific_adductor',
+    group: 'adducteurs',
     tips: 'L\'effort se sent à l\'intérieur de la cuisse posée sur la chaise. Trop dur : pose le genou sur la chaise au lieu du pied.',
     instructionHighlight: 'Corps aligné, bassin haut.'
   },
@@ -18,6 +19,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Sur une marche, talons dans le vide. Monte sur la pointe des pieds en 1 seconde, redescends en 3 à 4 secondes. Sur une jambe si tu peux.',
     equipmentRequired: [],
     category: 'specific_calf',
+    group: 'mollets',
     tips: 'C\'est la descente qui compte : ce travail excentrique renforce le mollet et le tendon d\'Achille.',
     instructionHighlight: '1 s pour monter, 4 s pour descendre.'
   },
@@ -28,6 +30,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Assis sur une chaise, le poids de 8 kg posé sur les cuisses près des genoux. Monte sur la pointe des pieds le plus haut possible, puis redescends. Enchaîne.',
     equipmentRequired: ['chaise', 'poids_8kg'],
     category: 'specific_calf',
+    group: 'mollets',
     tips: 'Genoux pliés, c\'est surtout le soléaire qui travaille. C\'est lui qui tient la cheville à chaque foulée.',
     instructionHighlight: 'Amplitude complète, descente contrôlée.'
   },
@@ -38,6 +41,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Pieds plus écartés que les épaules, pointes tournées vers l\'extérieur. Descends en gardant le buste droit, puis remonte. Option : tiens le poids de 8 kg contre la poitrine.',
     equipmentRequired: [],
     category: 'specific_adductor',
+    group: 'adducteurs',
     tips: 'Pousse les genoux vers l\'extérieur pour qu\'ils restent dans l\'axe des pieds.',
     instructionHighlight: 'Genoux dans l\'axe des pieds, buste droit.'
   },
@@ -48,18 +52,9 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Fais un grand pas sur le côté. Plie la jambe qui avance, garde l\'autre tendue, puis pousse pour revenir au centre. Alterne les côtés.',
     equipmentRequired: [],
     category: 'specific_adductor',
+    group: 'adducteurs',
     tips: 'Envoie les fesses en arrière sur la jambe pliée, comme pour t\'asseoir.',
     instructionHighlight: 'Jambe opposée tendue.'
-  },
-  {
-    id: 'crunchs',
-    name: 'Crunchs',
-    target: 'Abdominaux (grand droit)',
-    description: 'Sur le dos, genoux pliés, mains près des tempes. Enroule le haut du dos en gardant le bas du dos au sol. Souffle en montant.',
-    equipmentRequired: [],
-    category: 'abdos',
-    tips: 'Ne tire pas sur la nuque : ce sont les abdos qui travaillent, pas les bras.',
-    instructionHighlight: 'Bas du dos au sol, souffle en montant.'
   },
   {
     id: 'plank_commando',
@@ -68,6 +63,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'En planche sur les avant-bras. Monte sur une main puis sur l\'autre pour passer bras tendus, puis redescends sur les avant-bras. Alterne le bras qui commence.',
     equipmentRequired: [],
     category: 'abdos',
+    group: 'gainage',
     tips: 'Écarte un peu les pieds pour être plus stable. Le bassin ne doit pas se balancer.',
     instructionHighlight: 'Bassin immobile.'
   },
@@ -78,18 +74,9 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Assis, buste incliné en arrière, talons au sol ou pieds décollés. Tiens le poids de 8 kg à deux mains et tourne le buste d\'un côté puis de l\'autre.',
     equipmentRequired: ['poids_8kg'],
     category: 'abdos',
+    group: 'gainage',
     tips: 'Tourne les épaules, pas seulement les bras. Trop dur : garde les talons au sol.',
     instructionHighlight: 'Les épaules suivent le poids.'
-  },
-  {
-    id: 'situps',
-    name: 'Sit-ups',
-    target: 'Abdominaux et fléchisseurs de hanche',
-    description: 'Sur le dos, genoux pliés. Remonte le buste jusqu\'à toucher les genoux, puis redescends en déroulant le dos.',
-    equipmentRequired: [],
-    category: 'abdos',
-    tips: 'Pas d\'élan avec les bras. Redescends vertèbre par vertèbre.',
-    instructionHighlight: 'Descente lente et contrôlée.'
   },
   {
     id: 'squat_classic',
@@ -98,6 +85,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Pieds largeur d\'épaules. Descends en envoyant les fesses en arrière, comme pour t\'asseoir, puis remonte. Option : tiens le poids de 8 kg contre la poitrine.',
     equipmentRequired: [],
     category: 'general',
+    group: 'cuisses',
     tips: 'Garde le poids du corps sur les talons et le regard devant toi.',
     instructionHighlight: 'Dos droit, talons au sol.'
   },
@@ -108,6 +96,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Fais un grand pas en avant et descends jusqu\'à ce que le genou arrière frôle le sol, puis reviens. Alterne les jambes.',
     equipmentRequired: [],
     category: 'general',
+    group: 'cuisses',
     tips: 'Garde le buste vertical et le genou avant dans l\'axe du pied.',
     instructionHighlight: 'Les deux genoux à 90°.'
   },
@@ -118,6 +107,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Dos contre le mur, cuisses parallèles au sol. Tiens la position. Pour corser, décolle un talon puis l\'autre.',
     equipmentRequired: [],
     category: 'general',
+    group: 'cuisses',
     tips: 'Tout le dos reste en contact avec le mur.',
     instructionHighlight: 'Cuisses parallèles au sol.'
   },
@@ -128,6 +118,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Mains sous les épaules, corps gainé. Descends la poitrine près du sol, puis pousse. Sur les genoux si besoin.',
     equipmentRequired: [],
     category: 'general',
+    group: 'haut_du_corps',
     tips: 'Coudes à environ 45° du corps, pas écartés à l\'horizontale : tes épaules te remercieront.',
     instructionHighlight: 'Corps droit du début à la fin.'
   },
@@ -138,6 +129,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Saute en écartant les pieds et en levant les bras au-dessus de la tête, puis reviens pieds joints, bras le long du corps.',
     equipmentRequired: [],
     category: 'general',
+    group: 'cardio',
     tips: 'Atterris en souplesse sur l\'avant du pied.',
     instructionHighlight: 'Réceptions légères.'
   },
@@ -148,6 +140,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Accroupis-toi au plus bas, fesses près des talons. Monte sur la pointe des pieds, tiens 2 secondes, repose les talons. Enchaîne.',
     equipmentRequired: [],
     category: 'specific_calf',
+    group: 'mollets',
     tips: 'Genoux très pliés, c\'est le soléaire qui travaille. Tiens-toi à un meuble si l\'équilibre est difficile.',
     instructionHighlight: 'Tiens 2 s en haut.'
   },
@@ -158,6 +151,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Petits sauts rapides sur l\'avant du pied, jambes presque tendues. Les talons ne touchent pas le sol.',
     equipmentRequired: ['corde_a_sauter'],
     category: 'specific_calf',
+    group: 'mollets',
     tips: 'Cherche des rebonds courts et réguliers : le tendon d\'Achille travaille comme un ressort.',
     instructionHighlight: 'Talons décollés, rebonds courts.'
   },
@@ -168,6 +162,7 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Lève l\'avant des pieds et marche uniquement sur les talons.',
     equipmentRequired: [],
     category: 'specific_calf',
+    group: 'mollets',
     tips: 'Ce muscle travaille à l\'opposé du mollet. Le renforcer équilibre le bas de la jambe.',
     instructionHighlight: 'Pointes de pieds le plus haut possible.'
   },
@@ -178,7 +173,74 @@ export const EXERCISE_DATABASE: Exercise[] = [
     description: 'Poids de 8 kg contre la poitrine, pieds un peu plus écartés que les épaules. Descends en squat. En bas, décale le poids du corps sur la jambe gauche, reviens au centre, puis sur la jambe droite, reviens au centre et remonte.',
     equipmentRequired: ['poids_8kg'],
     category: 'specific_adductor',
+    group: 'adducteurs',
     tips: 'Reste bas pendant tout le transfert : les adducteurs travaillent pour stabiliser le bassin.',
     instructionHighlight: 'Fesses basses pendant le transfert.'
+  },
+  {
+    id: 'single_leg_bridge',
+    name: 'Pont fessier sur une jambe',
+    target: 'Fessiers et ischios',
+    description: 'Sur le dos, genoux pliés, pieds au sol. Tends une jambe dans l\'axe de la cuisse, pousse dans le talon resté au sol et monte le bassin. Redescends sans poser les fesses. Change de jambe à mi-temps.',
+    equipmentRequired: [],
+    category: 'general',
+    group: 'fessiers',
+    tips: 'Serre les fessiers en haut, sans cambrer le bas du dos. Trop dur : garde les deux pieds au sol.',
+    instructionHighlight: 'Pousse dans le talon, bassin horizontal.'
+  },
+  {
+    id: 'side_lying_abduction',
+    name: 'Abduction couché sur le côté',
+    target: 'Moyen fessier',
+    description: 'Allongé sur le côté, jambes tendues dans l\'axe du corps. Monte la jambe du dessus d\'environ 30 cm, pointe de pied vers l\'avant, puis redescends lentement. Change de côté à mi-temps.',
+    equipmentRequired: [],
+    category: 'general',
+    group: 'fessiers',
+    tips: 'Le moyen fessier stabilise le bassin à chaque appui. La jambe monte légèrement vers l\'arrière, jamais vers l\'avant.',
+    instructionHighlight: 'Bassin immobile, le talon mène.'
+  },
+  {
+    id: 'single_leg_rdl',
+    name: 'Soulevé de terre sur une jambe',
+    target: 'Ischios, fessiers et équilibre',
+    description: 'Debout sur une jambe, genou légèrement fléchi. Penche le buste vers l\'avant en tendant l\'autre jambe derrière toi, dos droit, puis reviens. Option : tiens le poids de 8 kg dans la main opposée. Change de jambe à mi-temps.',
+    equipmentRequired: [],
+    category: 'general',
+    group: 'fessiers',
+    tips: 'Le mouvement part des hanches. Descends tant que ton dos reste plat.',
+    instructionHighlight: 'Dos plat, bassin face au sol.'
+  },
+  {
+    id: 'bulgarian_split_squat',
+    name: 'Fente bulgare',
+    target: 'Quadriceps et fessiers',
+    description: 'Dos à une chaise, pose le dessus du pied arrière sur l\'assise. Descends sur la jambe avant jusqu\'à ce que la cuisse soit presque parallèle au sol, puis remonte. Change de jambe à mi-temps.',
+    equipmentRequired: ['chaise'],
+    category: 'general',
+    group: 'cuisses',
+    tips: 'Le genou avant reste dans l\'axe du pied. Éloigne un peu le pied avant de la chaise pour garder le buste droit.',
+    instructionHighlight: 'Le poids sur la jambe avant.'
+  },
+  {
+    id: 'side_plank',
+    name: 'Gainage latéral',
+    target: 'Obliques et moyen fessier',
+    description: 'Sur le côté, en appui sur l\'avant-bras, coude sous l\'épaule. Soulève le bassin pour aligner tête, bassin et pieds. Change de côté à mi-temps.',
+    equipmentRequired: [],
+    category: 'abdos',
+    group: 'gainage',
+    tips: 'Trop dur : genoux pliés au sol. Plus dur : lève la jambe du dessus.',
+    instructionHighlight: 'Bassin haut, corps aligné.'
+  },
+  {
+    id: 'dead_bug',
+    name: 'Dead bug',
+    target: 'Gainage profond (transverse)',
+    description: 'Sur le dos, bras tendus vers le plafond, genoux pliés à 90° au-dessus des hanches. Tends lentement un bras derrière la tête et la jambe opposée, sans toucher le sol, puis reviens. Alterne.',
+    equipmentRequired: [],
+    category: 'abdos',
+    group: 'gainage',
+    tips: 'Le bas du dos reste plaqué au sol pendant tout le mouvement. Souffle en tendant.',
+    instructionHighlight: 'Bas du dos collé au sol.'
   }
 ];

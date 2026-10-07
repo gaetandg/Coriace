@@ -21,8 +21,10 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [ ] Corriger la durée réelle des séances : les 30 s ajoutées à chaque changement de tour font dépasser la durée choisie (une séance de 45 min dure environ 47 min)
 
 ### Exercices
-- [ ] Revoir la liste des exercices en s'appuyant sur ce que proposent les références (apps, coachs, études) : s'assurer que chaque exercice est fiable et utile pour un coureur
-- [ ] Classer les exercices par thème dans la liste (mollets, adducteurs, gainage, etc.)
+- [x] Classer les exercices par groupe sur l'écran de préparation
+- [x] Première revue : ajout fessiers et ischios (pont fessier, abduction, soulevé de terre sur une jambe), fente bulgare, gainage latéral, dead bug ; retrait des crunchs et sit-ups
+- [ ] Revue approfondie avec un regard de coach ou de kiné : dosage, progressions, variantes plus faciles et plus dures
+- [ ] Séances qui équilibrent les groupes (aujourd'hui le tirage ne garantit pas, par exemple, au moins un exercice fessiers par circuit)
 
 ### Séances
 - [ ] Proposer des séances toutes faites et cohérentes, en plus de la génération aléatoire

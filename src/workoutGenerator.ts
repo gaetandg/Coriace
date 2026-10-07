@@ -9,6 +9,7 @@ const WARM_UP_EXERCISES: Omit<Exercise, 'id'>[] = [
     description: 'Fais des cercles avec les chevilles, les genoux puis les hanches. Termine en enroulant doucement le dos.',
     equipmentRequired: [],
     category: 'general',
+    group: 'cardio',
     tips: 'Va doucement : le but est de te réchauffer, pas de te fatiguer.',
     instructionHighlight: 'Mouvements amples et lents.'
   },
@@ -18,6 +19,7 @@ const WARM_UP_EXERCISES: Omit<Exercise, 'id'>[] = [
     description: 'Pieds largeur d\'épaules. Descends à mi-hauteur et remonte, sans forcer.',
     equipmentRequired: [],
     category: 'general',
+    group: 'cuisses',
     tips: 'Sans poids. Garde un rythme fluide.',
     instructionHighlight: 'Dos droit, regard devant.'
   },
@@ -27,6 +29,7 @@ const WARM_UP_EXERCISES: Omit<Exercise, 'id'>[] = [
     description: 'Pieds très écartés. Bascule le poids du corps d\'une jambe sur l\'autre en fente latérale légère.',
     equipmentRequired: [],
     category: 'specific_adductor',
+    group: 'adducteurs',
     tips: 'Tu dois sentir un léger étirement à l\'intérieur de la cuisse tendue.',
     instructionHighlight: 'Talons au sol.'
   },
@@ -36,6 +39,7 @@ const WARM_UP_EXERCISES: Omit<Exercise, 'id'>[] = [
     description: 'En planche sur les avant-bras, ou sur les genoux. Rentre le ventre et respire normalement.',
     equipmentRequired: [],
     category: 'abdos',
+    group: 'gainage',
     tips: 'Serre les abdos et les fessiers.',
     instructionHighlight: 'Dos plat, fesses alignées.'
   },
@@ -45,6 +49,7 @@ const WARM_UP_EXERCISES: Omit<Exercise, 'id'>[] = [
     description: 'Petits jumping jacks, réceptions souples sur l\'avant du pied.',
     equipmentRequired: [],
     category: 'general',
+    group: 'cardio',
     tips: 'Augmente le rythme petit à petit.',
     instructionHighlight: 'Réceptions légères.'
   }
@@ -67,7 +72,7 @@ function shuffle<T>(array: T[]): T[] {
  */
 export function getBodyPart(ex: Exercise): 'jambes' | 'bras' | 'abdos' {
   if (ex.id === 'pushups' || ex.id === 'plank_commando') return 'bras';
-  if (ex.category === 'abdos' || ex.id === 'crunchs' || ex.id === 'russian_twists') return 'abdos';
+  if (ex.category === 'abdos') return 'abdos';
   return 'jambes';
 }
 
@@ -219,18 +224,15 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
 
   const cardioFinisher = availableWorkoutExercises.find(ex => ex.id === 'jumping_jacks') || 
                          availableWorkoutExercises.find(ex => ex.category === 'general') || 
-                         availableWorkoutExercises[0] || 
-                         EXERCISE_DATABASE[12];
+                         availableWorkoutExercises[0];
   
   let abdosFinisher = availableWorkoutExercises.find(ex => ex.id === 'plank_commando') || 
                       availableWorkoutExercises.find(ex => ex.category === 'abdos') || 
-                      availableWorkoutExercises[1 % availableWorkoutExercises.length] || 
-                      EXERCISE_DATABASE[6];
+                      availableWorkoutExercises[1 % availableWorkoutExercises.length];
 
   let finalBurnerFinisher = availableWorkoutExercises.find(ex => ex.id === 'wall_sit') || 
                             availableWorkoutExercises.find(ex => ex.category === 'general') || 
-                            availableWorkoutExercises[2 % availableWorkoutExercises.length] || 
-                            EXERCISE_DATABASE[10];
+                            availableWorkoutExercises[2 % availableWorkoutExercises.length];
 
   finisherExercises.push(cardioFinisher, abdosFinisher, finalBurnerFinisher);
 
@@ -264,7 +266,8 @@ export function generateWorkout(config: WorkoutConfig): WorkoutInterval[] {
         target: wEx.target,
         description: wEx.description,
         equipmentRequired: [],
-        category: wEx.category as any,
+        category: wEx.category,
+        group: wEx.group,
         tips: wEx.tips,
         instructionHighlight: wEx.instructionHighlight
       };

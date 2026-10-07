@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Play } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Play } from 'lucide-react';
 import { Exercise, WorkoutConfig, WorkoutInterval } from '../../types';
 import { PlanGroups } from '../../lib/plan';
 import { outlineButton, primaryButton, sectionLabel } from '../../lib/ui';
@@ -32,6 +32,7 @@ function PlanSection({ label, items, prefix, onSelect }: PlanSectionProps) {
               )}
               <span className="flex-1 font-medium text-base">{item.title.replace('Échauffement : ', '')}</span>
               <span className="text-sm text-sand text-right">{item.target.split(' - ')[0]}</span>
+              <ChevronRight className="w-[18px] h-[18px] shrink-0 text-sand" aria-hidden="true" />
             </button>
           </li>
         ))}
@@ -66,7 +67,10 @@ export function SummaryScreen({ config, plan, onBack, onRegenerate, onLaunch }: 
         Réglages
       </button>
 
-      <h1 className="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">Ta séance</h1>
+      <div className="flex flex-col gap-2">
+        <h1 className="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">Ta séance</h1>
+        <p className="text-[15px] text-sand">Touche un exercice pour voir ses consignes.</p>
+      </div>
 
       <div className="grid grid-cols-3 bg-cream text-ink rounded-[18px] py-3.5">
         {stats.map((stat, i) => (

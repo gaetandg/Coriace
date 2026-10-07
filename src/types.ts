@@ -1,5 +1,8 @@
 export type ExerciseCategory = 'specific_calf' | 'specific_adductor' | 'abdos' | 'general';
 
+// How exercises are grouped in the list shown to the runner.
+export type ExerciseGroup = 'mollets' | 'adducteurs' | 'fessiers' | 'cuisses' | 'gainage' | 'haut_du_corps' | 'cardio';
+
 export interface Exercise {
   id: string;
   name: string;
@@ -7,6 +10,7 @@ export interface Exercise {
   description: string;
   equipmentRequired: ('chaise' | 'poids_8kg' | 'corde_a_sauter')[];
   category: ExerciseCategory;
+  group: ExerciseGroup;
   tips: string;
   instructionHighlight: string;
 }

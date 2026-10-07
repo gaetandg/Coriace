@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Check, ChevronRight } from 'lucide-react';
+import { Check } from 'lucide-react';
+import { EXERCISE_DATABASE } from '../../exercises';
+import { EXERCISE_GROUPS } from '../../lib/groups';
 import { EquipmentKey, WorkoutSession } from '../../hooks/useWorkoutSession';
 import { WorkoutConfig } from '../../types';
 import { outlineButton, primaryButton, sectionLabel, segmentedOption, segmentedTrack } from '../../lib/ui';
 import { LaneArcs } from '../Logo';
-import { ExercisePicker } from './ExercisePicker';
 
 const EQUIPMENT_OPTIONS: { key: EquipmentKey; id: string; label: string }[] = [
   { key: 'none', id: 'chk-eq-none', label: 'Aucun' },
@@ -21,12 +21,17 @@ const RYTHME_OPTIONS: { value: WorkoutConfig['rythme']; id: string; title: strin
 const DURATIONS = [15, 20, 30, 45, 60];
 
 export function ConfigScreen({ session }: { session: WorkoutSession }) {
-  const { config, setConfig, previewExercises, handleEquipmentChange, handleGenerateWorkoutPlan } = session;
-  const [showExercises, setShowExercises] = useState(false);
-
-  if (showExercises) {
-    return <ExercisePicker session={session} onBack={() => setShowExercises(false)} />;
-  }
+  const {
+    config,
+    setConfig,
+    compatibleExercises,
+    previewExercises,
+    handleEquipmentChange,
+    toggleExerciseSelection,
+    handleSelectAllExercises,
+    handleGenerateWorkoutPlan,
+  } = session;
+  const selectedIds = config.selectedExerciseIds || EXERCISE_DATABASE.map(e => e.id);
 
   const durationMinutes = config.durationMinutes || 30;
   const numBlocks = config.numBlocks || 1;
@@ -122,17 +127,54 @@ export function ConfigScreen({ session }: { session: WorkoutSession }) {
         </div>
       </div>
 
-      <button
-        id="btn-exercises"
-        onClick={() => setShowExercises(true)}
-        className="relative flex items-center justify-between py-3.5 border-y border-white/30 cursor-pointer"
-      >
-        <span className="font-semibold text-base">Exercices</span>
-        <span className="flex items-center gap-1.5 text-sand text-[15px]">
-          {previewExercises.length} sélectionnés
-          <ChevronRight className="w-[18px] h-[18px]" />
-        </span>
-      </button>
+      <div id="exercise-list" className="relative flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-baseline justify-between">
+            <span className={sectionLabel}>Exercices</span>
+            <span className="text-sm text-sand">{previewExercises.length} sur {compatibleExercises.length}</span>
+          </div>
+          <div className="flex gap-4 text-sm font-semibold">
+            <button onClick={() => handleSelectAllExercises(true)} className="h-11 underline underline-offset-4 cursor-pointer">Tout cocher</button>
+            <button onClick={() => handleSelectAllExercises(false)} className="h-11 underline underline-offset-4 cursor-pointer">Tout décocher</button>
+          </div>
+        </div>
+
+        {EXERCISE_GROUPS.map(group => {
+          const exercises = compatibleExercises.filter(ex => ex.group === group.id);
+          if (exercises.length === 0) return null;
+          const selectedCount = exercises.filter(ex => selectedIds.includes(ex.id)).length;
+          return (
+            <section key={group.id} className="flex flex-col">
+              <h3 className="flex items-baseline justify-between pb-1 border-b border-white/30">
+                <span className="font-display font-bold text-lg">{group.label}</span>
+                <span className="text-sm text-sand">{selectedCount}/{exercises.length}</span>
+              </h3>
+              <ul className="flex flex-col">
+                {exercises.map(ex => {
+                  const isSelected = selectedIds.includes(ex.id);
+                  return (
+                    <li key={ex.id} className="border-b border-white/20">
+                      <button
+                        aria-pressed={isSelected}
+                        onClick={() => toggleExerciseSelection(ex.id)}
+                        className="w-full py-3 flex items-center gap-3.5 text-left cursor-pointer"
+                      >
+                        <span className={`w-6 h-6 rounded-md shrink-0 flex items-center justify-center ${isSelected ? 'bg-cream text-ink' : 'border-[1.5px] border-white/55'}`}>
+                          {isSelected && <Check className="w-4 h-4" strokeWidth={3} />}
+                        </span>
+                        <span className="flex flex-col">
+                          <span className={`font-semibold text-base ${isSelected ? '' : 'text-sand'}`}>{ex.name}</span>
+                          <span className="text-sm text-sand">{ex.target}</span>
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          );
+        })}
+      </div>
 
       <div className="sticky bottom-0 mt-auto -mx-5 px-5 pt-3 pb-1 bg-brick">
         <button id="btn-generate-launch" onClick={handleGenerateWorkoutPlan} className={`w-full ${primaryButton}`}>
