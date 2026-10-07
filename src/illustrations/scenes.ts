@@ -58,14 +58,14 @@ const calvesSeated: Scene = {
 };
 
 const lowCalves = (raised: boolean): Partial<Pose> => ({
-  anchor: ['hip', raised ? [94, 123] : [92, 128]],
+  anchor: ['hip', raised ? [98, 123] : [96, 128]],
   ik: raised ? { near: [110.5, 139.8], far: [108.5, 139.8] } : { near: [108, ANKLE_Y], far: [106, ANKLE_Y] },
   angles: raised ? { nearFoot: 55, farFoot: 55 } : flatFeet,
 });
 const calfRaiseLow: Scene = {
   motion: keyframes({
-    anchor: ['hip', [92, 128]], bend: { near: 1, far: 1 },
-    angles: { torso: 150, head: 165, nearUpperArm: 96, nearForearm: 96, farUpperArm: 92, farForearm: 92, ...flatFeet },
+    anchor: ['hip', [96, 128]], bend: { near: 1, far: 1 },
+    angles: { torso: 146, head: 162, nearUpperArm: 96, nearForearm: 96, farUpperArm: 92, farForearm: 92, ...flatFeet },
   }, [
     { move: 600, hold: 2000, pose: lowCalves(true) },
     { move: 800, hold: 500, pose: lowCalves(false) },
@@ -185,7 +185,7 @@ const shiftSquat: Scene = {
 
 const copenhagenBase: Pose = {
   view: 'front', nearSide: 'right', anchor: ['far.elbow', [40, 145]],
-  angles: { torso: -74, head: -78, nearUpperArm: 184, nearForearm: 182, farUpperArm: 2, farForearm: -90, nearThigh: 104, nearShin: 104, nearFoot: 178, farThigh: 64, farShin: 64, farFoot: 154 },
+  angles: { torso: -74, head: -78, nearUpperArm: 184, nearForearm: 182, farUpperArm: 2, farForearm: -90, nearThigh: 104, nearShin: 104, nearFoot: 178, farThigh: 70, farShin: 70, farFoot: 160 },
   scale: { nearFoot: 0.6, farFoot: 0.6 },
 };
 const copenhagen: Scene = {
@@ -217,11 +217,11 @@ const lungeKeys = (front: 'near' | 'far'): Key[] => {
     anchor: ['hip', hip], ik: { [front]: frontFoot, [back]: backFoot }, angles: { [`${front}Foot`]: 90, [`${back}Foot`]: backAngle },
   } as Partial<Pose>);
   return [
-    { move: 400, hold: 0, pose: pose([106, 92], [118, 136], stay, 90) },
-    { move: 350, hold: 150, pose: pose([113, 96], [130, ANKLE_Y], stay, 90) },
-    { move: 900, hold: 300, pose: pose([114, 114], [130, ANKLE_Y], heelUp, 52) },
-    { move: 700, hold: 100, pose: pose([113, 96], [130, ANKLE_Y], stay, 90) },
-    { move: 350, hold: 0, pose: pose([106, 92], [118, 136], stay, 90) },
+    { move: 400, hold: 0, pose: pose([110, 92], [126, 135], stay, 90) },
+    { move: 350, hold: 150, pose: pose([118, 97], [140, ANKLE_Y], stay, 90) },
+    { move: 900, hold: 300, pose: pose([120, 114], [140, ANKLE_Y], heelUp, 52) },
+    { move: 700, hold: 100, pose: pose([118, 97], [140, ANKLE_Y], stay, 90) },
+    { move: 350, hold: 0, pose: pose([110, 92], [126, 135], stay, 90) },
     { move: 350, hold: 300, pose: pose([100, STAND_HIP], [front === 'near' ? 101 : 99, ANKLE_Y], stay, 90) },
   ];
 };
@@ -393,7 +393,8 @@ const chop = (high: boolean): Partial<Pose> => ({
   hands: high ? [19, -22] : [-18, 23],
 });
 const woodchop: Scene = {
-  motion: keyframes(frontBase({ ...chop(false), bend: { near: 1, far: -1, nearHand: 0, farHand: 0 } }), [
+  // Elbow sides chosen so both elbows stay down from the low to the high position.
+  motion: keyframes(frontBase({ ...chop(false), bend: { near: 1, far: -1, nearHand: 1, farHand: -1 } }), [
     { move: 900, hold: 200, pose: chop(true) },
     { move: 1600, hold: 200, pose: chop(false) },
   ]),

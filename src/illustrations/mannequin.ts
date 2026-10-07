@@ -36,13 +36,13 @@ export const angleTo = (from: Pt, to: Pt) => (Math.atan2(to[0] - from[0], to[1] 
 export const lerp = (a: Pt, b: Pt, t: number): Pt => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
 
 // Two-bone reach: angles of the upper and lower bone so the chain ends on `target`.
-// `bend` picks the side the middle joint folds to; 0 keeps it as low as possible (elbows down).
+// `bend` (1 or -1) picks the side the middle joint folds to; keep it fixed through a move
+// so the joint never flips.
 function reach(root: Pt, target: Pt, l1: number, l2: number, bend: number): [number, number] {
   const d = Math.min(Math.max(Math.hypot(target[0] - root[0], target[1] - root[1]), Math.abs(l1 - l2) + 0.01), l1 + l2 - 0.01);
   const base = angleTo(root, target);
   const phi = (Math.acos((l1 * l1 + d * d - l2 * l2) / (2 * l1 * d)) * 180) / Math.PI;
-  const side = bend !== 0 ? bend : add(root, base + phi, l1)[1] >= add(root, base - phi, l1)[1] ? 1 : -1;
-  const upper = base + side * phi;
+  const upper = base + bend * phi;
   return [upper, angleTo(add(root, upper, l1), target)];
 }
 
@@ -72,8 +72,8 @@ export function skeleton(pose: Pose): Joints {
     if (hand) [A[`${side}UpperArm`], A[`${side}Forearm`]] = reach(shoulder, hand, L.upperArm, L.forearm, pose.bend?.[`${side}Hand`] ?? 1);
     const foot = pose.ik?.[side];
     if (foot) [A[`${side}Thigh`], A[`${side}Shin`]] = reach(hipJoint, foot, L.thigh, L.shin, pose.bend?.[side] ?? 1);
-    // Lying on the back: the raised foot points its toes to the ceiling, square to the leg.
-    if (side === 'far' && pose.farLegFollowsNearThigh) { A.farThigh = A.farShin = A.nearThigh; A.farFoot = A.nearThigh + 90; }
+    // The raised leg is straight, foot pointed in line with it.
+    if (side === 'far' && pose.farLegFollowsNearThigh) A.farThigh = A.farShin = A.farFoot = A.nearThigh;
     const elbow = add(shoulder, A[`${side}UpperArm`], len(`${side}UpperArm`, L.upperArm));
     const knee = add(hipJoint, A[`${side}Thigh`], len(`${side}Thigh`, L.thigh));
     const ankle = add(knee, A[`${side}Shin`], len(`${side}Shin`, L.shin));
