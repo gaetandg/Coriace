@@ -34,7 +34,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 ### Séances
 - [x] Échauffement progressif sans répétition, option « Ne pas inclure d'échauffement » (même durée), finisher cardio, retour au calme guidé ; circuits courts et deux blocs pour les séances longues
 - [x] Six séances prédéfinies, exercices fixes dans un ordre fixe
-- [ ] Programme sur plusieurs semaines (enchaînement de séances selon la phase de préparation)
+- [ ] Programmes sur plusieurs semaines (prépa marathon, trail, prévention des blessures, reprise) : phases fondation, développement, spécifique, affûtage ; calage sur la date de course ; carte « séance du jour » sur l'accueil ; progression synchronisée avec le compte
 - [x] Historique des séances terminées, avec le nombre de séances des 7 derniers jours sur l'accueil
 - [x] Écran Statistiques : chiffres clés, séances par semaine, séances les plus faites
 - [x] Stats par groupe musculaire : chaque séance enregistre ses exercices (séries de travail sur 30 jours)
