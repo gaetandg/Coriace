@@ -44,7 +44,8 @@ export const DEFAULT_PREFERENCES: Preferences = {
     customRounds: 3,
   },
   sound: { beeps: true, voice: true },
-  mode: 'random',
+  // Ready-made race sessions first: the quickest way in for a new runner.
+  mode: 'preset',
 };
 
 const DURATIONS = [15, 20, 30, 45, 60];

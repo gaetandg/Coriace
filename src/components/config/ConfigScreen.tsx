@@ -27,9 +27,9 @@ const RYTHME_OPTIONS: { value: WorkoutConfig['rythme']; id: string; title: strin
 const DURATIONS = [15, 20, 30, 45, 60];
 
 const MODE_OPTIONS: { value: SessionMode; label: string; hint: string }[] = [
+  { value: 'preset', label: 'Prédéfinies', hint: 'Des séances toutes prêtes, toujours identiques, pour suivre tes progrès.' },
   { value: 'random', label: 'Aléatoire', hint: "Choisis ta durée : l'app compose une séance variée parmi les exercices sélectionnés." },
   { value: 'custom', label: 'Personnalisée', hint: 'Tous les exercices que tu sélectionnes seront dans ta séance.' },
-  { value: 'preset', label: 'Prédéfinies', hint: 'Des séances toutes prêtes, toujours identiques, pour suivre tes progrès.' },
 ];
 
 const ROUNDS = [2, 3, 4];

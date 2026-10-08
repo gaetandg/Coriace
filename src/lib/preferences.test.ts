@@ -60,6 +60,10 @@ describe('preferences', () => {
 });
 
 describe('session modes', () => {
+  it('opens on ready-made sessions for a new runner', () => {
+    expect(loadPreferences().mode).toBe('preset');
+  });
+
   it('turns the old custom mode into random sessions, which it was', () => {
     store.set('coriace:preferences:v1', JSON.stringify({ mode: 'custom' }));
     expect(loadPreferences().mode).toBe('random');
