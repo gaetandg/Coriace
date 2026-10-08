@@ -74,9 +74,11 @@ export function generateWorkout(config: WorkoutConfig, previous: WorkoutInterval
   const finishers: Exercise[] = [];
   for (let f = 0; f < shape.finisherMinutes; f++) {
     const unused = (list: Exercise[]) => list.filter(ex => !usedIds.has(ex.id));
+    // A cardio move already done in a circuit is still better than a non-cardio one.
     const exercise =
       unused(lively).find(ex => !avoidIds.has(ex.id)) ??
       unused(lively)[0] ??
+      lively.find(ex => !finishers.includes(ex)) ??
       unused(availableWorkoutExercises)[0] ??
       lively[f % Math.max(1, lively.length)] ??
       availableWorkoutExercises[f % availableWorkoutExercises.length];
