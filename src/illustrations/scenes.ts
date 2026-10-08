@@ -474,6 +474,87 @@ const pogo: Scene = {
   dynamic: (p) => { const lift = (p as Pose & { lift: number }).lift; return { back: shadow(100, 14 - lift, 1 - lift / 12) }; },
 };
 
+// --- Descents, hills and reactivity ---
+
+// Standing on a step on the near leg, the far foot lowered slowly to touch the floor in front.
+const stepDown: Scene = {
+  motion: keyframes({
+    anchor: ['hip', [108, 66.5]], ik: { near: [110, 121.5], far: [122, 112] }, bend: { near: 1, far: 1 },
+    angles: { torso: 180, head: 182, nearFoot: 90, farFoot: 100, nearUpperArm: 30, nearForearm: 70, farUpperArm: 26, farForearm: 66 },
+  }, [
+    { move: 2600, hold: 250, pose: { anchor: ['hip', [103, 88]], ik: { near: [110, 121.5], far: [136, 141] }, angles: { torso: 168, head: 172, farFoot: 120 } } },
+    { move: 1100, hold: 350, pose: {} },
+  ]),
+  props: () => ({ back: step(84, 124, 126) }),
+};
+
+const tempoSquat: Scene = {
+  motion: keyframes({
+    anchor: ['hip', [100, STAND_HIP]], ik: { near: [101, ANKLE_Y], far: [99, ANKLE_Y] }, bend: { near: 1, far: 1 },
+    angles: { torso: 180, head: 182, ...armsDown, ...flatFeet },
+  }, [
+    { move: 4000, hold: 300, pose: squatPose(true, 0.85) },
+    { move: 1000, hold: 500, pose: squatPose(false) },
+  ]),
+};
+
+// Backward lunge: the back foot steps back through the air, the front foot stays put.
+const reverseLungeKeys = (back: 'near' | 'far'): Key[] => {
+  const front = back === 'near' ? 'far' : 'near';
+  const stay: Pt = back === 'near' ? [99, ANKLE_Y] : [101, ANKLE_Y];
+  const toe: Pt = [64 + 11 * Math.sin((52 * Math.PI) / 180) - 11, ANKLE_Y - 11 * Math.cos((52 * Math.PI) / 180) + 1];
+  const pose = (hip: Pt, backFoot: Pt, backAngle: number): Partial<Pose> => ({
+    anchor: ['hip', hip], ik: { [front]: stay, [back]: backFoot }, angles: { [`${front}Foot`]: 90, [`${back}Foot`]: backAngle },
+  } as Partial<Pose>);
+  return [
+    { move: 450, hold: 0, pose: pose([94, 92], [80, 136], 70) },
+    { move: 400, hold: 100, pose: pose([90, 98], [66, 141], 52) },
+    { move: 900, hold: 300, pose: pose([86, 114], toe, 52) },
+    { move: 800, hold: 0, pose: pose([90, 98], [66, 141], 52) },
+    { move: 450, hold: 300, pose: pose([100, STAND_HIP], [back === 'near' ? 101 : 99, ANKLE_Y], 90) },
+  ];
+};
+const reverseLunges: Scene = {
+  thumb: 1750,
+  motion: keyframes({
+    anchor: ['hip', [100, STAND_HIP]], ik: { near: [101, ANKLE_Y], far: [99, ANKLE_Y] }, bend: { near: 1, far: 1 },
+    angles: { torso: 180, head: 180, ...armsDown, ...flatFeet },
+  }, [...reverseLungeKeys('near'), ...reverseLungeKeys('far')]),
+};
+
+// Feet together, small hops from one side of a line to the other (front view).
+const lateralHops: Scene = {
+  motion: {
+    duration: 1400,
+    still: 350,
+    at(ms) {
+      const t = (ms % 700) / 700, side = Math.floor(ms / 700) % 2 ? -1 : 1;
+      const x = 100 + side * 12 * Math.cos(Math.PI * t);
+      const lift = 7 * Math.sin(Math.PI * t);
+      return frontBase({
+        anchor: ['hip', [x, STAND_HIP - 1 - lift]], ik: { near: [x + 4, ANKLE_Y - lift], far: [x - 4, ANKLE_Y - lift] },
+        angles: { torso: 180 - side * 4 * Math.sin(Math.PI * t), head: 180, nearUpperArm: 20, nearForearm: 60, farUpperArm: -20, farForearm: -60, nearFoot: 90, farFoot: -90 },
+        lift,
+      } as Partial<Pose>);
+    },
+  },
+  dynamic: (p, j) => ({ back: `<rect x="99" y="146" width="2" height="5" fill="#C9A88D"/>` + shadow((j['near.ankle'][0] + j['far.ankle'][0]) / 2, 16 - (p as Pose & { lift: number }).lift, 1) }),
+};
+
+// Squat, jump with the arms swinging up, land back into the squat.
+const squatJumps: Scene = {
+  thumb: 1300,
+  motion: keyframes({
+    anchor: ['hip', [100, STAND_HIP]], ik: { near: [101, ANKLE_Y], far: [99, ANKLE_Y] }, bend: { near: 1, far: 1 },
+    angles: { torso: 180, head: 182, ...armsDown, ...flatFeet },
+  }, [
+    { move: 700, hold: 100, pose: { ...squatPose(true, 0.8), angles: { torso: 150, head: 168, nearUpperArm: -30, nearForearm: -20, farUpperArm: -34, farForearm: -24 } } },
+    { move: 350, hold: 0, pose: { anchor: ['hip', [100, STAND_HIP - 14]], ik: { near: [101, ANKLE_Y - 13], far: [99, ANKLE_Y - 13] }, angles: { torso: 182, head: 182, nearUpperArm: 140, nearForearm: 150, farUpperArm: 136, farForearm: 146, nearFoot: 60, farFoot: 60 } } },
+    { move: 350, hold: 0, pose: { ...squatPose(true, 0.6), angles: { torso: 158, head: 170, nearUpperArm: 60, nearForearm: 80, farUpperArm: 56, farForearm: 76, ...flatFeet } } },
+    { move: 600, hold: 400, pose: { anchor: ['hip', [100, STAND_HIP]], angles: { torso: 180, head: 182, ...armsDown } } },
+  ]),
+};
+
 // --- Warm-up and cool-down ---
 
 // Hip circles, hands on the hips, front view.
@@ -576,6 +657,11 @@ export const SCENES: Record<string, Scene> = {
   side_plank: sidePlank,
   dead_bug: deadBug,
   bird_dog: birdDog,
+  step_down: stepDown,
+  tempo_squat: tempoSquat,
+  reverse_lunges: reverseLunges,
+  lateral_hops: lateralHops,
+  squat_jumps: squatJumps,
   // Warm-up and cool-down.
   warmup_mobility: hipCircles,
   warmup_leg_swings: legSwings,

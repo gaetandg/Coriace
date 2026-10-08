@@ -6,11 +6,11 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 
 ## Fonctionnalités
 
-- **Séances prédéfinies** : six séances fixes (Mollets express, Gainage, Hanches solides, Sans matériel, Spécial marathon, Complète), toujours les mêmes exercices dans le même ordre pour suivre ses progrès.
+- **Séances prédéfinies** : par objectif de course (10 km, semi, marathon, +50 km), chacune en trois niveaux (Débutant 20 min, Intermédiaire 30 min, Confirmé 45 min), et dix séances ciblées (Mollets express, Gainage, Hanches solides, Genoux solides, Pieds et chevilles, Tendon d'Achille, Côtes, Descentes, Dos et posture, Activation avant sortie). Toujours les mêmes exercices dans le même ordre, pour suivre ses progrès.
 - **Trois modes**, chacun expliqué en une phrase sous le sélecteur :
   - **Aléatoire** : durée de 15 à 60 minutes, l'app compose une séance variée parmi les exercices sélectionnés (tous par défaut) ; « Régénérer » en tire une autre.
   - **Personnalisée** : tous les exercices sélectionnés (aucun par défaut) sont dans la séance, rangés pour ne pas enchaîner deux fois le même groupe, répétés 2, 3 ou 4 tours ; la durée s'affiche en direct. Pas de finisher.
-  - **Prédéfinies** : six séances fixes.
+  - **Prédéfinies** : séances fixes par objectif de course et niveau, et séances ciblées.
   Chaque mode garde sa propre sélection d'exercices.
 - **Matériel** : sans matériel, chaise, poids de 8 kg, corde à sauter.
 - **Trois rythmes** : doux (20 s / 40 s), équilibré (30 s / 30 s, par défaut) ou intense (40 s / 20 s).
@@ -21,7 +21,7 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Guidage vocal** : annonce du prochain exercice et de sa consigne pendant les pauses, décompte « 3, 2, 1 » avant de repartir, « encore dix secondes », « change de côté ». Bips et voix réglables séparément.
 - **Écran maintenu allumé** pendant la séance (si le navigateur le permet).
 - **Durée respectée** : la séance dure le temps choisi, à 30 secondes près.
-- **Fiche de chaque exercice** (30 exercices) : description, conseil, variante plus facile et plus dure, précautions pour les sauts.
+- **Fiche de chaque exercice** (35 exercices) : description, conseil, variante plus facile et plus dure, précautions pour les sauts.
 - **Animations** : chaque exercice est montré par un personnage animé (squelette posé par angles, dessiné en SVG, calculé dans l'app, hors ligne). Dans la fiche, pendant l'effort et, pendant les pauses, pour le prochain exercice. L'animation se fige quand la séance est en pause ou si le téléphone demande moins d'animations. Une vignette fixe tirée de l'animation repère chaque exercice dans les listes (accueil et résumé de séance).
 - **Circuits équilibrés et variés** : chaque circuit contient au moins un exercice de mollets, d'adducteurs, de fessiers et de gainage, au plus deux par groupe, sans deux exercices du même groupe à la suite. « Régénérer » évite les exercices de la séance précédente.
 - **Bouton retour du téléphone** : revient à l'écran précédent ; pendant une séance, il met en pause au lieu de quitter.

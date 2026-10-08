@@ -33,7 +33,8 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 
 ### Séances
 - [x] Échauffement progressif sans répétition, option « Ne pas inclure d'échauffement » (même durée), finisher cardio, retour au calme guidé ; circuits courts et deux blocs pour les séances longues
-- [x] Six séances prédéfinies, exercices fixes dans un ordre fixe
+- [x] Séances prédéfinies par objectif (10 km, semi, marathon, +50 km) et niveau (débutant, intermédiaire, confirmé), et dix séances ciblées
+- [x] Nouveaux exercices pour le trail et la puissance : descente lente d'une marche, squat descente lente, fentes arrière, sauts latéraux, squat sauté
 - [ ] Programmes sur plusieurs semaines (prépa marathon, trail, prévention des blessures, reprise) : phases fondation, développement, spécifique, affûtage ; calage sur la date de course ; carte « séance du jour » sur l'accueil ; progression synchronisée avec le compte
 - [x] Historique des séances terminées, avec le nombre de séances des 7 derniers jours sur l'accueil
 - [x] Écran Statistiques : chiffres clés, séances par semaine, séances les plus faites
