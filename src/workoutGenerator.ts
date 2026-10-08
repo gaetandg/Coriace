@@ -92,6 +92,33 @@ export function generateWorkout(config: WorkoutConfig, previous: WorkoutInterval
   }, rythme);
 }
 
+// Exercises usable with the equipment at hand.
+export const fitsEquipment = (ex: Exercise, equipment: WorkoutConfig['equipment']) =>
+  ex.equipmentRequired.every(eq => equipment[eq]);
+
+// Personalized session: every selected exercise, ordered so that a group never comes twice in a
+// row, repeated `customRounds` times. The warm-up and cool-down follow the circuit's length; no
+// finisher, the runner chose exactly what they do.
+export function customPlan(config: WorkoutConfig): SessionPlan {
+  const ids = config.customExerciseIds ?? [];
+  const exercises = EXERCISE_DATABASE.filter(ex => ids.includes(ex.id) && fitsEquipment(ex, config.equipment));
+  const rounds = config.customRounds ?? 3;
+  const circuit = exercises.length * rounds;
+  const warmup = config.skipWarmup ? 0 : circuit < 12 ? 3 : circuit < 20 ? 4 : circuit < 32 ? 5 : MAX_WARMUP_MINUTES;
+  const cooldown = circuit < 12 ? 1 : circuit < 30 ? 2 : 3;
+  return {
+    warmup: warmupMoves(warmup),
+    blocks: exercises.length > 0 ? [{ exercises: spreadGroups(exercises), rounds }] : [],
+    finishers: [],
+    cooldown: cooldownStretches(cooldown),
+  };
+}
+
+export const generateCustomWorkout = (config: WorkoutConfig): WorkoutInterval[] => buildIntervals(customPlan(config), config.rythme);
+
+// Length of a session in whole minutes, as announced to the runner.
+export const sessionMinutes = (intervals: WorkoutInterval[]) => Math.round(intervals.reduce((sum, i) => sum + i.duration, 0) / 60);
+
 export interface SessionShape {
   warmupMinutes: number;
   blocks: { length: number; rounds: number }[];

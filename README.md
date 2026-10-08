@@ -7,7 +7,11 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 ## Fonctionnalités
 
 - **Séances prédéfinies** : six séances fixes (Mollets express, Gainage, Hanches solides, Sans matériel, Spécial marathon, Complète), toujours les mêmes exercices dans le même ordre pour suivre ses progrès.
-- **Séance sur mesure** : durée de 15 à 60 minutes, choix des exercices par groupe, fiche détaillée de chaque exercice.
+- **Trois modes**, chacun expliqué en une phrase sous le sélecteur :
+  - **Aléatoire** : durée de 15 à 60 minutes, l'app compose une séance variée parmi les exercices sélectionnés (tous par défaut) ; « Régénérer » en tire une autre.
+  - **Personnalisée** : tous les exercices sélectionnés (aucun par défaut) sont dans la séance, rangés pour ne pas enchaîner deux fois le même groupe, répétés 2, 3 ou 4 tours ; la durée s'affiche en direct. Pas de finisher.
+  - **Prédéfinies** : six séances fixes.
+  Chaque mode garde sa propre sélection d'exercices.
 - **Matériel** : sans matériel, chaise, poids de 8 kg, corde à sauter.
 - **Trois rythmes** : doux (20 s / 40 s), équilibré (30 s / 30 s, par défaut) ou intense (40 s / 20 s).
 - **Structure complète** : échauffement progressif (de la mobilité aux sautillements, sans répétition), un ou deux circuits courts (8 exercices au plus, 3 ou 4 tours ; les séances longues ont deux blocs plutôt qu'un circuit sans fin), finisher cardio et sauts, retour au calme avec étirements guidés.
@@ -77,7 +81,7 @@ src/
 ├── illustrations/             # Personnage animé : squelette (mannequin.ts), mouvements (motion.ts), décor (props.ts), une scène par exercice (scenes.ts)
 ├── lib/                       # Annonces (cues.ts), préférences, historique, statistiques, groupes d'exercices, plan, formatage, classes d'interface
 ├── exercises.ts               # Base de données des exercices
-├── workoutGenerator.ts        # Séance sur mesure et construction des intervalles
+├── workoutGenerator.ts        # Séances aléatoires et personnalisées, construction des intervalles
 ├── sessions.ts                # Séances prédéfinies
 ├── sessionParts.ts            # Mouvements d'échauffement et étirements du retour au calme
 ├── types.ts                   # Types partagés

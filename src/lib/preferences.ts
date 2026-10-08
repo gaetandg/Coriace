@@ -6,8 +6,10 @@ import { SoundSettings, WorkoutConfig } from '../types';
 
 const STORAGE_KEY = 'coriace:preferences:v1';
 
-// Ready-made sessions or a custom one, as last chosen on the home screen.
-export type SessionMode = 'preset' | 'custom';
+// As last chosen on the home screen: a ready-made session, a random one drawn from the
+// selected exercises, or a personalized one with every selected exercise.
+export type SessionMode = 'random' | 'custom' | 'preset';
+const MODES: SessionMode[] = ['random', 'custom', 'preset'];
 
 export interface Preferences {
   config: WorkoutConfig;
@@ -23,8 +25,12 @@ interface StoredPreferences {
   durationMinutes?: number;
   skipWarmup?: boolean;
   excludedExerciseIds?: string[];
+  customExerciseIds?: string[];
+  customRounds?: number;
   sound?: Partial<SoundSettings>;
-  mode?: SessionMode;
+  // Before personalized sessions existed, 'custom' meant what is now 'random'.
+  mode?: 'preset' | 'custom';
+  sessionMode?: SessionMode;
 }
 
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -34,9 +40,11 @@ export const DEFAULT_PREFERENCES: Preferences = {
     durationMinutes: 30,
     skipWarmup: false,
     selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id),
+    customExerciseIds: [],
+    customRounds: 3,
   },
   sound: { beeps: true, voice: true },
-  mode: 'custom',
+  mode: 'random',
 };
 
 const DURATIONS = [15, 20, 30, 45, 60];
@@ -66,12 +74,17 @@ export function loadPreferences(): Preferences {
       durationMinutes: DURATIONS.includes(stored.durationMinutes as number) ? stored.durationMinutes : defaults.config.durationMinutes,
       skipWarmup: isBoolean(stored.skipWarmup) ? stored.skipWarmup : false,
       selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id).filter(id => !excluded.includes(id)),
+      customExerciseIds: Array.isArray(stored.customExerciseIds)
+        ? EXERCISE_DATABASE.map(ex => ex.id).filter(id => stored.customExerciseIds!.includes(id))
+        : [],
+      customRounds: [2, 3, 4].includes(stored.customRounds as number) ? stored.customRounds : defaults.config.customRounds,
     },
     sound: {
       beeps: isBoolean(stored.sound?.beeps) ? stored.sound.beeps : defaults.sound.beeps,
       voice: isBoolean(stored.sound?.voice) ? stored.sound.voice : defaults.sound.voice,
     },
-    mode: stored.mode === 'custom' || stored.mode === 'preset' ? stored.mode : defaults.mode,
+    mode: MODES.includes(stored.sessionMode as SessionMode) ? stored.sessionMode!
+      : stored.mode === 'preset' ? 'preset' : stored.mode === 'custom' ? 'random' : defaults.mode,
   };
 }
 
@@ -83,8 +96,10 @@ export function savePreferences({ config, sound, mode }: Preferences) {
     durationMinutes: config.durationMinutes,
     skipWarmup: !!config.skipWarmup,
     excludedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id).filter(id => !selected.includes(id)),
+    customExerciseIds: config.customExerciseIds ?? [],
+    customRounds: config.customRounds ?? 3,
     sound,
-    mode,
+    sessionMode: mode,
   };
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));

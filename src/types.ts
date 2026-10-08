@@ -54,6 +54,9 @@ export interface WorkoutConfig {
   numBlocks?: number; // no longer used: the length of the session decides
   // Already warm (after a run): no warm-up, the circuits get the time instead.
   skipWarmup?: boolean;
+  // Personalized sessions: every one of these exercises, repeated `customRounds` times.
+  customExerciseIds?: string[];
+  customRounds?: number;
 }
 
 export interface SoundSettings {

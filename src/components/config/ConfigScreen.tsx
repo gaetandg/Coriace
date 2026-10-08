@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Check, Info } from 'lucide-react';
-import { EXERCISE_DATABASE } from '../../exercises';
 import { EXERCISE_GROUPS } from '../../lib/groups';
 import { EquipmentKey, SessionMode, WorkoutSession } from '../../hooks/useWorkoutSession';
 import { PresetList } from './PresetList';
@@ -27,10 +26,13 @@ const RYTHME_OPTIONS: { value: WorkoutConfig['rythme']; id: string; title: strin
 
 const DURATIONS = [15, 20, 30, 45, 60];
 
-const MODE_OPTIONS: { value: SessionMode; label: string }[] = [
-  { value: 'custom', label: 'Sur mesure' },
-  { value: 'preset', label: 'Séances prédéfinies' },
+const MODE_OPTIONS: { value: SessionMode; label: string; hint: string }[] = [
+  { value: 'random', label: 'Aléatoire', hint: "Choisis ta durée : l'app compose une séance variée parmi les exercices sélectionnés." },
+  { value: 'custom', label: 'Personnalisée', hint: 'Tous les exercices que tu sélectionnes seront dans ta séance.' },
+  { value: 'preset', label: 'Prédéfinies', hint: 'Des séances toutes prêtes, toujours identiques, pour suivre tes progrès.' },
 ];
+
+const ROUNDS = [2, 3, 4];
 
 export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSession; onOpenHistory: () => void }) {
   const {
@@ -45,9 +47,11 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
     mode,
     setMode,
     handleStartPreset,
+    selectedIds,
+    customMinutes,
   } = session;
   const noExercise = previewExercises.length === 0;
-  const selectedIds = config.selectedExerciseIds || EXERCISE_DATABASE.map(e => e.id);
+  const rounds = config.customRounds ?? 3;
   const [detailExercise, setDetailExercise] = useState<Exercise | null>(null);
 
   const durationMinutes = config.durationMinutes || 30;
@@ -64,18 +68,21 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
         <RecentActivity count={sessionsInLastDays(session.history, 7)} onOpen={onOpenHistory} />
       )}
 
-      <div className={`relative ${segmentedTrack} grid-cols-2`}>
-        {MODE_OPTIONS.map(option => (
-          <button
-            key={option.value}
-            id={`mode-${option.value}`}
-            aria-pressed={mode === option.value}
-            onClick={() => setMode(option.value)}
-            className={`h-11 font-semibold text-[15px] ${segmentedOption(mode === option.value)}`}
-          >
-            {option.label}
-          </button>
-        ))}
+      <div className="relative flex flex-col gap-2">
+        <div className={`${segmentedTrack} grid-cols-3`}>
+          {MODE_OPTIONS.map(option => (
+            <button
+              key={option.value}
+              id={`mode-${option.value}`}
+              aria-pressed={mode === option.value}
+              onClick={() => setMode(option.value)}
+              className={`h-11 font-semibold text-[13px] tracking-tight min-[360px]:text-[14px] min-[360px]:tracking-normal ${segmentedOption(mode === option.value)}`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+        <p id="mode-hint" className="text-sm text-sand">{MODE_OPTIONS.find(option => option.value === mode)?.hint}</p>
       </div>
 
       <div className="relative flex flex-col gap-2.5">
@@ -128,6 +135,31 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
         </div>
 
         <div className="relative flex flex-col gap-2.5">
+          {mode === 'custom' ? (
+            <>
+              <div className="flex items-baseline justify-between">
+                <span className={sectionLabel}>Tours du circuit</span>
+                <span className="font-display font-extrabold text-[26px]">{noExercise ? '–' : `≈ ${customMinutes} min`}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {ROUNDS.map(count => {
+                  const selected = rounds === count;
+                  return (
+                    <button
+                      key={count}
+                      id={`rounds-${count}`}
+                      aria-pressed={selected}
+                      onClick={() => setConfig(prev => ({ ...prev, customRounds: count }))}
+                      className={`h-11 rounded-xl text-[15px] ${selected ? 'bg-cream text-ink font-bold cursor-pointer' : outlineButton}`}
+                    >
+                      {count} tours
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+          <>
           <div className="flex items-baseline justify-between">
             <span className={sectionLabel}>Durée</span>
             <span className="font-display font-extrabold text-[26px]">{durationMinutes} min</span>
@@ -148,6 +180,8 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
               );
             })}
           </div>
+          </>
+          )}
           <button
             id="switch-skip-warmup"
             role="switch"
@@ -157,7 +191,7 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
           >
             <span className="flex-1 flex flex-col gap-0.5">
               <span className="font-semibold text-base">Ne pas inclure d'échauffement</span>
-              <span className="text-sm text-sand">La durée restera la même.</span>
+              <span className="text-sm text-sand">{mode === 'custom' ? 'La séance sera plus courte.' : 'La durée restera la même.'}</span>
             </span>
             <span className={`w-13 h-8 rounded-full p-1 shrink-0 transition-colors ${config.skipWarmup ? 'bg-cream' : 'bg-ink/35'}`}>
               <span className={`block w-6 h-6 rounded-full transition-transform ${config.skipWarmup ? 'translate-x-5 bg-brick' : 'bg-white/80'}`} />
@@ -169,11 +203,11 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
           <div className="flex flex-col gap-1">
             <div className="flex items-baseline justify-between">
               <span className={sectionLabel}>Exercices</span>
-              <span className="text-sm text-sand">{previewExercises.length} sur {compatibleExercises.length}</span>
+              <span className="text-sm text-sand">{previewExercises.length} sélectionné{previewExercises.length > 1 ? 's' : ''} sur {compatibleExercises.length}</span>
             </div>
             <div className="flex gap-4 text-sm font-semibold">
-              <button onClick={() => setExercisesSelected(compatibleExercises.map(ex => ex.id), true)} className="h-11 underline underline-offset-4 cursor-pointer">Tout cocher</button>
-              <button onClick={() => setExercisesSelected(compatibleExercises.map(ex => ex.id), false)} className="h-11 underline underline-offset-4 cursor-pointer">Tout décocher</button>
+              <button onClick={() => setExercisesSelected(compatibleExercises.map(ex => ex.id), true)} className="h-11 underline underline-offset-4 cursor-pointer">Tout sélectionner</button>
+              <button onClick={() => setExercisesSelected(compatibleExercises.map(ex => ex.id), false)} className="h-11 underline underline-offset-4 cursor-pointer">Tout désélectionner</button>
             </div>
           </div>
 
@@ -192,7 +226,7 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
                     onClick={() => setExercisesSelected(exercises.map(ex => ex.id), !allSelected)}
                     className="h-11 text-sm font-semibold underline underline-offset-4 cursor-pointer"
                   >
-                    {allSelected ? 'Tout décocher' : 'Tout cocher'}
+                    {allSelected ? 'Tout désélectionner' : 'Tout sélectionner'}
                   </button>
                 </div>
                 <ul className="flex flex-col">
@@ -230,7 +264,14 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
           })}
         </div>
 
-        <div className="sticky bottom-0 mt-auto -mx-5 px-5 pt-3 pb-1 bg-brick">
+        <div className="sticky bottom-0 mt-auto -mx-5 px-5 pt-3 pb-1 bg-brick flex flex-col gap-1.5">
+          {mode === 'custom' && (
+            <p id="custom-summary" className="text-sm text-sand text-center">
+              {noExercise
+                ? 'Sélectionne au moins un exercice.'
+                : `${previewExercises.length} exercice${previewExercises.length > 1 ? 's' : ''} × ${rounds} tours · environ ${customMinutes} min`}
+            </p>
+          )}
           <button
             id="btn-generate-launch"
             onClick={handleGenerateWorkoutPlan}

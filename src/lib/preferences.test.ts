@@ -25,6 +25,8 @@ describe('preferences', () => {
         durationMinutes: 45,
         skipWarmup: true,
         selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id).filter(id => id !== 'pushups'),
+        customExerciseIds: ['side_plank'],
+        customRounds: 2,
       },
       sound: { beeps: false, voice: true },
       mode: 'custom' as const,
@@ -54,5 +56,24 @@ describe('preferences', () => {
     });
     expect(loadPreferences()).toEqual(DEFAULT_PREFERENCES);
     expect(() => savePreferences(DEFAULT_PREFERENCES)).not.toThrow();
+  });
+});
+
+describe('session modes', () => {
+  it('turns the old custom mode into random sessions, which it was', () => {
+    store.set('coriace:preferences:v1', JSON.stringify({ mode: 'custom' }));
+    expect(loadPreferences().mode).toBe('random');
+    store.set('coriace:preferences:v1', JSON.stringify({ mode: 'preset' }));
+    expect(loadPreferences().mode).toBe('preset');
+  });
+
+  it('starts personalized sessions with nothing selected, and remembers the choice', () => {
+    expect(loadPreferences().config.customExerciseIds).toEqual([]);
+    const prefs = loadPreferences();
+    savePreferences({ ...prefs, mode: 'custom', config: { ...prefs.config, customExerciseIds: ['dead_bug', 'side_plank'], customRounds: 4 } });
+    const loaded = loadPreferences();
+    expect(loaded.mode).toBe('custom');
+    expect(loaded.config.customExerciseIds).toEqual(['side_plank', 'dead_bug']);
+    expect(loaded.config.customRounds).toBe(4);
   });
 });

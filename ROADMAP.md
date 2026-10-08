@@ -38,7 +38,8 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Historique des séances terminées, avec le nombre de séances des 7 derniers jours sur l'accueil
 - [x] Écran Statistiques : chiffres clés, séances par semaine, séances les plus faites
 - [x] Stats par groupe musculaire : chaque séance enregistre ses exercices (séries de travail sur 30 jours)
-- [ ] Créer ses propres séances (exercices et ordre choisis) et les enregistrer
+- [x] Mode Personnalisée : tous les exercices sélectionnés, 2 à 4 tours, durée affichée en direct
+- [ ] Enregistrer ses séances personnalisées (nom, ordre choisi) dans « Mes séances »
 
 ### Préférences
 - [x] Se souvenir des préférences d'une fois sur l'autre (matériel, rythme, durée, exercices cochés, son)

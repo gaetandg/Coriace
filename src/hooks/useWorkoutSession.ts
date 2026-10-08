@@ -1,6 +1,6 @@
 import { track } from '../lib/analytics';
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { generateWorkout } from '../workoutGenerator';
+import { generateCustomWorkout, generateWorkout, sessionMinutes } from '../workoutGenerator';
 import { SoundSettings, WorkoutConfig, WorkoutInterval } from '../types';
 import { SessionMode, loadPreferences, savePreferences } from '../lib/preferences';
 import { HistoryEntry, addHistoryEntry, clearHistory, loadHistory, saveHistory } from '../lib/history';
@@ -31,6 +31,8 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
   const [mode, setMode] = useState<SessionMode>(initialPreferences.mode);
   // The ready-made session being run, or null for a custom one.
   const [activePreset, setActivePreset] = useState<PresetSession | null>(null);
+  // Kind of the session on screen (the mode can change afterwards on the home screen).
+  const [planKind, setPlanKind] = useState<SessionMode>('random');
   const [history, setHistory] = useState<HistoryEntry[]>(loadHistory);
 
   // On sign-in (and each launch while signed in): send sessions only known here, fetch the others.
@@ -168,34 +170,36 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
 
   // --- NAVIGATION & CONTROLS ---
   // What audience measurement records about a session: its kind, never anything personal.
-  const sessionInfo = (preset: PresetSession | null = activePreset) => ({
-    seance: preset?.id ?? 'sur-mesure',
-    minutes: preset?.durationMinutes ?? config.durationMinutes ?? 30,
+  const sessionInfo = (kind: SessionMode = planKind, preset: PresetSession | null = activePreset, plan: WorkoutInterval[] = intervals) => ({
+    seance: preset?.id ?? (kind === 'custom' ? 'personnalisee' : 'aleatoire'),
+    minutes: preset?.durationMinutes ?? sessionMinutes(plan),
     rythme: config.rythme,
     deja_echauffe: !preset && !!config.skipWarmup,
   });
 
-  const showPlan = (generated: WorkoutInterval[], preset: PresetSession | null) => {
+  const showPlan = (generated: WorkoutInterval[], kind: SessionMode, preset: PresetSession | null = null) => {
     initAudio();
     setIntervals(generated);
+    setPlanKind(kind);
     setActivePreset(preset);
     setCurrentIntervalIndex(0);
     setSecondsRemaining(generated[0]?.duration || 30);
     setWorkoutState('summary');
-    track('seance-preparee', sessionInfo(preset));
+    track('seance-preparee', sessionInfo(kind, preset, generated));
   };
 
-  // Custom sessions need at least one checked exercise usable with the equipment.
+  // Random and personalized sessions need at least one selected exercise usable with the equipment.
   const handleGenerateWorkoutPlan = () => {
     if (previewExercises.length === 0) {
-      notify('Coche au moins un exercice pour créer ta séance.');
+      notify('Sélectionne au moins un exercice pour créer ta séance.');
       return;
     }
-    showPlan(generateWorkout(config), null);
+    if (mode === 'custom') showPlan(generateCustomWorkout(config), 'custom');
+    else showPlan(generateWorkout(config), 'random');
   };
 
   const handleStartPreset = (preset: PresetSession) => {
-    showPlan(buildPresetWorkout(preset, config.rythme), preset);
+    showPlan(buildPresetWorkout(preset, config.rythme), 'preset', preset);
   };
 
   const handleLaunchWorkout = () => {
@@ -235,30 +239,39 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     });
   }, [config.equipment]);
 
-  // Find preview exercises that are both compatible AND selected by the user
-  const previewExercises = useMemo(() => {
-    return compatibleExercises.filter(ex => {
-      const selected = config.selectedExerciseIds || EXERCISE_DATABASE.map(e => e.id);
-      return selected.includes(ex.id);
-    });
-  }, [compatibleExercises, config.selectedExerciseIds]);
+  // Each mode keeps its own selection: everything by default for random sessions (exercises
+  // that may come up), nothing for personalized ones (exercises that will all be done).
+  const selectionKey = mode === 'custom' ? 'customExerciseIds' : 'selectedExerciseIds';
+  const selectionOf = (c: WorkoutConfig) =>
+    mode === 'custom' ? c.customExerciseIds ?? [] : c.selectedExerciseIds ?? EXERCISE_DATABASE.map(e => e.id);
+  const selectedIds = selectionOf(config);
+
+  // Selected exercises usable with the equipment at hand.
+  const previewExercises = useMemo(
+    () => compatibleExercises.filter(ex => selectedIds.includes(ex.id)),
+    [compatibleExercises, selectedIds],
+  );
 
   const toggleExerciseSelection = (id: string) => {
     setConfig(prev => {
-      const selected = prev.selectedExerciseIds || EXERCISE_DATABASE.map(e => e.id);
-      const nextSelected = selected.includes(id) ? selected.filter(x => x !== id) : [...selected, id];
-      return { ...prev, selectedExerciseIds: nextSelected };
+      const selected = selectionOf(prev);
+      return { ...prev, [selectionKey]: selected.includes(id) ? selected.filter(x => x !== id) : [...selected, id] };
     });
   };
 
-  // Checks or unchecks several exercises at once (a group, or the whole list).
+  // Selects or deselects several exercises at once (a group, or the whole list).
   const setExercisesSelected = (ids: string[], select: boolean) => {
     setConfig(prev => {
-      const current = prev.selectedExerciseIds || EXERCISE_DATABASE.map(e => e.id);
-      const nextSelected = select ? Array.from(new Set([...current, ...ids])) : current.filter(id => !ids.includes(id));
-      return { ...prev, selectedExerciseIds: nextSelected };
+      const current = selectionOf(prev);
+      return { ...prev, [selectionKey]: select ? Array.from(new Set([...current, ...ids])) : current.filter(id => !ids.includes(id)) };
     });
   };
+
+  // Personalized session as it stands, to show its length while exercises are being selected.
+  const customMinutes = useMemo(
+    () => (mode === 'custom' ? sessionMinutes(generateCustomWorkout(config)) : 0),
+    [mode, config],
+  );
 
   // The start cue of the new interval is played by the cue effect.
   const handleNextInterval = () => {
@@ -270,7 +283,7 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
       playCue(sessionEndCue());
       const plan = groupPlan(intervals);
       const entry = addHistoryEntry({
-        name: activePreset?.name ?? 'Séance sur mesure',
+        name: activePreset?.name ?? (planKind === 'custom' ? 'Séance personnalisée' : 'Séance aléatoire'),
         presetId: activePreset?.id,
         minutes: plannedMinutes,
         rythme: config.rythme,
@@ -365,13 +378,16 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
   }, [intervals, currentIntervalIndex]);
 
   // Length shown on the summary and completion screens.
-  const plannedMinutes = activePreset ? activePreset.durationMinutes : config.durationMinutes || 30;
+  const plannedMinutes = activePreset ? activePreset.durationMinutes : planKind === 'custom' ? sessionMinutes(intervals) : config.durationMinutes || 30;
 
   return {
     config,
     setConfig,
     mode,
     setMode,
+    planKind,
+    selectedIds,
+    customMinutes,
     activePreset,
     plannedMinutes,
     handleStartPreset,

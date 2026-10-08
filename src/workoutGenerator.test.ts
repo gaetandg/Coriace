@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateWorkout, sessionShape } from './workoutGenerator';
+import { generateCustomWorkout, generateWorkout, sessionMinutes, sessionShape } from './workoutGenerator';
 import { EXERCISE_DATABASE } from './exercises';
 import { ExerciseGroup, WorkoutConfig, WorkoutInterval } from './types';
 
@@ -151,5 +151,34 @@ describe('generateWorkout', () => {
     const intervals = generateWorkout(config({ selectedExerciseIds: ['squat_classic'] }));
     expect(intervals.filter(i => i.type === 'work' && !i.exercise)).toEqual([]);
     expect(intervals.filter(i => i.stage === 'main').every(i => i.type === 'rest' || i.exercise!.id === 'squat_classic')).toBe(true);
+  });
+});
+
+describe('personalized sessions', () => {
+  const picked = ['copenhagen_plank', 'calves_standing_slow', 'side_plank', 'single_leg_bridge', 'squat_sumo', 'dead_bug'];
+  const custom = (overrides: Partial<WorkoutConfig> = {}) => config({ customExerciseIds: picked, customRounds: 3, ...overrides });
+
+  it('puts every selected exercise in the circuit, for each round, and nothing else', () => {
+    const work = generateCustomWorkout(custom()).filter(i => i.stage === 'main' && i.type === 'work');
+    expect(work).toHaveLength(picked.length * 3);
+    for (let round = 1; round <= 3; round++) {
+      expect(work.filter(i => i.roundNumber === round).map(i => i.exercise!.id).sort()).toEqual([...picked].sort());
+    }
+  });
+
+  it('has no finisher, a cool-down, and a warm-up unless it is skipped', () => {
+    const intervals = generateCustomWorkout(custom());
+    expect(intervals.some(i => i.stage === 'finisher')).toBe(false);
+    expect(intervals.some(i => i.stage === 'cooldown')).toBe(true);
+    expect(intervals.some(i => i.stage === 'warmup')).toBe(true);
+    const skipped = generateCustomWorkout(custom({ skipWarmup: true }));
+    expect(skipped.some(i => i.stage === 'warmup')).toBe(false);
+    expect(sessionMinutes(skipped)).toBeLessThan(sessionMinutes(intervals));
+  });
+
+  it('gets longer with each round and leaves out exercises the equipment rules out', () => {
+    expect(sessionMinutes(generateCustomWorkout(custom({ customRounds: 4 })))).toBeGreaterThan(sessionMinutes(generateCustomWorkout(custom())));
+    const noChair = generateCustomWorkout(custom({ equipment: { none: true, chaise: false, poids_8kg: false, corde_a_sauter: false } }));
+    expect(noChair.some(i => i.exercise?.id === 'copenhagen_plank')).toBe(false);
   });
 });

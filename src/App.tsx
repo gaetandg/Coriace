@@ -115,7 +115,7 @@ export default function App() {
                 rythme={config.rythme}
                 plan={summaryPlanGroups}
                 onBack={session.handleBackToConfig}
-                onRegenerate={session.activePreset ? undefined : session.handleRegeneratePlan}
+                onRegenerate={session.planKind === 'random' ? session.handleRegeneratePlan : undefined}
                 onLaunch={session.handleLaunchWorkout}
               />
             )}
