@@ -10,7 +10,7 @@ declare global {
 }
 
 const SCRIPT = 'https://cloud.umami.is/script.js';
-const SITE_DOMAIN = 'gaetandg.github.io';
+const SITE_DOMAIN = 'coriace.app';
 
 export function loadAnalytics() {
   if (!UMAMI_WEBSITE_ID || typeof document === 'undefined') return;

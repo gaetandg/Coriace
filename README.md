@@ -98,7 +98,7 @@ Mise en place, une seule fois, dans le tableau de bord Supabase :
 
 1. **SQL Editor** : exécuter, dans l'ordre, les fichiers de `supabase/migrations/` : `20261007000000_session_history.sql` (table de l'historique et règles d'accès : chacun ne voit que ses séances) puis `20261008000000_session_exercises.sql` (exercices de chaque séance) et `20261009000000_gentle_rhythm.sql` (rythme doux).
 2. **Authentication → Sign In / Providers** : désactiver *Email*, activer *Google* avec l'identifiant et le secret d'un client OAuth Google Cloud dont l'URI de redirection autorisée est `https://prfadpnawhrphxigiyag.supabase.co/auth/v1/callback`.
-3. **Authentication → URL Configuration** : *Site URL* `https://gaetandg.github.io/Coriace/`, et ajouter cette adresse (plus `http://localhost:3000/` pour le développement) aux *Redirect URLs*.
+3. **Authentication → URL Configuration** : *Site URL* `https://coriace.app/`, et ajouter cette adresse (plus `http://localhost:3000/` pour le développement) aux *Redirect URLs*.
 
 ## Mesure d'audience (Umami)
 
@@ -112,6 +112,6 @@ L'identifiant du site Umami se règle dans `src/config.ts` (`UMAMI_WEBSITE_ID`, 
 
 L'application est déployée automatiquement sur GitHub Pages à chaque push sur `main`, via le workflow `.github/workflows/deploy.yml` : vérification des types, tests, build, puis publication.
 
-Mise en place initiale (une seule fois) : dans **Settings → Pages** du dépôt, choisir **Source : GitHub Actions**.
+Mise en place initiale (une seule fois) : dans **Settings → Pages** du dépôt, choisir **Source : GitHub Actions**, puis *Custom domain* `coriace.app` avec *Enforce HTTPS*. Le domaine est chez OVH : enregistrements A et AAAA de GitHub Pages sur `coriace.app`, CNAME `www` vers `gaetandg.github.io.`.
 
-Adresse : https://gaetandg.github.io/Coriace/
+Adresse : https://coriace.app/ (l'ancienne adresse github.io redirige)

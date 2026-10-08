@@ -4,7 +4,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 
 ## Fait
 
-- [x] Déploiement automatique sur GitHub Pages (https://gaetandg.github.io/Coriace/)
+- [x] Déploiement automatique sur GitHub Pages (https://coriace.app/)
 - [x] Application installable (PWA), fonctionne hors ligne
 - [x] Nettoyage du code issu d'AI Studio, découpage en composants
 - [x] Réécriture de tous les textes : tutoiement, ton sobre et direct
@@ -56,7 +56,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [ ] Section d'articles sur la course à pied et le renfo, publiés à intervalle régulier, rédigés par IA et relus avant publication
 - [ ] Définir le ton (tutoiement, sobre et direct, comme l'app), la liste de sujets et un calendrier
 - [ ] Pages HTML statiques générées au build (une page par article, titre, description, données structurées `Article`, sitemap) : l'app actuelle est une page unique que les moteurs lisent mal
-- [ ] Nom de domaine propre plutôt que github.io, pour que le référencement profite à la marque
+- [x] Nom de domaine propre plutôt que github.io (coriace.app), pour que le référencement profite à la marque
 - [ ] Publication par une tâche planifiée qui propose l'article en pull request : rien n'est publié sans relecture (Google pénalise les contenus produits en masse sans valeur ajoutée)
 - [ ] Chaque article renvoie vers une séance de l'app adaptée au sujet
 

@@ -5,7 +5,7 @@ import {VitePWA} from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
   return {
-    // GitHub Pages serves the app from /<repo>/; BASE_PATH is set by the deploy workflow.
+    // Served at the root of coriace.app; BASE_PATH allows hosting under a sub-path.
     base: process.env.BASE_PATH || '/',
     plugins: [
       react(),
