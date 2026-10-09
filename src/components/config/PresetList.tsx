@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { LEVELS, OBJECTIVES, Objective, PresetSession, RACE_SESSIONS, TARGETED_SESSIONS, presetEquipment } from '../../sessions';
-import { sectionLabel, segmentedOption, segmentedTrack } from '../../lib/ui';
+import { segmentedOption, segmentedTrack } from '../../lib/ui';
 
-const EQUIPMENT_LABELS = { chaise: 'Chaise', poids_8kg: 'Poids 4–10 kg', corde_a_sauter: 'Corde à sauter' } as const;
+// The weight can always be done without: the loaded exercises are then swapped.
+const EQUIPMENT_LABELS = { chaise: 'Chaise', poids_8kg: 'Poids facultatif', corde_a_sauter: 'Corde à sauter' } as const;
 const OBJECTIVE_KEY = 'coriace:objective';
 
 // The race distance last looked at, kept in this browser.
@@ -17,7 +18,14 @@ function loadObjective(): Objective {
   return OBJECTIVES[0].id;
 }
 
-function PresetCard({ preset, title, onStart }: { preset: PresetSession; title: string; onStart: (preset: PresetSession) => void }) {
+interface PresetCardProps {
+  preset: PresetSession;
+  title: string;
+  overline?: string; // the race distance, recalled above the level
+  onStart: (preset: PresetSession) => void;
+}
+
+function PresetCard({ preset, title, overline, onStart }: PresetCardProps) {
   const equipment = presetEquipment(preset);
   return (
     <li>
@@ -27,6 +35,7 @@ function PresetCard({ preset, title, onStart }: { preset: PresetSession; title: 
         className="w-full bg-cream text-ink rounded-[18px] px-4 py-3.5 flex items-center gap-3 text-left cursor-pointer active:scale-[0.99] transition-transform"
       >
         <span className="flex-1 flex flex-col gap-1">
+          {overline && <span className="text-[12px] font-bold uppercase tracking-[0.08em] text-clay">{overline}</span>}
           <span className="flex items-baseline justify-between gap-3">
             <span className="font-display font-bold text-[21px] leading-tight">{title}</span>
             <span className="font-display font-extrabold text-[17px] shrink-0">{preset.durationMinutes} min</span>
@@ -56,7 +65,7 @@ export function PresetList({ onStart }: { onStart: (preset: PresetSession) => vo
   return (
     <div id="preset-list" className="relative flex flex-col gap-6">
       <section className="flex flex-col gap-2.5">
-        <span className={sectionLabel}>Préparer une course</span>
+        <h2 className="font-display font-extrabold text-[26px] leading-tight">Tu prépares quoi ?</h2>
         <div className={`${segmentedTrack} grid-cols-4`}>
           {OBJECTIVES.map(o => (
             <button
@@ -64,7 +73,7 @@ export function PresetList({ onStart }: { onStart: (preset: PresetSession) => vo
               id={`objective-${o.id}`}
               aria-pressed={o.id === objective}
               onClick={() => choose(o.id)}
-              className={`h-11 font-semibold text-[14px] ${segmentedOption(o.id === objective)}`}
+              className={`h-14 font-display font-extrabold text-[14px] tracking-tight min-[360px]:text-[16px] min-[400px]:text-[18px] ${segmentedOption(o.id === objective)}`}
             >
               {o.label}
             </button>
@@ -74,13 +83,13 @@ export function PresetList({ onStart }: { onStart: (preset: PresetSession) => vo
         <ul className="flex flex-col gap-2.5">
           {LEVELS.map(level => {
             const preset = RACE_SESSIONS.find(p => p.objective === objective && p.level === level.id);
-            return preset ? <PresetCard key={preset.id} preset={preset} title={level.label} onStart={onStart} /> : null;
+            return preset ? <PresetCard key={preset.id} preset={preset} title={level.label} overline={current.label} onStart={onStart} /> : null;
           })}
         </ul>
       </section>
 
       <section className="flex flex-col gap-2.5">
-        <span className={sectionLabel}>Séances ciblées</span>
+        <h2 className="font-display font-extrabold text-[26px] leading-tight">Séances ciblées</h2>
         <ul className="flex flex-col gap-2.5">
           {TARGETED_SESSIONS.map(preset => <PresetCard key={preset.id} preset={preset} title={preset.name} onStart={onStart} />)}
         </ul>

@@ -6,6 +6,7 @@ import { RHYTHMS, rhythmTiming } from '../../lib/rhythm';
 import { outlineButton, primaryButton, sectionLabel } from '../../lib/ui';
 import { ExerciseDetailModal } from './ExerciseDetailModal';
 import { ExerciseThumb } from '../ExerciseThumb';
+import { Switch } from '../Switch';
 
 interface PlanSectionProps {
   label: string;
@@ -54,10 +55,12 @@ interface SummaryScreenProps {
   plan: PlanGroups;
   onBack: () => void;
   onRegenerate?: () => void; // custom sessions only: ready-made ones never change
+  // Ready-made sessions with a weight: done without one, the loaded exercises are swapped.
+  withoutWeight?: { checked: boolean; onChange: (checked: boolean) => void };
   onLaunch: () => void;
 }
 
-export function SummaryScreen({ title, backLabel, minutes, rythme, plan, onBack, onRegenerate, onLaunch }: SummaryScreenProps) {
+export function SummaryScreen({ title, backLabel, minutes, rythme, plan, onBack, onRegenerate, withoutWeight, onLaunch }: SummaryScreenProps) {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
   const tours = (rounds: number) => `${rounds} ${rounds > 1 ? 'tours' : 'tour'}`;
 
@@ -84,6 +87,16 @@ export function SummaryScreen({ title, backLabel, minutes, rythme, plan, onBack,
           </div>
         ))}
       </div>
+
+      {withoutWeight && (
+        <Switch
+          id="switch-without-weight"
+          checked={withoutWeight.checked}
+          label="Je n'ai pas de poids"
+          hint={withoutWeight.checked ? 'Les exercices lestés sont remplacés.' : 'La séance utilise un poids de 4 à 10 kg.'}
+          onChange={withoutWeight.onChange}
+        />
+      )}
 
       {plan.totalWarmup > 0 && (
         <PlanSection label={`Échauffement · ${plan.totalWarmup} min`} items={plan.warmups} onSelect={setSelectedExercise} />

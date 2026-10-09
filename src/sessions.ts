@@ -196,7 +196,34 @@ export function presetEquipment(preset: PresetSession): Exercise['equipmentRequi
   return (['chaise', 'poids_8kg', 'corde_a_sauter'] as const).filter(eq => needed.has(eq));
 }
 
-export function buildPresetWorkout(preset: PresetSession, rythme: WorkoutConfig['rythme']): WorkoutInterval[] {
+export const presetUsesWeight = (preset: PresetSession) => presetEquipment(preset).includes('poids_8kg');
+
+// Without a weight, each loaded exercise gives way to the first of these the session doesn't already have.
+const WITHOUT_WEIGHT: Record<string, string[]> = {
+  shift_squat_goblet: ['tempo_squat', 'squat_classic'],
+  calves_seated: ['calves_standing_slow', 'calf_raise_isometric_low'],
+  woodchop: ['bird_dog', 'dead_bug'],
+};
+
+export function presetWithoutWeight(preset: PresetSession): PresetSession {
+  const used = new Set(presetExercises(preset).map(ex => ex.id));
+  const swap = (id: string) => {
+    const alternatives = WITHOUT_WEIGHT[id];
+    if (!alternatives) return id;
+    const replacement = alternatives.find(alt => !used.has(alt));
+    if (!replacement) throw new Error(`No weight-free replacement left for ${id} in ${preset.id}`);
+    used.add(replacement);
+    return replacement;
+  };
+  return {
+    ...preset,
+    blocks: preset.blocks.map(block => ({ ...block, exerciseIds: block.exerciseIds.map(swap) })),
+    finisherIds: preset.finisherIds.map(swap),
+  };
+}
+
+export function buildPresetWorkout(preset: PresetSession, rythme: WorkoutConfig['rythme'], hasWeight = true): WorkoutInterval[] {
+  if (!hasWeight) preset = presetWithoutWeight(preset);
   return buildIntervals(
     {
       warmup: warmupMoves(preset.warmupMinutes),

@@ -199,7 +199,17 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
   };
 
   const handleStartPreset = (preset: PresetSession) => {
-    showPlan(buildPresetWorkout(preset, config.rythme), 'preset', preset);
+    showPlan(buildPresetWorkout(preset, config.rythme, config.equipment.poids_8kg), 'preset', preset);
+  };
+
+  // On a ready-made session's summary: swap the loaded exercises, and remember there is no weight.
+  const setPresetWithoutWeight = (withoutWeight: boolean) => {
+    if (!activePreset || withoutWeight === !config.equipment.poids_8kg) return;
+    handleEquipmentChange('poids_8kg');
+    const generated = buildPresetWorkout(activePreset, config.rythme, !withoutWeight);
+    setIntervals(generated);
+    setCurrentIntervalIndex(0);
+    setSecondsRemaining(generated[0]?.duration || 30);
   };
 
   const handleLaunchWorkout = () => {
@@ -391,6 +401,7 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     activePreset,
     plannedMinutes,
     handleStartPreset,
+    setPresetWithoutWeight,
     history,
     clearHistory: () => {
       clearHistory();

@@ -14,6 +14,7 @@ import { useAuth } from './hooks/useAuth';
 import { AccountCard } from './components/AccountCard';
 import { AccountSheet } from './components/AccountSheet';
 import { track } from './lib/analytics';
+import { presetUsesWeight } from './sessions';
 
 const accountInitial = (user: User | null) =>
   user ? ((user.user_metadata?.full_name as string | undefined) || user.email || '?').charAt(0).toUpperCase() : '';
@@ -116,6 +117,9 @@ export default function App() {
                 plan={summaryPlanGroups}
                 onBack={session.handleBackToConfig}
                 onRegenerate={session.planKind === 'random' ? session.handleRegeneratePlan : undefined}
+                withoutWeight={session.activePreset && presetUsesWeight(session.activePreset)
+                  ? { checked: !config.equipment.poids_8kg, onChange: session.setPresetWithoutWeight }
+                  : undefined}
                 onLaunch={session.handleLaunchWorkout}
               />
             )}

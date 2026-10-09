@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LEVELS, OBJECTIVES, PRESET_SESSIONS, buildPresetWorkout, presetEquipment } from './sessions';
+import { LEVELS, OBJECTIVES, PRESET_SESSIONS, buildPresetWorkout, presetEquipment, presetUsesWeight, presetWithoutWeight } from './sessions';
 
 describe('preset sessions', () => {
   for (const preset of PRESET_SESSIONS) {
@@ -21,6 +21,23 @@ describe('preset sessions', () => {
       }
     });
   }
+
+  for (const preset of PRESET_SESSIONS.filter(presetUsesWeight)) {
+    it(`${preset.name} can be done without a weight, same length, no repeat in a circuit`, () => {
+      const light = presetWithoutWeight(preset);
+      expect(presetEquipment(light)).not.toContain('poids_8kg');
+      const minutes = (p: typeof preset) => buildPresetWorkout(p, 'equilibre').reduce((sum, i) => sum + i.duration, 0);
+      expect(minutes(light)).toBe(minutes(preset));
+      for (const block of light.blocks) expect(new Set(block.exerciseIds).size).toBe(block.exerciseIds.length);
+      const loaded = buildPresetWorkout(preset, 'equilibre', false).filter(i => i.exercise?.equipmentRequired.includes('poids_8kg'));
+      expect(loaded).toEqual([]);
+    });
+  }
+
+  it('keeps sessions without a weight unchanged', () => {
+    const preset = PRESET_SESSIONS.find(p => p.id === 'marathon-debutant')!;
+    expect(presetWithoutWeight(preset)).toEqual(preset);
+  });
 
   it('has unique ids', () => {
     expect(new Set(PRESET_SESSIONS.map(p => p.id)).size).toBe(PRESET_SESSIONS.length);

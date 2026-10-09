@@ -9,7 +9,9 @@ import { Exercise, WorkoutConfig } from '../../types';
 import { ExerciseDetailModal } from '../summary/ExerciseDetailModal';
 import { outlineButton, primaryButton, sectionLabel, segmentedOption, segmentedTrack } from '../../lib/ui';
 import { LaneArcs } from '../Logo';
+import { RHYTHMS } from '../../lib/rhythm';
 import { ExerciseThumb } from '../ExerciseThumb';
+import { Switch } from '../Switch';
 
 const EQUIPMENT_OPTIONS: { key: EquipmentKey; id: string; label: string }[] = [
   { key: 'none', id: 'chk-eq-none', label: 'Aucun' },
@@ -18,10 +20,10 @@ const EQUIPMENT_OPTIONS: { key: EquipmentKey; id: string; label: string }[] = [
   { key: 'corde_a_sauter', id: 'chk-eq-corde', label: 'Corde à sauter' },
 ];
 
-const RYTHME_OPTIONS: { value: WorkoutConfig['rythme']; id: string; title: string; label: string }[] = [
-  { value: 'doux', id: 'rad-rythme-doux', title: '20 / 40', label: 'Doux' },
-  { value: 'equilibre', id: 'rad-rythme-equilibre', title: '30 / 30', label: 'Équilibré' },
-  { value: 'intense', id: 'rad-rythme-intense', title: '40 / 20', label: 'Intense' },
+const RYTHME_OPTIONS: { value: WorkoutConfig['rythme']; id: string }[] = [
+  { value: 'doux', id: 'rad-rythme-doux' },
+  { value: 'equilibre', id: 'rad-rythme-equilibre' },
+  { value: 'intense', id: 'rad-rythme-intense' },
 ];
 
 const DURATIONS = [15, 20, 30, 45, 60];
@@ -98,12 +100,15 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
                 onClick={() => setConfig(prev => ({ ...prev, rythme: option.value }))}
                 className={`h-14 flex flex-col items-center justify-center ${segmentedOption(selected)}`}
               >
-                <span className="font-display font-extrabold text-xl leading-tight">{option.title}</span>
-                <span className={`text-[13px] font-medium ${selected ? '' : 'text-sand'}`}>{option.label}</span>
+                <span className="font-display font-extrabold text-[17px] min-[360px]:text-xl leading-tight">{RHYTHMS[option.value].label}</span>
+                <span className={`text-[13px] font-medium ${selected ? '' : 'text-sand'}`}>
+                  {RHYTHMS[option.value].work} s / {RHYTHMS[option.value].rest} s
+                </span>
               </button>
             );
           })}
         </div>
+        <p id="rythme-hint" className="text-sm text-sand">{RHYTHMS[config.rythme].hint}</p>
       </div>
 
       {mode === 'preset' ? (
@@ -182,21 +187,15 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
           </div>
           </>
           )}
-          <button
-            id="switch-skip-warmup"
-            role="switch"
-            aria-checked={!!config.skipWarmup}
-            onClick={() => setConfig(prev => ({ ...prev, skipWarmup: !prev.skipWarmup }))}
-            className="mt-1 py-2 flex items-center gap-4 text-left cursor-pointer"
-          >
-            <span className="flex-1 flex flex-col gap-0.5">
-              <span className="font-semibold text-base">Ne pas inclure d'échauffement</span>
-              <span className="text-sm text-sand">{mode === 'custom' ? 'La séance sera plus courte.' : 'La durée restera la même.'}</span>
-            </span>
-            <span className={`w-13 h-8 rounded-full p-1 shrink-0 transition-colors ${config.skipWarmup ? 'bg-cream' : 'bg-ink/35'}`}>
-              <span className={`block w-6 h-6 rounded-full transition-transform ${config.skipWarmup ? 'translate-x-5 bg-brick' : 'bg-white/80'}`} />
-            </span>
-          </button>
+          <div className="mt-1 flex flex-col">
+            <Switch
+              id="switch-skip-warmup"
+              checked={!!config.skipWarmup}
+              label="Ne pas inclure d'échauffement"
+              hint={mode === 'custom' ? 'La séance sera plus courte.' : 'La durée restera la même.'}
+              onChange={skipWarmup => setConfig(prev => ({ ...prev, skipWarmup }))}
+            />
+          </div>
         </div>
 
         <div id="exercise-list" className="relative flex flex-col gap-4">

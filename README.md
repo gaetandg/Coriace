@@ -6,14 +6,14 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 
 ## Fonctionnalités
 
-- **Séances prédéfinies** : par objectif de course (10 km, semi, marathon, +50 km), chacune en trois niveaux (Débutant 20 min, Intermédiaire 30 min, Confirmé 45 min), et dix séances ciblées (Mollets express, Gainage, Hanches solides, Genoux solides, Pieds et chevilles, Tendon d'Achille, Côtes, Descentes, Dos et posture, Activation avant sortie). Toujours les mêmes exercices dans le même ordre, pour suivre ses progrès.
+- **Séances prédéfinies** : par objectif de course (10 km, semi, marathon, +50 km), chacune en trois niveaux (Débutant 20 min, Intermédiaire 30 min, Confirmé 45 min), et dix séances ciblées (Mollets express, Gainage, Hanches solides, Genoux solides, Pieds et chevilles, Tendon d'Achille, Côtes, Descentes, Dos et posture, Activation avant sortie). Toujours les mêmes exercices dans le même ordre, pour suivre ses progrès. Chaque carte rappelle la distance au-dessus du niveau. Les trois séances qui utilisent un poids se font aussi sans : l'interrupteur « Je n'ai pas de poids » du résumé remplace les exercices lestés (squat gobelet → squat descente lente, mollets assis lestés → mollets debout, bûcheron → bird dog) et le choix est retenu avec le matériel.
 - **Trois modes**, chacun expliqué en une phrase sous le sélecteur (Prédéfinies par défaut pour un nouvel utilisateur) :
   - **Aléatoire** : durée de 15 à 60 minutes, l'app compose une séance variée parmi les exercices sélectionnés (tous par défaut) ; « Régénérer » en tire une autre.
   - **Personnalisée** : tous les exercices sélectionnés (aucun par défaut) sont dans la séance, rangés pour ne pas enchaîner deux fois le même groupe, répétés 2, 3 ou 4 tours ; la durée s'affiche en direct. Pas de finisher.
   - **Prédéfinies** : séances fixes par objectif de course et niveau, et séances ciblées.
   Chaque mode garde sa propre sélection d'exercices.
 - **Matériel** : sans matériel, chaise, poids de 8 kg, corde à sauter.
-- **Trois rythmes** : doux (20 s / 40 s), équilibré (30 s / 30 s, par défaut) ou intense (40 s / 20 s).
+- **Trois rythmes** : doux (20 s / 40 s), équilibré (30 s / 30 s, par défaut) ou intense (40 s / 20 s), avec une phrase sous le sélecteur qui explique l'effort et la récupération.
 - **Structure complète** : échauffement progressif (de la mobilité aux sautillements, sans répétition), un ou deux circuits courts (8 exercices au plus, 3 ou 4 tours ; les séances longues ont deux blocs plutôt qu'un circuit sans fin), finisher cardio et sauts, retour au calme avec étirements guidés.
 - **Ne pas inclure d'échauffement** : après un footing par exemple ; la séance garde sa durée, le circuit prend le temps libéré.
 - **Ciblage coureur** : gainage abdominal, endurance des mollets, adducteurs.
