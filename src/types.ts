@@ -57,6 +57,8 @@ export interface WorkoutConfig {
   // Personalized sessions: every one of these exercises, repeated `customRounds` times.
   customExerciseIds?: string[];
   customRounds?: number;
+  // Ready-made sessions done without a weight: the loaded exercises are swapped.
+  presetWithoutWeight?: boolean;
 }
 
 export interface SoundSettings {

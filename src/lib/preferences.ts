@@ -27,6 +27,7 @@ interface StoredPreferences {
   excludedExerciseIds?: string[];
   customExerciseIds?: string[];
   customRounds?: number;
+  presetWithoutWeight?: boolean;
   sound?: Partial<SoundSettings>;
   // Before personalized sessions existed, 'custom' meant what is now 'random'.
   mode?: 'preset' | 'custom';
@@ -42,6 +43,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
     selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id),
     customExerciseIds: [],
     customRounds: 3,
+    presetWithoutWeight: false,
   },
   sound: { beeps: true, voice: true },
   // Ready-made race sessions first: the quickest way in for a new runner.
@@ -79,6 +81,7 @@ export function loadPreferences(): Preferences {
         ? EXERCISE_DATABASE.map(ex => ex.id).filter(id => stored.customExerciseIds!.includes(id))
         : [],
       customRounds: [2, 3, 4].includes(stored.customRounds as number) ? stored.customRounds : defaults.config.customRounds,
+      presetWithoutWeight: isBoolean(stored.presetWithoutWeight) ? stored.presetWithoutWeight : false,
     },
     sound: {
       beeps: isBoolean(stored.sound?.beeps) ? stored.sound.beeps : defaults.sound.beeps,
@@ -99,6 +102,7 @@ export function savePreferences({ config, sound, mode }: Preferences) {
     excludedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id).filter(id => !selected.includes(id)),
     customExerciseIds: config.customExerciseIds ?? [],
     customRounds: config.customRounds ?? 3,
+    presetWithoutWeight: !!config.presetWithoutWeight,
     sound,
     sessionMode: mode,
   };

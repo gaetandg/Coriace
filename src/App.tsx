@@ -118,7 +118,7 @@ export default function App() {
                 onBack={session.handleBackToConfig}
                 onRegenerate={session.planKind === 'random' ? session.handleRegeneratePlan : undefined}
                 withoutWeight={session.activePreset && presetUsesWeight(session.activePreset)
-                  ? { checked: !config.equipment.poids_8kg, onChange: session.setPresetWithoutWeight }
+                  ? { checked: !!config.presetWithoutWeight, onChange: session.setPresetWithoutWeight }
                   : undefined}
                 onLaunch={session.handleLaunchWorkout}
               />

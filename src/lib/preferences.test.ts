@@ -27,6 +27,7 @@ describe('preferences', () => {
         selectedExerciseIds: EXERCISE_DATABASE.map(ex => ex.id).filter(id => id !== 'pushups'),
         customExerciseIds: ['side_plank'],
         customRounds: 2,
+        presetWithoutWeight: true,
       },
       sound: { beeps: false, voice: true },
       mode: 'custom' as const,
