@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react';
 import {defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
 
+// The Android app ships its files inside the app: no service worker there.
+const androidBuild = process.env.BUILD_TARGET === 'android';
+
 export default defineConfig(() => {
   return {
     // Served at the root of coriace.app; BASE_PATH allows hosting under a sub-path.
@@ -11,6 +14,7 @@ export default defineConfig(() => {
       react(),
       tailwindcss(),
       VitePWA({
+        disable: androidBuild,
         registerType: 'autoUpdate',
         includeAssets: ['favicon.svg', 'apple-touch-icon-180x180.png'],
         manifest: {

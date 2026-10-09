@@ -1,9 +1,17 @@
 import { useEffect } from 'react';
+import { KeepAwake } from '@capacitor-community/keep-awake';
+import { isNativeApp } from '../lib/native';
 
-// Keeps the screen on while `active`, where the browser supports it.
+// Keeps the screen on while `active`: always in the Android app, where the browser supports it otherwise.
 export function useWakeLock(active: boolean) {
   useEffect(() => {
-    if (!active || !('wakeLock' in navigator)) return;
+    if (!active || !isNativeApp) return;
+    KeepAwake.keepAwake().catch(() => {});
+    return () => { KeepAwake.allowSleep().catch(() => {}); };
+  }, [active]);
+
+  useEffect(() => {
+    if (!active || isNativeApp || !('wakeLock' in navigator)) return;
     let lock: WakeLockSentinel | null = null;
     let cancelled = false;
 

@@ -3,6 +3,7 @@ import type { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { track } from '../lib/analytics';
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from '../config';
+import { isNativeApp } from '../lib/native';
 
 // Asks the project whether Google sign-in is switched on, so the button never leads to an error.
 async function googleSignInAvailable(): Promise<boolean> {
@@ -16,13 +17,14 @@ async function googleSignInAvailable(): Promise<boolean> {
 }
 
 // Google sign-in through Supabase. `enabled` is false when no project is configured or
-// Google is not switched on in it.
+// Google is not switched on in it, and in the Android app until its native sign-in exists
+// (Google refuses its web sign-in page inside an app).
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [googleAvailable, setGoogleAvailable] = useState(false);
 
   useEffect(() => {
-    if (supabase) googleSignInAvailable().then(setGoogleAvailable);
+    if (supabase && !isNativeApp) googleSignInAvailable().then(setGoogleAvailable);
   }, []);
 
   useEffect(() => {

@@ -115,3 +115,13 @@ L'application est déployée automatiquement sur GitHub Pages à chaque push sur
 Mise en place initiale (une seule fois) : dans **Settings → Pages** du dépôt, choisir **Source : GitHub Actions**, puis *Custom domain* `coriace.app` avec *Enforce HTTPS*. Le domaine est chez OVH : enregistrements A et AAAA de GitHub Pages sur `coriace.app`, CNAME `www` vers `gaetandg.github.io.`.
 
 Adresse : https://coriace.app/ (l'ancienne adresse github.io redirige)
+
+## App Android
+
+L'app Android emballe l'app web avec [Capacitor](https://capacitorjs.com) (identifiant `app.coriace`, dossier `android/`). Le site n'est pas concerné : dans un navigateur, tout fonctionne comme avant.
+
+Dans l'app, la voix passe par le moteur du téléphone (la vue web d'Android n'en a pas) et l'écran reste allumé pendant la séance ; pas de service worker, les fichiers sont dans l'app. La connexion Google est masquée tant que la connexion native n'est pas en place (Google refuse sa page de connexion web dans une app).
+
+- `npm run build:android` : build web pour l'app puis copie dans `android/`.
+- Fabrication : le workflow `.github/workflows/android.yml` construit l'APK de test à chaque push sur `main` et le publie à l'adresse https://github.com/gaetandg/Coriace/releases/download/android-test/coriace.apk. Il est signé avec une clé de test partagée (`android/app/debug.keystore`, pas un secret), pour que chaque nouvelle version s'installe par-dessus la précédente.
+- En local : JDK 21 et le SDK Android (plateforme 36), puis `cd android && ./gradlew assembleDebug`.
