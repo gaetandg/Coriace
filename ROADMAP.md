@@ -49,8 +49,17 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Mesure d'audience avec Umami (sans cookie) : séances préparées, lancées, terminées, quittées, écrans ouverts — à activer avec l'identifiant du site
 - [x] Connexion Google (Supabase) et synchronisation de l'historique entre appareils, accessible depuis l'en-tête
 - [ ] Synchroniser aussi les préférences et les séances enregistrées
+- [ ] Connexion avec Apple, obligatoire pour publier l'app iPhone sur l'App Store dès qu'une connexion Google est proposée (compte développeur Apple, 99 $ par an)
 - [x] Sans compte : proposer de se connecter en fin de séance pour sauvegarder son historique (l'historique local est repris à la connexion)
 - [ ] Export vers Strava : envoyer chaque séance terminée comme activité « Renforcement musculaire » (API Strava, connexion Strava du coureur)
+
+### Installation de l'app
+- [ ] Proposer d'installer l'app depuis le navigateur. Android et ordinateur (Chrome, Edge, Samsung Internet) : bouton « Installer » qui ouvre la fenêtre du système. iPhone (Safari, aucun moyen de déclencher l'installation) : fenêtre qui montre « Partager » puis « Sur l'écran d'accueil ». Rien si l'app est déjà installée
+- [ ] Moment : jamais à la première visite ni pendant une séance. Carte sur l'écran de fin de la première séance terminée (« Installer » / « Plus tard »), reproposée 3 séances plus tard, abandonnée après deux refus
+- [ ] Une seule carte à la fois en fin de séance : l'installation passe en premier les fois où elle est prévue, la connexion Google les autres fois. Déjà installée : seulement la connexion ; déjà connecté : seulement l'installation
+- [ ] Ligne « Installer l'app » dans le menu du compte, tant que l'app n'est pas installée
+- [ ] Mesure Umami : proposition affichée, installation acceptée, refus
+- [ ] Une fois l'app Android publiée : sur Android, lien vers le Play Store à la place de l'installation navigateur ; rien si l'app du Store est déjà installée (`related_applications` dans le manifeste) ; rien dans l'app Android elle-même
 
 ### Articles (SEO et GEO)
 - [ ] Section d'articles sur la course à pied et le renfo, publiés à intervalle régulier, rédigés par IA et relus avant publication
