@@ -90,12 +90,17 @@ export function PresetCategoryPage({ category, onBack, onStart }: {
       </button>
       <h1 className="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">{categoryLabel(category)}</h1>
       <p className="text-base leading-snug">{intro}</p>
+      {category !== 'ciblees' && (
+        <p id="category-count" className="text-base font-semibold">
+          {RACE_SESSIONS.filter(p => p.objective === category).length} séances, en trois durées : 20, 30 et 45 minutes.
+        </p>
+      )}
       {category === 'ciblees'
         ? list(TARGETED_SESSIONS)
         : LEVELS.map(level => (
           <section key={level.id} id={`level-${level.id}`} className="flex flex-col gap-2.5 mt-2">
             <div className="flex flex-col gap-0.5">
-              <h2 className="font-display font-extrabold text-[26px] leading-tight">{level.label}</h2>
+              <h2 className="font-display font-extrabold text-[26px] leading-tight">{level.heading}</h2>
               <p className="text-sm text-sand">{level.hint}</p>
             </div>
             {list(RACE_SESSIONS.filter(p => p.objective === category && p.level === level.id))}

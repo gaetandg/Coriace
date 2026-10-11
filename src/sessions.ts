@@ -27,10 +27,13 @@ export const OBJECTIVES: { id: Objective; label: string; hint: string; intro: st
     intro: 'Sur les longues distances et en trail, les cuisses encaissent les descentes et les chevilles les terrains irréguliers. Ces séances travaillent le freinage, l\'équilibre et l\'endurance des muscles.',
   },
 ];
-export const LEVELS: { id: Level; label: string; hint: string }[] = [
-  { id: 'debutant', label: 'Débutant', hint: 'Tu débutes le renfo ou tu reprends. Un circuit, 2 tours.' },
-  { id: 'intermediaire', label: 'Intermédiaire', hint: 'Tu fais du renfo de temps en temps. Un circuit plus long, 3 tours.' },
-  { id: 'confirme', label: 'Confirmé', hint: 'Tu en fais régulièrement. Deux blocs de 3 tours.' },
+
+// Levels are named after their length: the short sessions suit beginners (no equipment, few jumps),
+// the long ones runners used to strength work.
+export const LEVELS: { id: Level; label: string; heading: string; hint: string }[] = [
+  { id: 'debutant', label: 'Courte', heading: 'Séances courtes', hint: '20 min, un circuit en 2 tours, sans matériel. Pour débuter, reprendre ou un jour chargé.' },
+  { id: 'intermediaire', label: 'Moyenne', heading: 'Séances moyennes', hint: '30 min, un circuit plus long en 3 tours.' },
+  { id: 'confirme', label: 'Longue', heading: 'Séances longues', hint: '45 min, deux blocs de 3 tours. Pour qui fait du renfo régulièrement.' },
 ];
 
 export const TARGETED_INTRO = 'Des séances courtes sur une zone précise, à glisser entre deux sorties ou en complément d\'une séance de préparation.';
