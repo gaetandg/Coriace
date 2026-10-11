@@ -9,17 +9,34 @@ import { FORMULAS, FormulaId, VARIANTS, Variants } from './sessionFormulas';
 export type Objective = '10k' | 'semi' | 'marathon' | 'ultra';
 export type Level = 'debutant' | 'intermediaire' | 'confirme';
 
-export const OBJECTIVES: { id: Objective; label: string; hint: string }[] = [
-  { id: '10k', label: '10 km', hint: 'Rebond et vivacité.' },
-  { id: 'semi', label: 'Semi', hint: 'Rebond et endurance.' },
-  { id: 'marathon', label: 'Marathon', hint: 'Tenir les derniers kilomètres.' },
-  { id: 'ultra', label: '+50 km', hint: 'Encaisser les heures et le dénivelé.' },
+export const OBJECTIVES: { id: Objective; label: string; hint: string; intro: string }[] = [
+  {
+    id: '10k', label: '10 km', hint: 'Rebond et vivacité.',
+    intro: 'Sur 10 km, on court vite. Le renfo travaille le rebond, la poussée sur une jambe et un tronc solide, pour garder une foulée efficace jusqu\'au bout.',
+  },
+  {
+    id: 'semi', label: 'Semi', hint: 'Rebond et endurance.',
+    intro: 'Le semi demande de la vivacité et de l\'endurance : des mollets et des hanches qui tiennent la distance, avec un peu de rebond.',
+  },
+  {
+    id: 'marathon', label: 'Marathon', hint: 'Tenir les derniers kilomètres.',
+    intro: 'Les derniers kilomètres d\'un marathon se jouent sur les mollets, les adducteurs, les fessiers et le gainage. Ces séances renforcent ce qui lâche en fin de course.',
+  },
+  {
+    id: 'ultra', label: '+50 km', hint: 'Encaisser les heures et le dénivelé.',
+    intro: 'Sur les longues distances et en trail, les cuisses encaissent les descentes et les chevilles les terrains irréguliers. Ces séances travaillent le freinage, l\'équilibre et l\'endurance des muscles.',
+  },
 ];
-export const LEVELS: { id: Level; label: string }[] = [
-  { id: 'debutant', label: 'Débutant' },
-  { id: 'intermediaire', label: 'Intermédiaire' },
-  { id: 'confirme', label: 'Confirmé' },
+export const LEVELS: { id: Level; label: string; hint: string }[] = [
+  { id: 'debutant', label: 'Débutant', hint: 'Tu débutes le renfo ou tu reprends. Un circuit, 2 tours.' },
+  { id: 'intermediaire', label: 'Intermédiaire', hint: 'Tu fais du renfo de temps en temps. Un circuit plus long, 3 tours.' },
+  { id: 'confirme', label: 'Confirmé', hint: 'Tu en fais régulièrement. Deux blocs de 3 tours.' },
 ];
+
+export const TARGETED_INTRO = 'Des séances courtes sur une zone précise, à glisser entre deux sorties ou en complément d\'une séance de préparation.';
+
+// The pages of ready-made sessions: one per race distance, then the targeted sessions.
+export type PresetCategory = Objective | 'ciblees';
 
 export interface PresetSession {
   id: string;

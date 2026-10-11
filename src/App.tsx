@@ -15,6 +15,7 @@ import { AccountCard } from './components/AccountCard';
 import { AccountSheet } from './components/AccountSheet';
 import { track } from './lib/analytics';
 import { presetFormulas, presetUsesWeight, withFormula } from './sessions';
+import { categoryLabel } from './components/config/PresetList';
 
 const accountInitial = (user: User | null) =>
   user ? ((user.user_metadata?.full_name as string | undefined) || user.email || '?').charAt(0).toUpperCase() : '';
@@ -38,6 +39,8 @@ export default function App() {
 
   // Phone back button, from the deepest level: sheets, stats, then the workout screens.
   useBackHandler(workoutState === 'summary', session.handleBackToConfig);
+  const categoryOpen = workoutState === 'config' && session.mode === 'preset' && session.presetCategory !== null;
+  useBackHandler(categoryOpen, () => session.setPresetCategory(null));
   useBackHandler(workoutState === 'completed', session.resetWorkout);
   useBackHandler(workoutState === 'active', () => {
     // Leaving a session by accident would lose it: pause instead.
@@ -62,23 +65,29 @@ export default function App() {
     setActiveTab('workout');
     if (workoutState === 'summary') session.handleBackToConfig();
     if (workoutState === 'completed') session.resetWorkout();
+    session.setPresetCategory(null);
   };
 
-  // Every new screen opens at the top. Coming back to the settings finds them where they were left.
-  const screen = activeTab === 'stats' ? 'stats' : workoutState;
+  // Every new screen opens at the top. Coming back to the settings, or to a page of ready-made
+  // sessions from one of them, finds it where it was left.
+  const screen = activeTab === 'stats' ? 'stats' : categoryOpen ? `category:${session.presetCategory}` : workoutState;
   const screenRef = useRef(screen);
-  const settingsScroll = useRef(0);
+  const scrolls = useRef<Record<string, number>>({});
+  const keepsScroll = (s: string) => s === 'config' || s.startsWith('category:');
   useEffect(() => {
     // The app places the scroll itself; the browser would otherwise restore it on the back button.
     history.scrollRestoration = 'manual';
-    const remember = () => { if (screenRef.current === 'config') settingsScroll.current = window.scrollY; };
+    const remember = () => { if (keepsScroll(screenRef.current)) scrolls.current[screenRef.current] = window.scrollY; };
     window.addEventListener('scroll', remember, { passive: true });
     return () => window.removeEventListener('scroll', remember);
   }, []);
   useLayoutEffect(() => {
     if (screenRef.current === screen) return;
+    const from = screenRef.current;
     screenRef.current = screen;
-    window.scrollTo(0, screen === 'config' ? settingsScroll.current : 0);
+    // A page opened from the home screen starts at the top.
+    if (from === 'config' && screen.startsWith('category:')) delete scrolls.current[screen];
+    window.scrollTo(0, keepsScroll(screen) ? scrolls.current[screen] ?? 0 : 0);
   }, [screen]);
 
   // Rest turns the screen green so effort and recovery read at a glance from the floor.
@@ -100,6 +109,8 @@ export default function App() {
         {activeTab === 'stats' ? (
           <StatsScreen
             history={session.history}
+            canRedo={session.canRedo}
+            onRedo={entry => { setActiveTab('workout'); session.redoSession(entry); }}
             onBack={closeStats}
             onClear={session.clearHistory}
             account={<AccountCard auth={auth} />}
@@ -111,12 +122,13 @@ export default function App() {
             {workoutState === 'summary' && summaryPlanGroups && (
               <SummaryScreen
                 title={session.activePreset?.name ?? 'Ta séance'}
-                backLabel={session.activePreset ? 'Séances prédéfinies' : 'Réglages'}
+                backLabel={session.activePreset && session.presetCategory ? categoryLabel(session.presetCategory) : 'Réglages'}
                 minutes={session.plannedMinutes}
                 rythme={config.rythme}
                 plan={summaryPlanGroups}
                 onBack={session.handleBackToConfig}
                 onRegenerate={session.planKind === 'random' ? session.handleRegeneratePlan : undefined}
+                onRhythmChange={session.activePreset ? session.setPresetRhythm : undefined}
                 formulas={session.activePreset && presetFormulas(session.activePreset).length > 0
                   ? { options: presetFormulas(session.activePreset), selected: session.activeFormula, onChange: session.setPresetFormula }
                   : undefined}

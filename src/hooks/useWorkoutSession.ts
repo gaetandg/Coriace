@@ -6,7 +6,7 @@ import { SessionMode, loadPreferences, savePreferences } from '../lib/preference
 import { HistoryEntry, addHistoryEntry, clearHistory, loadHistory, saveHistory } from '../lib/history';
 import { deleteRemoteHistory, pushHistoryEntry, syncHistory } from '../lib/historySync';
 import { supabase } from '../lib/supabase';
-import { PresetSession, buildPresetWorkout } from '../sessions';
+import { PRESET_SESSIONS, PresetCategory, PresetSession, buildPresetWorkout } from '../sessions';
 import type { FormulaId } from '../sessionFormulas';
 import { EXERCISE_DATABASE } from '../exercises';
 import { getBlockSteps, groupPlan } from '../lib/plan';
@@ -33,6 +33,9 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
   // The ready-made session being run, or null for a custom one.
   const [activePreset, setActivePreset] = useState<PresetSession | null>(null);
   const [activeFormula, setActiveFormula] = useState<FormulaId>('a');
+  // The page of ready-made sessions open on the home screen (a race distance or the targeted
+  // sessions), or null for the list of pages.
+  const [presetCategory, setPresetCategory] = useState<PresetCategory | null>(null);
   // Kind of the session on screen (the mode can change afterwards on the home screen).
   const [planKind, setPlanKind] = useState<SessionMode>('random');
   const [history, setHistory] = useState<HistoryEntry[]>(loadHistory);
@@ -207,15 +210,15 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     else showPlan(generateWorkout(config), 'random');
   };
 
-  const handleStartPreset = (preset: PresetSession) => {
+  const handleStartPreset = (preset: PresetSession, rythme = config.rythme) => {
     setActiveFormula('a');
-    showPlan(buildPresetWorkout(preset, config.rythme, !config.presetWithoutWeight), 'preset', preset);
+    showPlan(buildPresetWorkout(preset, rythme, !config.presetWithoutWeight), 'preset', preset);
   };
 
-  // On a ready-made session's summary, a change of formula or weight redraws the plan.
-  const redrawPreset = (formula: FormulaId, withoutWeight: boolean) => {
+  // On a ready-made session's page, a change of formula, weight or rhythm redraws the plan.
+  const redrawPreset = (formula: FormulaId, withoutWeight: boolean, rythme = config.rythme) => {
     if (!activePreset) return;
-    const generated = buildPresetWorkout(activePreset, config.rythme, !withoutWeight, formula);
+    const generated = buildPresetWorkout(activePreset, rythme, !withoutWeight, formula);
     setIntervals(generated);
     setCurrentIntervalIndex(0);
     setSecondsRemaining(generated[0]?.duration || 30);
@@ -230,6 +233,41 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
   const setPresetFormula = (formula: FormulaId) => {
     setActiveFormula(formula);
     redrawPreset(formula, !!config.presetWithoutWeight);
+  };
+
+  // The rhythm is chosen on the session's page and kept for next time.
+  const setPresetRhythm = (rythme: WorkoutConfig['rythme']) => {
+    setConfig(prev => ({ ...prev, rythme }));
+    redrawPreset(activeFormula, !!config.presetWithoutWeight, rythme);
+  };
+
+  // From the history: the same ready-made session at the same rhythm, or a personalized session
+  // with the same exercises (older sessions without their exercise list can't be redone).
+  const canRedo = (entry: HistoryEntry) =>
+    PRESET_SESSIONS.some(p => p.id === entry.presetId) || (entry.exercises?.length ?? 0) > 0;
+
+  const redoSession = (entry: HistoryEntry) => {
+    const preset = PRESET_SESSIONS.find(p => p.id === entry.presetId);
+    setConfig(prev => ({ ...prev, rythme: entry.rythme }));
+    if (preset) {
+      setMode('preset');
+      setPresetCategory(preset.objective ?? 'ciblees');
+      handleStartPreset(preset, entry.rythme);
+      return;
+    }
+    const exercises = entry.exercises ?? [];
+    const unique = [...new Set(exercises)];
+    if (unique.length === 0) return;
+    const rounds = Math.min(4, Math.max(2, Math.round(exercises.length / unique.length)));
+    // Every exercise is kept, whatever the equipment now selected.
+    const redo: WorkoutConfig = {
+      ...config,
+      rythme: entry.rythme,
+      customExerciseIds: unique,
+      customRounds: rounds,
+      equipment: { none: false, chaise: true, poids_8kg: true, corde_a_sauter: true },
+    };
+    showPlan(generateCustomWorkout(redo), 'custom');
   };
 
   const handleLaunchWorkout = () => {
@@ -424,6 +462,11 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     setPresetWithoutWeight,
     activeFormula,
     setPresetFormula,
+    setPresetRhythm,
+    presetCategory,
+    setPresetCategory,
+    canRedo,
+    redoSession,
     history,
     clearHistory: () => {
       clearHistory();

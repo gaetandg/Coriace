@@ -4,7 +4,7 @@ import { HistoryEntry, sessionsInLastDays } from '../../lib/history';
 import { groupSets, minutesInLastDays, topSessions, weekStreak, weeklyStats } from '../../lib/stats';
 import { plural } from '../../lib/format';
 import { rhythmTiming } from '../../lib/rhythm';
-import { primaryButton, sectionLabel } from '../../lib/ui';
+import { outlineButton, primaryButton, sectionLabel } from '../../lib/ui';
 import { WeeklyChart } from './WeeklyChart';
 import { BarList } from './BarList';
 
@@ -17,10 +17,13 @@ interface StatsScreenProps {
   history: HistoryEntry[];
   onBack: () => void;
   onClear: () => void;
+  // Opens the same session again, ready to start; not offered for old sessions without their exercises.
+  canRedo: (entry: HistoryEntry) => boolean;
+  onRedo: (entry: HistoryEntry) => void;
   account: ReactNode;
 }
 
-export function StatsScreen({ history, onBack, onClear, account }: StatsScreenProps) {
+export function StatsScreen({ history, onBack, onClear, canRedo, onRedo, account }: StatsScreenProps) {
   const [confirmClear, setConfirmClear] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const visible = showAll ? history : history.slice(0, VISIBLE_SESSIONS);
@@ -83,14 +86,22 @@ export function StatsScreen({ history, onBack, onClear, account }: StatsScreenPr
           <h2 className={sectionLabel}>Historique</h2>
           <ul className="flex flex-col">
             {visible.map(entry => (
-              <li key={entry.id} className="py-3 border-b border-white/20 flex items-baseline justify-between gap-3">
+              <li key={entry.id} className="py-3 border-b border-white/20 flex items-center justify-between gap-3">
                 <span className="flex flex-col">
                   <span className="font-semibold text-base">{entry.name}</span>
                   <span className="text-sm text-sand">
-                    {entry.minutes} min · {rhythmTiming(entry.rythme)} · {plural(entry.exerciseCount, 'exercice')}
+                    <span className="first-letter:uppercase inline-block">{dayFormat.format(new Date(entry.completedAt))}</span>
+                    {' · '}{entry.minutes} min · {rhythmTiming(entry.rythme)} · {plural(entry.exerciseCount, 'exercice')}
                   </span>
                 </span>
-                <span className="text-sm text-sand shrink-0 first-letter:uppercase">{dayFormat.format(new Date(entry.completedAt))}</span>
+                {canRedo(entry) && (
+                  <button
+                    onClick={() => onRedo(entry)}
+                    className={`shrink-0 h-10 px-4 rounded-full text-[15px] ${outlineButton}`}
+                  >
+                    Refaire
+                  </button>
+                )}
               </li>
             ))}
           </ul>

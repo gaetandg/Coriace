@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { Check, Info } from 'lucide-react';
 import { EXERCISE_GROUPS } from '../../lib/groups';
 import { EquipmentKey, SessionMode, WorkoutSession } from '../../hooks/useWorkoutSession';
-import { PresetList } from './PresetList';
+import { PresetCategories, PresetCategoryPage } from './PresetList';
+import { RhythmPicker } from '../RhythmPicker';
 import { RecentActivity } from '../RecentActivity';
 import { sessionsInLastDays } from '../../lib/history';
-import { Exercise, WorkoutConfig } from '../../types';
+import { Exercise } from '../../types';
 import { ExerciseDetailModal } from '../summary/ExerciseDetailModal';
 import { outlineButton, primaryButton, sectionLabel, segmentedOption, segmentedTrack } from '../../lib/ui';
 import { LaneArcs } from '../Logo';
-import { RHYTHMS } from '../../lib/rhythm';
 import { ExerciseThumb } from '../ExerciseThumb';
 import { Switch } from '../Switch';
 
@@ -18,12 +18,6 @@ const EQUIPMENT_OPTIONS: { key: EquipmentKey; id: string; label: string }[] = [
   { key: 'chaise', id: 'chk-eq-chaise', label: 'Chaise' },
   { key: 'poids_8kg', id: 'chk-eq-weight', label: 'Poids 4–10 kg' },
   { key: 'corde_a_sauter', id: 'chk-eq-corde', label: 'Corde à sauter' },
-];
-
-const RYTHME_OPTIONS: { value: WorkoutConfig['rythme']; id: string }[] = [
-  { value: 'doux', id: 'rad-rythme-doux' },
-  { value: 'equilibre', id: 'rad-rythme-equilibre' },
-  { value: 'intense', id: 'rad-rythme-intense' },
 ];
 
 const DURATIONS = [15, 20, 30, 45, 60];
@@ -49,6 +43,8 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
     mode,
     setMode,
     handleStartPreset,
+    presetCategory,
+    setPresetCategory,
     selectedIds,
     customMinutes,
   } = session;
@@ -57,6 +53,11 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
   const [detailExercise, setDetailExercise] = useState<Exercise | null>(null);
 
   const durationMinutes = config.durationMinutes || 30;
+
+  // A page of ready-made sessions replaces the whole home screen.
+  if (mode === 'preset' && presetCategory) {
+    return <PresetCategoryPage category={presetCategory} onBack={() => setPresetCategory(null)} onStart={handleStartPreset} />;
+  }
 
   return (
     <div id="panel-config" className="flex-1 flex flex-col gap-[22px]">
@@ -87,32 +88,12 @@ export function ConfigScreen({ session, onOpenHistory }: { session: WorkoutSessi
         <p id="mode-hint" className="text-sm text-sand">{MODE_OPTIONS.find(option => option.value === mode)?.hint}</p>
       </div>
 
-      <div className="relative flex flex-col gap-2.5">
-        <span className={sectionLabel}>Rythme</span>
-        <div className={`${segmentedTrack} grid-cols-3`}>
-          {RYTHME_OPTIONS.map(option => {
-            const selected = config.rythme === option.value;
-            return (
-              <button
-                key={option.value}
-                id={option.id}
-                aria-pressed={selected}
-                onClick={() => setConfig(prev => ({ ...prev, rythme: option.value }))}
-                className={`h-14 flex flex-col items-center justify-center ${segmentedOption(selected)}`}
-              >
-                <span className="font-display font-extrabold text-[17px] min-[360px]:text-xl leading-tight">{RHYTHMS[option.value].label}</span>
-                <span className={`text-[13px] font-medium ${selected ? '' : 'text-sand'}`}>
-                  {RHYTHMS[option.value].work} s / {RHYTHMS[option.value].rest} s
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        <p id="rythme-hint" className="text-sm text-sand">{RHYTHMS[config.rythme].hint}</p>
-      </div>
+      {mode !== 'preset' && (
+        <RhythmPicker value={config.rythme} onChange={rythme => setConfig(prev => ({ ...prev, rythme }))} />
+      )}
 
       {mode === 'preset' ? (
-        <PresetList onStart={handleStartPreset} />
+        <PresetCategories onOpen={setPresetCategory} />
       ) : (
         <>
         <div className="relative flex flex-col gap-2.5">
