@@ -7,6 +7,10 @@ import { outlineButton, primaryButton, sectionLabel } from '../../lib/ui';
 import { ExerciseDetailModal } from './ExerciseDetailModal';
 import { ExerciseThumb } from '../ExerciseThumb';
 import { Switch } from '../Switch';
+import { FormulaPicker } from './FormulaPicker';
+import type { FormulaId } from '../../sessionFormulas';
+
+type FormulaOption = { id: FormulaId; label: string; hint: string };
 
 interface PlanSectionProps {
   label: string;
@@ -55,12 +59,14 @@ interface SummaryScreenProps {
   plan: PlanGroups;
   onBack: () => void;
   onRegenerate?: () => void; // custom sessions only: ready-made ones never change
+  // Race sessions: the formula picker.
+  formulas?: { options: FormulaOption[]; selected: FormulaId; onChange: (formula: FormulaId) => void };
   // Ready-made sessions with a weight: done without one, the loaded exercises are swapped.
   withoutWeight?: { checked: boolean; onChange: (checked: boolean) => void };
   onLaunch: () => void;
 }
 
-export function SummaryScreen({ title, backLabel, minutes, rythme, plan, onBack, onRegenerate, withoutWeight, onLaunch }: SummaryScreenProps) {
+export function SummaryScreen({ title, backLabel, minutes, rythme, plan, onBack, onRegenerate, formulas, withoutWeight, onLaunch }: SummaryScreenProps) {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
   const tours = (rounds: number) => `${rounds} ${rounds > 1 ? 'tours' : 'tour'}`;
 
@@ -78,6 +84,8 @@ export function SummaryScreen({ title, backLabel, minutes, rythme, plan, onBack,
       </button>
 
       <h1 className="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">{title}</h1>
+
+      {formulas && <FormulaPicker {...formulas} />}
 
       <div className="grid grid-cols-3 bg-cream text-ink rounded-[18px] py-3.5">
         {stats.map((stat, i) => (

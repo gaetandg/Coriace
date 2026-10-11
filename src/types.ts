@@ -1,3 +1,5 @@
+import type { FormulaId } from './sessionFormulas';
+
 export type ExerciseCategory = 'specific_calf' | 'specific_adductor' | 'abdos' | 'general';
 
 // How exercises are grouped in the list shown to the runner.
@@ -59,6 +61,8 @@ export interface WorkoutConfig {
   customRounds?: number;
   // Ready-made sessions done without a weight: the loaded exercises are swapped.
   presetWithoutWeight?: boolean;
+  // Race sessions: the formula last chosen for each (by session id), formula A otherwise.
+  presetFormulas?: Record<string, FormulaId>;
 }
 
 export interface SoundSettings {

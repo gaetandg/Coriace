@@ -7,6 +7,7 @@ import { HistoryEntry, addHistoryEntry, clearHistory, loadHistory, saveHistory }
 import { deleteRemoteHistory, pushHistoryEntry, syncHistory } from '../lib/historySync';
 import { supabase } from '../lib/supabase';
 import { PresetSession, buildPresetWorkout } from '../sessions';
+import type { FormulaId } from '../sessionFormulas';
 import { EXERCISE_DATABASE } from '../exercises';
 import { getBlockSteps, groupPlan } from '../lib/plan';
 import { useBeep } from './useBeep';
@@ -175,6 +176,7 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     minutes: preset?.durationMinutes ?? sessionMinutes(plan),
     rythme: config.rythme,
     deja_echauffe: !preset && !!config.skipWarmup,
+    ...(preset?.variants ? { formule: formulaOf(preset) } : {}),
   });
 
   const showPlan = (generated: WorkoutInterval[], kind: SessionMode, preset: PresetSession | null = null) => {
@@ -198,18 +200,33 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     else showPlan(generateWorkout(config), 'random');
   };
 
+  // Race sessions open on the formula last chosen for them.
+  const formulaOf = (preset: PresetSession | null): FormulaId => (preset && config.presetFormulas?.[preset.id]) || 'a';
+  const activeFormula = formulaOf(activePreset);
+
   const handleStartPreset = (preset: PresetSession) => {
-    showPlan(buildPresetWorkout(preset, config.rythme, !config.presetWithoutWeight), 'preset', preset);
+    showPlan(buildPresetWorkout(preset, config.rythme, !config.presetWithoutWeight, formulaOf(preset)), 'preset', preset);
   };
 
-  // On a ready-made session's summary: swap the loaded exercises; the choice is remembered.
-  const setPresetWithoutWeight = (withoutWeight: boolean) => {
+  // On a ready-made session's summary, a change of formula or weight redraws the plan.
+  const redrawPreset = (formula: FormulaId, withoutWeight: boolean) => {
     if (!activePreset) return;
-    setConfig(prev => ({ ...prev, presetWithoutWeight: withoutWeight }));
-    const generated = buildPresetWorkout(activePreset, config.rythme, !withoutWeight);
+    const generated = buildPresetWorkout(activePreset, config.rythme, !withoutWeight, formula);
     setIntervals(generated);
     setCurrentIntervalIndex(0);
     setSecondsRemaining(generated[0]?.duration || 30);
+  };
+
+  // Both choices are remembered: the weight for every session, the formula for this one.
+  const setPresetWithoutWeight = (withoutWeight: boolean) => {
+    setConfig(prev => ({ ...prev, presetWithoutWeight: withoutWeight }));
+    redrawPreset(activeFormula, withoutWeight);
+  };
+
+  const setPresetFormula = (formula: FormulaId) => {
+    if (!activePreset) return;
+    setConfig(prev => ({ ...prev, presetFormulas: { ...prev.presetFormulas, [activePreset.id]: formula } }));
+    redrawPreset(formula, !!config.presetWithoutWeight);
   };
 
   const handleLaunchWorkout = () => {
@@ -402,6 +419,8 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     plannedMinutes,
     handleStartPreset,
     setPresetWithoutWeight,
+    activeFormula,
+    setPresetFormula,
     history,
     clearHistory: () => {
       clearHistory();
