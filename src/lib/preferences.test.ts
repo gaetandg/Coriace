@@ -28,7 +28,6 @@ describe('preferences', () => {
         customExerciseIds: ['side_plank'],
         customRounds: 2,
         presetWithoutWeight: true,
-        presetFormulas: { complete: 'cardio' as const, '10k-debutant': 'b' as const },
       },
       sound: { beeps: false, voice: true },
       mode: 'custom' as const,
@@ -47,7 +46,7 @@ describe('preferences', () => {
   it('ignores corrupted or invalid values', () => {
     store.set('coriace:preferences:v1', '{not json');
     expect(loadPreferences()).toEqual(DEFAULT_PREFERENCES);
-    store.set('coriace:preferences:v1', JSON.stringify({ durationMinutes: 999, rythme: 'fast', sound: { voice: 'yes' }, mode: 'other', presetFormulas: { complete: 'z' } }));
+    store.set('coriace:preferences:v1', JSON.stringify({ durationMinutes: 999, rythme: 'fast', sound: { voice: 'yes' }, mode: 'other' }));
     expect(loadPreferences()).toEqual(DEFAULT_PREFERENCES);
   });
 

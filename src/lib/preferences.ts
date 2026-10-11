@@ -1,5 +1,4 @@
 import { isRhythm } from './rhythm';
-import { FormulaId, isFormulaId } from '../sessionFormulas';
 import { EXERCISE_DATABASE } from '../exercises';
 import { SoundSettings, WorkoutConfig } from '../types';
 
@@ -29,7 +28,6 @@ interface StoredPreferences {
   customExerciseIds?: string[];
   customRounds?: number;
   presetWithoutWeight?: boolean;
-  presetFormulas?: Record<string, unknown>;
   sound?: Partial<SoundSettings>;
   // Before personalized sessions existed, 'custom' meant what is now 'random'.
   mode?: 'preset' | 'custom';
@@ -46,7 +44,6 @@ export const DEFAULT_PREFERENCES: Preferences = {
     customExerciseIds: [],
     customRounds: 3,
     presetWithoutWeight: false,
-    presetFormulas: {},
   },
   sound: { beeps: true, voice: true },
   // Ready-made race sessions first: the quickest way in for a new runner.
@@ -85,10 +82,6 @@ export function loadPreferences(): Preferences {
         : [],
       customRounds: [2, 3, 4].includes(stored.customRounds as number) ? stored.customRounds : defaults.config.customRounds,
       presetWithoutWeight: isBoolean(stored.presetWithoutWeight) ? stored.presetWithoutWeight : false,
-      presetFormulas: Object.fromEntries(
-        Object.entries(stored.presetFormulas && typeof stored.presetFormulas === 'object' ? stored.presetFormulas : {})
-          .filter((entry): entry is [string, FormulaId] => isFormulaId(entry[1])),
-      ),
     },
     sound: {
       beeps: isBoolean(stored.sound?.beeps) ? stored.sound.beeps : defaults.sound.beeps,
@@ -110,7 +103,6 @@ export function savePreferences({ config, sound, mode }: Preferences) {
     customExerciseIds: config.customExerciseIds ?? [],
     customRounds: config.customRounds ?? 3,
     presetWithoutWeight: !!config.presetWithoutWeight,
-    presetFormulas: config.presetFormulas ?? {},
     sound,
     sessionMode: mode,
   };
