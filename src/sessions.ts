@@ -2,7 +2,7 @@ import { EXERCISE_DATABASE } from './exercises';
 import { Exercise, WorkoutConfig, WorkoutInterval } from './types';
 import { buildIntervals } from './workoutGenerator';
 import { cooldownStretches, warmupMoves } from './sessionParts';
-import { FORMULAS, FormulaId, VARIANTS, Variants } from './sessionFormulas';
+import { FORMULAS, VARIANTS } from './sessionFormulas';
 
 // Ready-made sessions: always the same exercises in the same order, so progress is easy to follow.
 
@@ -50,8 +50,8 @@ export interface PresetSession {
   // Sessions for a race distance and a level; targeted sessions have neither.
   objective?: Objective;
   level?: Level;
-  // Race sessions: formulas B, C and the leaning ones (blocks and finisher above are formula A).
-  variants?: Variants;
+  // Race sessions: which of the level's five sessions this is (Complète A, Mollets…).
+  formula?: string;
 }
 
 // Shorthands for the sessions below.
@@ -63,7 +63,8 @@ const race = (objective: Objective, level: Level, rest: Omit<PresetSession, 'id'
   objective, level, warmupMinutes: 4, cooldownMinutes: 2, ...rest,
 });
 
-export const PRESET_SESSIONS: PresetSession[] = [
+// Race sessions as first written (each becomes its Complète A), then the targeted sessions.
+const BASE_SESSIONS: PresetSession[] = [
   // --- 10 km: bounce and quickness ---
   race('10k', 'debutant', {
     description: 'Rebond, mollets et gainage, sans matériel.', durationMinutes: 20,
@@ -196,7 +197,25 @@ export const PRESET_SESSIONS: PresetSession[] = [
   },
 ];
 
-for (const preset of PRESET_SESSIONS) preset.variants = VARIANTS[preset.id];
+// Each race session is offered in its five formulas, each one a session of its own.
+function withFormulas(base: PresetSession): PresetSession[] {
+  const variants = VARIANTS[base.id];
+  if (!variants) return [base];
+  return FORMULAS.map(({ id, label, hint }) => {
+    const variant = id === 'a' ? undefined : variants[id];
+    return {
+      ...base,
+      id: id === 'a' ? base.id : `${base.id}-${id}`, // formula A keeps the id the history knows
+      name: `${base.name} · ${label}`,
+      description: id === 'a' ? base.description : hint,
+      formula: label,
+      blocks: variant ? base.blocks.map((block, i) => ({ ...block, exerciseIds: variant.blocks[i] })) : base.blocks,
+      finisherIds: variant ? variant.finisherIds : base.finisherIds,
+    };
+  });
+}
+
+export const PRESET_SESSIONS: PresetSession[] = BASE_SESSIONS.flatMap(withFormulas);
 
 export const RACE_SESSIONS = PRESET_SESSIONS.filter(p => p.objective);
 export const TARGETED_SESSIONS = PRESET_SESSIONS.filter(p => !p.objective);
@@ -207,31 +226,12 @@ const exerciseById = (id: string): Exercise => {
   return exercise;
 };
 
-// The formulas a session offers: all six for race sessions, none to choose from otherwise.
-export const presetFormulas = (preset: PresetSession) => (preset.variants ? FORMULAS : []);
-
-// The session as done with one formula; formula A is the session itself.
-export function withFormula(preset: PresetSession, formula: FormulaId): PresetSession {
-  const { variants, ...session } = preset;
-  const variant = formula === 'a' ? undefined : variants?.[formula];
-  if (!variant) return session;
-  return {
-    ...session,
-    blocks: preset.blocks.map((block, i) => ({ ...block, exerciseIds: variant.blocks[i] })),
-    finisherIds: variant.finisherIds,
-  };
-}
-
-// Every exercise the session may use, all formulas included.
 export function presetExercises(preset: PresetSession): Exercise[] {
-  const ids = [
-    ...preset.blocks.flatMap(block => block.exerciseIds), ...preset.finisherIds,
-    ...Object.values(preset.variants ?? {}).flatMap(variant => [...variant.blocks.flat(), ...variant.finisherIds]),
-  ];
+  const ids = [...preset.blocks.flatMap(block => block.exerciseIds), ...preset.finisherIds];
   return [...new Set(ids)].map(exerciseById);
 }
 
-// Equipment the session needs (in any of its formulas), in display order.
+// Equipment the session needs, in display order.
 export function presetEquipment(preset: PresetSession): Exercise['equipmentRequired'] {
   const needed = new Set(presetExercises(preset).flatMap(ex => ex.equipmentRequired));
   return (['chaise', 'poids_8kg', 'corde_a_sauter'] as const).filter(eq => needed.has(eq));
@@ -247,9 +247,7 @@ const WITHOUT_WEIGHT: Record<string, string[]> = {
   woodchop: ['bird_dog', 'dead_bug', 'side_plank', 'plank_commando'],
 };
 
-// Works on one formula: the session as returned by `withFormula`.
-export function presetWithoutWeight(formula: PresetSession): PresetSession {
-  const { variants: _others, ...preset } = formula;
+export function presetWithoutWeight(preset: PresetSession): PresetSession {
   const used = new Set(presetExercises(preset).map(ex => ex.id));
   const swapIn = (ids: string[]) => {
     const circuit = [...ids];
@@ -270,13 +268,7 @@ export function presetWithoutWeight(formula: PresetSession): PresetSession {
   };
 }
 
-export function buildPresetWorkout(
-  preset: PresetSession,
-  rythme: WorkoutConfig['rythme'],
-  hasWeight = true,
-  formula: FormulaId = 'a',
-): WorkoutInterval[] {
-  preset = withFormula(preset, formula);
+export function buildPresetWorkout(preset: PresetSession, rythme: WorkoutConfig['rythme'], hasWeight = true): WorkoutInterval[] {
   if (!hasWeight) preset = presetWithoutWeight(preset);
   return buildIntervals(
     {

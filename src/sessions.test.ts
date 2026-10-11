@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LEVELS, OBJECTIVES, PRESET_SESSIONS, RACE_SESSIONS, TARGETED_SESSIONS, buildPresetWorkout, presetEquipment, presetFormulas, presetUsesWeight, presetWithoutWeight, withFormula } from './sessions';
+import { LEVELS, OBJECTIVES, PRESET_SESSIONS, RACE_SESSIONS, TARGETED_SESSIONS, buildPresetWorkout, presetEquipment, presetUsesWeight, presetWithoutWeight } from './sessions';
 import { EXERCISE_DATABASE } from './exercises';
 import { FORMULAS } from './sessionFormulas';
 
@@ -31,43 +31,46 @@ describe('preset sessions', () => {
   }
 
   for (const preset of RACE_SESSIONS) {
-    for (const { id } of FORMULAS) {
-      const formula = withFormula(preset, id);
-      it(`${preset.name}, formula ${id}: same shape and length as formula A, no repeat in a circuit`, () => {
-        expect(formula.blocks.map(b => [b.rounds, b.exerciseIds.length])).toEqual(preset.blocks.map(b => [b.rounds, b.exerciseIds.length]));
-        expect(formula.finisherIds).toHaveLength(preset.finisherIds.length);
-        expect(seconds(buildPresetWorkout(preset, 'equilibre', true, id))).toBe(seconds(buildPresetWorkout(preset, 'equilibre')));
-        for (const block of formula.blocks) expect(new Set(block.exerciseIds).size).toBe(block.exerciseIds.length);
-      });
+    // The Complète A of the same distance and level: every formula keeps its shape.
+    const base = RACE_SESSIONS.find(p => p.objective === preset.objective && p.level === preset.level)!;
+    it(`${preset.name}: same shape and length as ${base.name}`, () => {
+      expect(preset.blocks.map(b => [b.rounds, b.exerciseIds.length])).toEqual(base.blocks.map(b => [b.rounds, b.exerciseIds.length]));
+      expect(preset.finisherIds).toHaveLength(base.finisherIds.length);
+      expect(seconds(buildPresetWorkout(preset, 'equilibre'))).toBe(seconds(buildPresetWorkout(base, 'equilibre')));
+    });
 
-      it(`${preset.name}, formula ${id}: equipment of its level, calves in every block`, () => {
-        const allowed: readonly string[] = ALLOWED[preset.level!];
-        expect(presetEquipment(formula).filter(eq => !allowed.includes(eq))).toEqual([]);
-        if (preset.level === 'debutant') expect(formula.blocks.flatMap(b => b.exerciseIds).filter(ex => HARD_JUMPS.includes(ex))).toEqual([]);
-        for (const block of formula.blocks) expect(block.exerciseIds.some(ex => groupOf(ex) === 'mollets' || ex === 'pogo_jumps')).toBe(true);
-      });
+    it(`${preset.name}: equipment of its level, calves in every block`, () => {
+      const allowed: readonly string[] = ALLOWED[preset.level!];
+      expect(presetEquipment(preset).filter(eq => !allowed.includes(eq))).toEqual([]);
+      if (preset.level === 'debutant') expect(preset.blocks.flatMap(b => b.exerciseIds).filter(ex => HARD_JUMPS.includes(ex))).toEqual([]);
+      for (const block of preset.blocks) expect(block.exerciseIds.some(ex => groupOf(ex) === 'mollets' || ex === 'pogo_jumps')).toBe(true);
+    });
 
-      if (presetUsesWeight(formula)) {
-        it(`${preset.name}, formula ${id}: can be done without a weight, same length`, () => {
-          const light = presetWithoutWeight(formula);
-          expect(presetEquipment(light)).not.toContain('poids_8kg');
-          for (const block of light.blocks) expect(new Set(block.exerciseIds).size).toBe(block.exerciseIds.length);
-          const plan = buildPresetWorkout(preset, 'equilibre', false, id);
-          expect(plan.filter(i => i.exercise?.equipmentRequired.includes('poids_8kg'))).toEqual([]);
-          expect(seconds(plan)).toBe(seconds(buildPresetWorkout(preset, 'equilibre', true, id)));
-        });
-      }
+    if (presetUsesWeight(preset)) {
+      it(`${preset.name}: can be done without a weight, same length`, () => {
+        const light = presetWithoutWeight(preset);
+        expect(presetEquipment(light)).not.toContain('poids_8kg');
+        for (const block of light.blocks) expect(new Set(block.exerciseIds).size).toBe(block.exerciseIds.length);
+        const plan = buildPresetWorkout(preset, 'equilibre', false);
+        expect(plan.filter(i => i.exercise?.equipmentRequired.includes('poids_8kg'))).toEqual([]);
+        expect(seconds(plan)).toBe(seconds(buildPresetWorkout(preset, 'equilibre')));
+      });
     }
   }
 
-  it('offers formulas for race sessions only', () => {
-    for (const preset of RACE_SESSIONS) expect(presetFormulas(preset)).toHaveLength(6);
-    for (const preset of TARGETED_SESSIONS) expect(presetFormulas(preset)).toEqual([]);
+  it('offers five sessions per level of each race distance, in the order of the formulas', () => {
+    for (const objective of OBJECTIVES) {
+      for (const level of LEVELS) {
+        const sessions = RACE_SESSIONS.filter(p => p.objective === objective.id && p.level === level.id);
+        expect(sessions.map(p => p.formula), `${objective.id} ${level.id}`).toEqual(FORMULAS.map(f => f.label));
+      }
+    }
+    expect(TARGETED_SESSIONS.every(p => p.formula === undefined)).toBe(true);
   });
 
   it('keeps sessions without a weight unchanged', () => {
     const preset = PRESET_SESSIONS.find(p => p.id === 'marathon-debutant')!;
-    expect(presetWithoutWeight(preset)).toEqual(withFormula(preset, 'a'));
+    expect(presetWithoutWeight(preset)).toEqual(preset);
   });
 
   it('has unique ids', () => {
@@ -79,18 +82,9 @@ describe('preset sessions', () => {
     expect(presetEquipment(PRESET_SESSIONS.find(p => p.id === 'complete')!)).toEqual(['chaise', 'poids_8kg']);
   });
 
-  it('offers every level for every race distance, beginners without equipment', () => {
-    for (const objective of OBJECTIVES) {
-      for (const level of LEVELS) {
-        const sessions = PRESET_SESSIONS.filter(p => p.objective === objective.id && p.level === level.id);
-        expect(sessions, `${objective.id} ${level.id}`).toHaveLength(1);
-        if (level.id === 'debutant') expect(presetEquipment(sessions[0]).filter(eq => eq !== 'chaise')).toEqual([]);
-      }
-    }
-  });
-
-  it('keeps the ids of the former marathon sessions, so the history still matches', () => {
+  it('keeps the ids of the former sessions, so the history still matches', () => {
     expect(PRESET_SESSIONS.find(p => p.id === 'special-marathon')?.level).toBe('intermediaire');
-    expect(PRESET_SESSIONS.find(p => p.id === 'complete')?.level).toBe('confirme');
+    expect(PRESET_SESSIONS.find(p => p.id === 'complete')?.formula).toBe('Complète A');
+    expect(PRESET_SESSIONS.find(p => p.id === '10k-debutant')?.formula).toBe('Complète A');
   });
 });

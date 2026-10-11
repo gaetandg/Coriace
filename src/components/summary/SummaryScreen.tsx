@@ -7,11 +7,7 @@ import { outlineButton, primaryButton, sectionLabel } from '../../lib/ui';
 import { ExerciseDetailModal } from './ExerciseDetailModal';
 import { ExerciseThumb } from '../ExerciseThumb';
 import { Switch } from '../Switch';
-import { FormulaPicker } from './FormulaPicker';
 import { RhythmPicker } from '../RhythmPicker';
-import type { FormulaId } from '../../sessionFormulas';
-
-type FormulaOption = { id: FormulaId; label: string; hint: string };
 
 interface PlanSectionProps {
   label: string;
@@ -62,15 +58,13 @@ interface SummaryScreenProps {
   onRegenerate?: () => void; // custom sessions only: ready-made ones never change
   // Ready-made sessions: the rhythm is chosen here, just before starting.
   onRhythmChange?: (rythme: WorkoutConfig['rythme']) => void;
-  // Race sessions: the formula picker.
-  formulas?: { options: FormulaOption[]; selected: FormulaId; onChange: (formula: FormulaId) => void };
   // Ready-made sessions with a weight: done without one, the loaded exercises are swapped.
   withoutWeight?: { checked: boolean; onChange: (checked: boolean) => void };
   onLaunch: () => void;
 }
 
 export function SummaryScreen({
-  title, backLabel, minutes, rythme, plan, onBack, onRegenerate, onRhythmChange, formulas, withoutWeight, onLaunch,
+  title, backLabel, minutes, rythme, plan, onBack, onRegenerate, onRhythmChange, withoutWeight, onLaunch,
 }: SummaryScreenProps) {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
   const tours = (rounds: number) => `${rounds} ${rounds > 1 ? 'tours' : 'tour'}`;
@@ -89,8 +83,6 @@ export function SummaryScreen({
       </button>
 
       <h1 className="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">{title}</h1>
-
-      {formulas && <FormulaPicker {...formulas} />}
 
       {onRhythmChange && <RhythmPicker value={rythme} onChange={onRhythmChange} />}
 

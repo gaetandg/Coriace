@@ -14,7 +14,7 @@ import { useAuth } from './hooks/useAuth';
 import { AccountCard } from './components/AccountCard';
 import { AccountSheet } from './components/AccountSheet';
 import { track } from './lib/analytics';
-import { presetFormulas, presetUsesWeight, withFormula } from './sessions';
+import { presetUsesWeight } from './sessions';
 import { categoryLabel } from './components/config/PresetList';
 
 const accountInitial = (user: User | null) =>
@@ -129,10 +129,7 @@ export default function App() {
                 onBack={session.handleBackToConfig}
                 onRegenerate={session.planKind === 'random' ? session.handleRegeneratePlan : undefined}
                 onRhythmChange={session.activePreset ? session.setPresetRhythm : undefined}
-                formulas={session.activePreset && presetFormulas(session.activePreset).length > 0
-                  ? { options: presetFormulas(session.activePreset), selected: session.activeFormula, onChange: session.setPresetFormula }
-                  : undefined}
-                withoutWeight={session.activePreset && presetUsesWeight(withFormula(session.activePreset, session.activeFormula))
+                withoutWeight={session.activePreset && presetUsesWeight(session.activePreset)
                   ? { checked: !!config.presetWithoutWeight, onChange: session.setPresetWithoutWeight }
                   : undefined}
                 onLaunch={session.handleLaunchWorkout}

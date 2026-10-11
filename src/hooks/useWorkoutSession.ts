@@ -7,7 +7,6 @@ import { HistoryEntry, addHistoryEntry, clearHistory, loadHistory, saveHistory }
 import { deleteRemoteHistory, pushHistoryEntry, syncHistory } from '../lib/historySync';
 import { supabase } from '../lib/supabase';
 import { PRESET_SESSIONS, PresetCategory, PresetSession, buildPresetWorkout } from '../sessions';
-import type { FormulaId } from '../sessionFormulas';
 import { EXERCISE_DATABASE } from '../exercises';
 import { getBlockSteps, groupPlan } from '../lib/plan';
 import { useBeep } from './useBeep';
@@ -32,7 +31,6 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
   const [mode, setMode] = useState<SessionMode>(initialPreferences.mode);
   // The ready-made session being run, or null for a custom one.
   const [activePreset, setActivePreset] = useState<PresetSession | null>(null);
-  const [activeFormula, setActiveFormula] = useState<FormulaId>('a');
   // The page of ready-made sessions open on the home screen (a race distance or the targeted
   // sessions), or null for the list of pages.
   const [presetCategory, setPresetCategory] = useState<PresetCategory | null>(null);
@@ -179,13 +177,11 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     kind: SessionMode = planKind,
     preset: PresetSession | null = activePreset,
     plan: WorkoutInterval[] = intervals,
-    formula: FormulaId = activeFormula,
   ) => ({
     seance: preset?.id ?? (kind === 'custom' ? 'personnalisee' : 'aleatoire'),
     minutes: preset?.durationMinutes ?? sessionMinutes(plan),
     rythme: config.rythme,
     deja_echauffe: !preset && !!config.skipWarmup,
-    ...(preset?.variants ? { formule: formula } : {}),
   });
 
   const showPlan = (generated: WorkoutInterval[], kind: SessionMode, preset: PresetSession | null = null) => {
@@ -196,8 +192,7 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     setCurrentIntervalIndex(0);
     setSecondsRemaining(generated[0]?.duration || 30);
     setWorkoutState('summary');
-    // A newly shown plan is always on formula A.
-    track('seance-preparee', sessionInfo(kind, preset, generated, 'a'));
+    track('seance-preparee', sessionInfo(kind, preset, generated));
   };
 
   // Random and personalized sessions need at least one selected exercise usable with the equipment.
@@ -211,34 +206,28 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
   };
 
   const handleStartPreset = (preset: PresetSession, rythme = config.rythme) => {
-    setActiveFormula('a');
     showPlan(buildPresetWorkout(preset, rythme, !config.presetWithoutWeight), 'preset', preset);
   };
 
-  // On a ready-made session's page, a change of formula, weight or rhythm redraws the plan.
-  const redrawPreset = (formula: FormulaId, withoutWeight: boolean, rythme = config.rythme) => {
+  // On a ready-made session's page, a change of weight or rhythm redraws the plan.
+  const redrawPreset = (withoutWeight: boolean, rythme = config.rythme) => {
     if (!activePreset) return;
-    const generated = buildPresetWorkout(activePreset, rythme, !withoutWeight, formula);
+    const generated = buildPresetWorkout(activePreset, rythme, !withoutWeight);
     setIntervals(generated);
     setCurrentIntervalIndex(0);
     setSecondsRemaining(generated[0]?.duration || 30);
   };
 
-  // The weight is remembered for every session; race sessions always open on formula A.
+  // The weight is remembered for every session.
   const setPresetWithoutWeight = (withoutWeight: boolean) => {
     setConfig(prev => ({ ...prev, presetWithoutWeight: withoutWeight }));
-    redrawPreset(activeFormula, withoutWeight);
-  };
-
-  const setPresetFormula = (formula: FormulaId) => {
-    setActiveFormula(formula);
-    redrawPreset(formula, !!config.presetWithoutWeight);
+    redrawPreset(withoutWeight);
   };
 
   // The rhythm is chosen on the session's page and kept for next time.
   const setPresetRhythm = (rythme: WorkoutConfig['rythme']) => {
     setConfig(prev => ({ ...prev, rythme }));
-    redrawPreset(activeFormula, !!config.presetWithoutWeight, rythme);
+    redrawPreset(!!config.presetWithoutWeight, rythme);
   };
 
   // From the history: the same ready-made session at the same rhythm, or a personalized session
@@ -460,8 +449,6 @@ export function useWorkoutSession(notify: (message: string) => void, userId: str
     plannedMinutes,
     handleStartPreset,
     setPresetWithoutWeight,
-    activeFormula,
-    setPresetFormula,
     setPresetRhythm,
     presetCategory,
     setPresetCategory,
