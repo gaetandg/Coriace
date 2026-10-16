@@ -1,7 +1,10 @@
 import { UMAMI_WEBSITE_ID } from '../config';
+import { isNativeApp } from './native';
 
 // Audience measurement with Umami: no cookie, no personal data, visits from browsers asking
-// not to be tracked are ignored. Only the published site counts, not local development.
+// not to be tracked are ignored. In a browser only the published site counts, not local
+// development. The Android app is served from inside the app (https://localhost): it counts
+// too, tagged "android" so its visits can be told apart in Umami.
 
 declare global {
   interface Window {
@@ -18,7 +21,8 @@ export function loadAnalytics() {
   script.src = SCRIPT;
   script.defer = true;
   script.dataset.websiteId = UMAMI_WEBSITE_ID;
-  script.dataset.domains = SITE_DOMAIN;
+  if (isNativeApp) script.dataset.tag = 'android';
+  else script.dataset.domains = SITE_DOMAIN;
   script.dataset.doNotTrack = 'true';
   document.head.appendChild(script);
 }

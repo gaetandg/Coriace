@@ -47,6 +47,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 
 ### Comptes et statistiques
 - [x] Mesure d'audience avec Umami (sans cookie) : séances préparées, lancées, terminées, quittées, écrans ouverts — à activer avec l'identifiant du site
+- [x] Visites de l'app Android comptées aussi, avec l'étiquette `android`
 - [x] Connexion Google (Supabase) et synchronisation de l'historique entre appareils, accessible depuis l'en-tête
 - [ ] Synchroniser aussi les préférences et les séances enregistrées
 - [ ] Connexion avec Apple, obligatoire pour publier l'app iPhone sur l'App Store dès qu'une connexion Google est proposée (compte développeur Apple, 99 $ par an)
@@ -69,7 +70,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Une page par distance et pour les séances ciblées (`/marathon/`…) : adresse, titre, description et texte lisible sans JavaScript, écrits au build ; sitemap et robots.txt
 - [x] Une page par exercice (`/exercices/…`) et la liste des exercices : fiche complète, image de la position, séances qui l'utilisent ; dans l'app aussi
 - [x] Données structurées (Organization, WebSite, WebApplication, fil d'Ariane, listes de séances et d'exercices) et une image de partage par page (1200 × 630)
-- [ ] Déclarer le site dans Google Search Console (propriété Domaine, enregistrement TXT chez OVH) et y envoyer le sitemap ; l'importer dans Bing Webmaster Tools
+- [x] Déclarer le site dans Google Search Console (propriété Domaine, enregistrement TXT chez OVH) et y envoyer le sitemap ; l'importer dans Bing Webmaster Tools
 - [ ] Faire connaître l'app ailleurs (forums, clubs, fiche Play Store) : les mentions comptent pour être cité par les assistants IA
 - [ ] Publication par une tâche planifiée qui propose l'article en pull request : rien n'est publié sans relecture (Google pénalise les contenus produits en masse sans valeur ajoutée)
 - [ ] Chaque article renvoie vers une séance de l'app adaptée au sujet

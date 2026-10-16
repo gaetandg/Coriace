@@ -109,7 +109,7 @@ Mise en place, une seule fois, dans le tableau de bord Supabase :
 
 ## Mesure d'audience (Umami)
 
-L'app compte les visites et quelques actions avec [Umami Cloud](https://umami.is) : sans cookie, sans donnée personnelle, et rien n'est mesuré si le navigateur demande à ne pas être suivi. Seul le site publié est mesuré, jamais le développement local.
+L'app compte les visites et quelques actions avec [Umami Cloud](https://umami.is) : sans cookie, sans donnée personnelle, et rien n'est mesuré si le navigateur demande à ne pas être suivi. Seul le site publié est mesuré, jamais le développement local. L'app Android est mesurée aussi : ses visites portent l'étiquette `android` (filtre *Tag* dans Umami).
 
 Événements : `seance-preparee`, `seance-lancee`, `seance-terminee`, `seance-quittee` (avec `progression` en %), `seance-regeneree` (chacun avec `seance`, `minutes`, `rythme`, `deja_echauffe`), `statistiques`, `compte`, `reglages-son`, `fiche-exercice` (avec `exercice`), `connexion-google`.
 
