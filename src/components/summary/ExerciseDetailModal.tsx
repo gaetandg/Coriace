@@ -1,15 +1,9 @@
 import { useEffect } from 'react';
-import { TriangleAlert, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { track } from '../../lib/analytics';
 import { Exercise } from '../../types';
 import { useBackHandler } from '../../hooks/useBackHandler';
-import { ExerciseAnimation, hasAnimation } from '../ExerciseAnimation';
-
-const EQUIPMENT_LABELS: Record<Exercise['equipmentRequired'][number], string> = {
-  chaise: 'Chaise',
-  poids_8kg: 'Poids 4–10 kg',
-  corde_a_sauter: 'Corde à sauter',
-};
+import { ExerciseDetail } from '../exercises/ExerciseDetail';
 
 interface ExerciseDetailModalProps {
   exercise: Exercise;
@@ -20,9 +14,6 @@ interface ExerciseDetailModalProps {
 export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalProps) {
   useBackHandler(true, onClose);
   useEffect(() => { track('fiche-exercice', { exercice: exercise.id }); }, [exercise.id]);
-  const equipment = exercise.equipmentRequired.length > 0
-    ? exercise.equipmentRequired.map(eq => EQUIPMENT_LABELS[eq])
-    : ['Sans matériel'];
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 flex items-end justify-center" onClick={onClose}>
@@ -42,61 +33,7 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
           <X className="w-5 h-5" />
         </button>
 
-        <div className="flex flex-col gap-1.5 pr-10">
-          <span className="text-sm font-semibold text-clay">{exercise.target}</span>
-          <h2 id="exercise-detail-title" className="font-display font-extrabold text-[30px] leading-tight tracking-tight">{exercise.name}</h2>
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            {equipment.map(label => (
-              <span key={label} className="px-3 py-1 rounded-full bg-ink/10 text-[13px] font-semibold">{label}</span>
-            ))}
-          </div>
-        </div>
-
-        {hasAnimation(exercise.id) && (
-          <div className="-mx-2 flex justify-center">
-            <ExerciseAnimation exerciseId={exercise.id} className="block w-full max-w-[320px]" />
-          </div>
-        )}
-
-        <div className="flex flex-col gap-1">
-          <h3 className="text-sm font-semibold text-clay">Mouvement</h3>
-          <p className="text-base leading-relaxed">{exercise.description}</p>
-        </div>
-
-        {exercise.tips && (
-          <div className="flex flex-col gap-1">
-            <h3 className="text-sm font-semibold text-clay">Conseil</h3>
-            <p className="text-base leading-relaxed">{exercise.tips}</p>
-          </div>
-        )}
-
-        {(exercise.easier || exercise.harder) && (
-          <div className="grid grid-cols-2 gap-2">
-            {[
-              { title: 'Plus facile', text: exercise.easier },
-              { title: 'Plus dur', text: exercise.harder },
-            ].filter(level => level.text).map(level => (
-              <div key={level.title} className="rounded-2xl bg-ink/[0.06] px-3.5 py-3 flex flex-col gap-0.5">
-                <h3 className="text-sm font-semibold text-clay">{level.title}</h3>
-                <p className="text-[15px] leading-snug">{level.text}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {exercise.caution && (
-          <p className="flex gap-2.5 text-[15px] leading-snug">
-            <TriangleAlert className="w-5 h-5 shrink-0 text-clay" aria-label="Attention" />
-            {exercise.caution}
-          </p>
-        )}
-
-        {exercise.instructionHighlight && (
-          <div className="rounded-2xl bg-brick text-white px-4 py-3.5 flex flex-col gap-0.5">
-            <h3 className="text-sm font-semibold text-sand">À retenir</h3>
-            <p className="text-base font-semibold">{exercise.instructionHighlight}</p>
-          </div>
-        )}
+        <ExerciseDetail exercise={exercise} heading="h2" headingId="exercise-detail-title" />
 
         <button
           type="button"

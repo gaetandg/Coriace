@@ -1,11 +1,21 @@
+import { EXERCISE_DATABASE } from './exercises';
 import { Objective, PRESET_CATEGORIES, PresetCategory, RACE_SESSIONS, TARGETED_SESSIONS } from './sessions';
+import { Exercise } from './types';
 
-// The site's pages: the home page, one page per race distance and one for the targeted sessions.
-// Each has its own address (coriace.app/marathon/…) and its own title and description for search
-// engines. The app keeps the address bar on the page shown; the build writes each page's HTML
-// (see staticPages.ts).
+// The site's pages: the home page, one page per race distance, one for the targeted sessions, the
+// list of exercises and one page per exercise. Each has its own address (coriace.app/marathon/…)
+// and its own title and description for search engines. The app keeps the address bar on the page
+// shown; the build writes each page's HTML (see staticPages.ts).
 
 export const SITE_URL = 'https://coriace.app';
+
+export type SitePage =
+  | { kind: 'home' }
+  | { kind: 'category'; category: PresetCategory }
+  | { kind: 'exercises' }
+  | { kind: 'exercise'; exerciseId: string };
+
+export const HOME: SitePage = { kind: 'home' };
 
 export interface PageText {
   title: string; // tab and search result title
@@ -58,15 +68,65 @@ export const CATEGORY_PAGES: Record<PresetCategory, CategoryPage> = {
   },
 };
 
-// `base` is where the site is served from, with its trailing slash ('/' on coriace.app).
-export const pagePath = (category: PresetCategory | null, base = '/') =>
-  category ? `${base}${CATEGORY_PAGES[category].slug}/` : base;
+export const EXERCISES_SLUG = 'exercices';
 
-// The page at an address, also without its trailing slash or with index.html; null for the home page.
-export function pageAt(pathname: string, base = '/'): PresetCategory | null {
-  if (!pathname.startsWith(base)) return null;
-  const slug = pathname.slice(base.length).replace(/\/(index\.html)?$/, '');
-  return PRESET_CATEGORIES.find(category => CATEGORY_PAGES[category].slug === slug) ?? null;
+export const EXERCISES_PAGE: PageText & { heading: string; intro: string } = {
+  heading: 'Les exercices de renfo pour coureurs',
+  intro: 'Chaque exercice des séances, expliqué et animé : le mouvement, un conseil, une version plus facile et une plus dure.',
+  title: `Exercices de renfo pour coureurs : ${EXERCISE_DATABASE.length} fiches · Coriace`,
+  description: `${EXERCISE_DATABASE.length} exercices de renforcement pour coureurs, expliqués et animés : mollets, adducteurs, fessiers, cuisses, gainage. Mouvement, conseil, version plus facile et plus dure.`,
+};
+
+// From the exercise's name, without accents: "Mollets debout, descente lente" → mollets-debout-descente-lente.
+// Renaming an exercise changes its address.
+export const exerciseSlug = (exercise: Exercise) =>
+  exercise.name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+const exerciseById = (id: string) => EXERCISE_DATABASE.find(ex => ex.id === id);
+
+// The search snippet: the target, then the movement, cut at a word near 160 characters.
+function snippet(text: string, max = 160) {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max - 1);
+  return `${cut.slice(0, cut.lastIndexOf(' ')).replace(/[\s,;:.]+$/, '')}…`;
 }
 
-export const pageTitle = (category: PresetCategory | null) => (category ? CATEGORY_PAGES[category] : HOME_PAGE).title;
+// `base` is where the site is served from, with its trailing slash ('/' on coriace.app).
+export function pagePath(page: SitePage, base = '/'): string {
+  switch (page.kind) {
+    case 'home': return base;
+    case 'category': return `${base}${CATEGORY_PAGES[page.category].slug}/`;
+    case 'exercises': return `${base}${EXERCISES_SLUG}/`;
+    case 'exercise': return `${base}${EXERCISES_SLUG}/${exerciseSlug(exerciseById(page.exerciseId)!)}/`;
+  }
+}
+
+// The page at an address, also without its trailing slash or with index.html; the home page for any
+// address the site doesn't have.
+export function pageAt(pathname: string, base = '/'): SitePage {
+  if (!pathname.startsWith(base)) return HOME;
+  const [first, second, ...rest] = pathname.slice(base.length).replace(/\/(index\.html)?$/, '').split('/');
+  if (rest.length > 0) return HOME;
+  if (first === EXERCISES_SLUG) {
+    if (second === undefined) return { kind: 'exercises' };
+    const exercise = EXERCISE_DATABASE.find(ex => exerciseSlug(ex) === second);
+    return exercise ? { kind: 'exercise', exerciseId: exercise.id } : HOME;
+  }
+  const category = second === undefined ? PRESET_CATEGORIES.find(c => CATEGORY_PAGES[c].slug === first) : undefined;
+  return category ? { kind: 'category', category } : HOME;
+}
+
+export function pageText(page: SitePage): PageText {
+  switch (page.kind) {
+    case 'home': return HOME_PAGE;
+    case 'category': return CATEGORY_PAGES[page.category];
+    case 'exercises': return EXERCISES_PAGE;
+    case 'exercise': {
+      const exercise = exerciseById(page.exerciseId)!;
+      return {
+        title: `${exercise.name} : exercice de renfo pour coureurs · Coriace`,
+        description: snippet(`${exercise.target}. ${exercise.description}`),
+      };
+    }
+  }
+}

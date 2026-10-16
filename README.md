@@ -24,7 +24,8 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Fiche de chaque exercice** (35 exercices) : description, conseil, variante plus facile et plus dure, précautions pour les sauts.
 - **Animations** : chaque exercice est montré par un personnage animé (squelette posé par angles, dessiné en SVG, calculé dans l'app, hors ligne). Dans la fiche, pendant l'effort et, pendant les pauses, pour le prochain exercice. L'animation se fige quand la séance est en pause ou si le téléphone demande moins d'animations. Une vignette fixe tirée de l'animation repère chaque exercice dans les listes (accueil et résumé de séance).
 - **Circuits équilibrés et variés** : chaque circuit contient au moins un exercice de mollets, d'adducteurs, de fessiers et de gainage, au plus deux par groupe, sans deux exercices du même groupe à la suite. « Régénérer » évite les exercices de la séance précédente.
-- **Une adresse par page** : `coriace.app/10-km/`, `/semi-marathon/`, `/marathon/`, `/trail-ultra/` et `/seances-ciblees/` ouvrent l'app sur la page de séances correspondante. La barre d'adresse et le titre de l'onglet suivent la page affichée (aussi pendant une de ses séances) : un lien partagé ou un rechargement y revient. Les pages de l'accueil sont de vrais liens.
+- **Une adresse par page** : `coriace.app/10-km/`, `/semi-marathon/`, `/marathon/`, `/trail-ultra/` et `/seances-ciblees/` ouvrent l'app sur la page de séances correspondante, `/exercices/` sur la liste des exercices et `/exercices/copenhagen-plank/` (le nom de l'exercice, sans accents) sur sa page. La barre d'adresse et le titre de l'onglet suivent la page affichée (aussi pendant une de ses séances) : un lien partagé ou un rechargement y revient. Les pages de l'accueil sont de vrais liens.
+- **Pages des exercices** : « Les exercices », en bas des séances prédéfinies, liste les 35 exercices par groupe ; la page d'un exercice reprend sa fiche avec l'animation, les pages de séances qui l'utilisent et les autres exercices du groupe. Retour : de l'exercice à la liste, de la liste à l'accueil.
 - **Bouton retour du téléphone** : revient à l'écran précédent ; pendant une séance, il met en pause au lieu de quitter.
 - **Statistiques** : bouton en haut à droite. Séances sur 7 et 30 jours, minutes, semaines d'affilée, moyenne par semaine, graphique des séances par semaine (12 semaines, repère à 2 par semaine), séries par groupe musculaire sur 30 jours, séances les plus faites et historique complet, avec un bouton « Refaire » sur chaque séance : la même séance prédéfinie au même rythme, ou une séance personnalisée avec les mêmes exercices pour les séances aléatoires et personnalisées (sauf les anciennes séances sans liste d'exercices). Chaque séance terminée garde la liste de ses exercices. L'accueil affiche le nombre de séances des 7 derniers jours.
 - **Compte Google (optionnel)** : bouton compte en haut à droite ; en se connectant, l'historique est sauvegardé et synchronisé entre appareils (Supabase).
@@ -78,19 +79,22 @@ src/
 │   ├── AccountCard.tsx, AccountSheet.tsx  # Connexion Google et compte
 │   ├── config/                # Accueil (réglages) et choix des exercices
 │   ├── summary/               # Résumé du plan et fiche détaillée d'un exercice
+│   ├── exercises/             # Fiche d'un exercice (partagée avec la fenêtre), liste et page des exercices
 │   └── player/                # Séance en cours : minuteur, prochaine étape, commandes, déroulé
 ├── illustrations/             # Personnage animé : squelette (mannequin.ts), mouvements (motion.ts), décor (props.ts), une scène par exercice (scenes.ts)
 ├── lib/                       # Annonces (cues.ts), préférences, historique, statistiques, groupes d'exercices, plan, formatage, classes d'interface
 ├── exercises.ts               # Base de données des exercices
 ├── workoutGenerator.ts        # Séances aléatoires et personnalisées, construction des intervalles
 ├── sessions.ts                # Séances prédéfinies
-├── pages.ts                   # Adresse, titre et description de chaque page (accueil, distances, séances ciblées)
-├── staticPages.ts             # HTML de chaque page, sitemap et robots.txt, écrits au build
+├── pages.ts                   # Adresse, titre et description de chaque page (accueil, distances, séances ciblées, exercices)
+├── staticPages.ts             # HTML de chaque page, données structurées, sitemap et robots.txt, écrits au build
+├── ogImage.ts                 # Images de partage (1200 × 630), dessinées au build
 ├── sessionParts.ts            # Mouvements d'échauffement et étirements du retour au calme
 ├── types.ts                   # Types partagés
 ├── main.tsx                   # Point d'entrée React
 └── index.css                  # Thème « Piste » : couleurs et polices
 public/                        # Icônes de l'application (PWA)
+fonts/                         # Polices des images de partage (SIL Open Font License)
 ```
 
 ## Comptes (Supabase)
@@ -115,9 +119,14 @@ L'identifiant du site Umami se règle dans `src/config.ts` (`UMAMI_WEBSITE_ID`, 
 
 ## Référencement
 
-Le build (extension `seoPages` dans `vite.config.ts`, contenu dans `src/staticPages.ts`) écrit une page HTML par adresse : l'accueil, chaque distance et les séances ciblées. Chacune a son titre, sa description, son adresse canonique, son aperçu de partage (Open Graph) et son texte dans la page : intro, séances avec leurs exercices, liens vers les autres pages. Les moteurs et les robots qui n'exécutent pas JavaScript lisent donc tout ; l'app remplace ce texte dès qu'elle démarre. Le build écrit aussi `sitemap.xml` et `robots.txt`. Les titres et descriptions se changent dans `src/pages.ts`.
+Le build (extension `seoPages` dans `vite.config.ts`, contenu dans `src/staticPages.ts`) écrit une page HTML par adresse : l'accueil, chaque distance, les séances ciblées, la liste des exercices et chaque exercice. Chacune a son titre, sa description, son adresse canonique et son texte dans la page : intro, séances avec leurs exercices (liens vers leurs pages), fiche complète de l'exercice avec l'image de sa position, liens vers les autres pages. Les moteurs et les robots qui n'exécutent pas JavaScript (dont ceux des assistants IA) lisent donc tout ; l'app remplace ce texte dès qu'elle démarre. Les titres et descriptions se changent dans `src/pages.ts`.
 
-Google Search Console (une seule fois) : propriété **Domaine** `coriace.app`, validée par l'enregistrement TXT que Google donne, à ajouter dans la zone DNS chez OVH. Puis **Sitemaps** : envoyer `https://coriace.app/sitemap.xml`, et **Inspection de l'URL** : demander l'indexation de l'accueil.
+- **Données structurées** (JSON-LD schema.org) : `Organization`, `WebSite` et `WebApplication` sur l'accueil ; fil d'Ariane (`BreadcrumbList`) sur les autres pages, avec la liste des séances (`ExercisePlan`) ou des exercices.
+- **Images de partage** : une par page (`og/…png`, 1200 × 630), dessinées par `src/ogImage.ts` avec [resvg](https://github.com/thx/resvg-js) aux couleurs de l'app ; celle d'un exercice montre sa position. Pas d'images dans le build Android.
+- **Sitemap et robots.txt** : écrits aussi au build, avec toutes les pages.
+- **Hors ligne** : les pages d'exercices ne sont pas pré-enregistrées par le service worker ; hors ligne, l'app les affiche elle-même.
+
+Google Search Console (une seule fois) : propriété **Domaine** `coriace.app`, validée par l'enregistrement TXT que Google donne, à ajouter dans la zone DNS chez OVH. Puis **Sitemaps** : envoyer `https://coriace.app/sitemap.xml`, et **Inspection de l'URL** : demander l'indexation de l'accueil. Bing Webmaster Tools (utilisé aussi par ChatGPT et Copilot) : importer le site depuis Search Console.
 
 ## Déploiement
 

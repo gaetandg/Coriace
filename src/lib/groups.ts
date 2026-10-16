@@ -1,4 +1,4 @@
-import { ExerciseGroup } from '../types';
+import { Exercise, ExerciseGroup } from '../types';
 
 // Display order and labels of the exercise groups.
 export const EXERCISE_GROUPS: { id: ExerciseGroup; label: string }[] = [
@@ -10,3 +10,10 @@ export const EXERCISE_GROUPS: { id: ExerciseGroup; label: string }[] = [
   { id: 'haut_du_corps', label: 'Haut du corps' },
   { id: 'cardio', label: 'Cardio' },
 ];
+
+// Equipment an exercise needs, as written on its sheet.
+export const EQUIPMENT_LABELS: Record<Exercise['equipmentRequired'][number], string> = {
+  chaise: 'Chaise',
+  poids_8kg: 'Poids 4–10 kg',
+  corde_a_sauter: 'Corde à sauter',
+};

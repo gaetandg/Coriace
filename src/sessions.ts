@@ -242,6 +242,16 @@ export function presetExercises(preset: PresetSession): Exercise[] {
 // The weight can always be done without: the loaded exercises are then swapped.
 export const PRESET_EQUIPMENT_LABELS = { chaise: 'Chaise', poids_8kg: 'Poids facultatif', corde_a_sauter: 'Corde à sauter' } as const;
 
+// The pages of ready-made sessions an exercise is part of, with how many of their sessions have it.
+export function categoriesWithExercise(exerciseId: string): { category: PresetCategory; count: number }[] {
+  return PRESET_CATEGORIES
+    .map(category => ({
+      category,
+      count: PRESET_SESSIONS.filter(p => (p.objective ?? 'ciblees') === category && presetExercises(p).some(ex => ex.id === exerciseId)).length,
+    }))
+    .filter(row => row.count > 0);
+}
+
 // Equipment the session needs, in display order.
 export function presetEquipment(preset: PresetSession): Exercise['equipmentRequired'] {
   const needed = new Set(presetExercises(preset).flatMap(ex => ex.equipmentRequired));

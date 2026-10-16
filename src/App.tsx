@@ -15,15 +15,23 @@ import { AccountCard } from './components/AccountCard';
 import { AccountSheet } from './components/AccountSheet';
 import { track } from './lib/analytics';
 import { categoryLabel, presetUsesWeight } from './sessions';
-import { pageAt, pagePath, pageTitle } from './pages';
+import { HOME, SitePage, pageAt, pagePath, pageText } from './pages';
+import { ExerciseList, ExercisePage } from './components/exercises/ExercisePages';
+import { PresetCategory } from './sessions';
 
 const accountInitial = (user: User | null) =>
   user ? ((user.user_metadata?.full_name as string | undefined) || user.email || '?').charAt(0).toUpperCase() : '';
 
-type AppTab = 'workout' | 'stats';
+type AppTab = 'workout' | 'stats' | 'exercises';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<AppTab>('workout');
+  // Opened at a page's address (coriace.app/marathon/…): the app starts on that page.
+  const [landingPage] = useState(() => pageAt(window.location.pathname, import.meta.env.BASE_URL));
+  const [activeTab, setActiveTab] = useState<AppTab>(
+    landingPage.kind === 'exercises' || landingPage.kind === 'exercise' ? 'exercises' : 'workout',
+  );
+  // On the exercises tab: the exercise whose page is open, or null for the list.
+  const [exerciseId, setExerciseId] = useState<string | null>(landingPage.kind === 'exercise' ? landingPage.exerciseId : null);
   const [feedbackMessage, setFeedbackMessage] = useState<string>('');
   const [showSound, setShowSound] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
@@ -34,9 +42,7 @@ export default function App() {
   };
 
   const auth = useAuth();
-  // Opened at a page's address (coriace.app/marathon/…): the app starts on that page.
-  const [landingPage] = useState(() => pageAt(window.location.pathname, import.meta.env.BASE_URL));
-  const session = useWorkoutSession(notify, auth.user?.id ?? null, landingPage);
+  const session = useWorkoutSession(notify, auth.user?.id ?? null, landingPage.kind === 'category' ? landingPage.category : null);
   const { config, workoutState, activeInterval, summaryPlanGroups } = session;
 
   // Phone back button, from the deepest level: sheets, stats, then the workout screens.
@@ -56,25 +62,38 @@ export default function App() {
   };
   useBackHandler(activeTab === 'stats', closeStats);
   const openStats = () => { setActiveTab('stats'); track('statistiques'); };
+  // The exercise pages: an exercise leads back to the list, the list to the home screen.
+  const openExercises = () => { setActiveTab('exercises'); setExerciseId(null); };
+  const closeExercises = () => { setActiveTab('workout'); setExerciseId(null); };
+  useBackHandler(activeTab === 'exercises' && exerciseId === null, closeExercises);
+  useBackHandler(activeTab === 'exercises' && exerciseId !== null, () => setExerciseId(null));
+  const openCategory = (category: PresetCategory) => {
+    closeExercises();
+    session.setMode('preset');
+    session.setPresetCategory(category);
+  };
   useBackHandler(showSound, () => setShowSound(false));
   useBackHandler(showAccount, () => setShowAccount(false));
 
-  // The address bar and tab title follow the page of ready-made sessions in use, also during one of
-  // its sessions, so a reload or a shared link comes back to it. Replaced rather than pushed: the
-  // back button is handled above. Also run after its moves through history, which can land on an
-  // entry with another address.
-  const page = session.mode === 'preset' ? session.presetCategory : null;
+  // The address bar and tab title follow the page shown: an exercise page, or the page of ready-made
+  // sessions in use, also during one of its sessions, so a reload or a shared link comes back to it.
+  // Replaced rather than pushed: the back button is handled above. Also run after its moves through
+  // history, which can land on an entry with another address.
+  const page: SitePage = activeTab === 'exercises'
+    ? (exerciseId ? { kind: 'exercise', exerciseId } : { kind: 'exercises' })
+    : session.mode === 'preset' && session.presetCategory ? { kind: 'category', category: session.presetCategory } : HOME;
+  const pathShown = pagePath(page, import.meta.env.BASE_URL);
+  const titleShown = pageText(page).title;
   useEffect(() => {
-    const path = pagePath(page, import.meta.env.BASE_URL);
-    document.title = pageTitle(page);
+    document.title = titleShown;
     const showPath = () => {
-      if (window.location.pathname === path) return;
-      window.history.replaceState(window.history.state, '', path + window.location.search + window.location.hash);
+      if (window.location.pathname === pathShown) return;
+      window.history.replaceState(window.history.state, '', pathShown + window.location.search + window.location.hash);
     };
     showPath();
     window.addEventListener('popstate', showPath);
     return () => window.removeEventListener('popstate', showPath);
-  }, [page]);
+  }, [pathShown, titleShown]);
 
   // The logo leads home, except during a session, which only "Quitter" ends.
   const goHome = () => {
@@ -82,17 +101,20 @@ export default function App() {
     setShowSound(false);
     setShowAccount(false);
     setActiveTab('workout');
+    setExerciseId(null);
     if (workoutState === 'summary') session.handleBackToConfig();
     if (workoutState === 'completed') session.resetWorkout();
     session.setPresetCategory(null);
   };
 
-  // Every new screen opens at the top. Coming back to the settings, or to a page of ready-made
-  // sessions from one of them, finds it where it was left.
-  const screen = activeTab === 'stats' ? 'stats' : categoryOpen ? `category:${session.presetCategory}` : workoutState;
+  // Every new screen opens at the top. Coming back to the settings, to a page of ready-made
+  // sessions from one of them, or to the list of exercises from one, finds it where it was left.
+  const screen = activeTab === 'stats' ? 'stats'
+    : activeTab === 'exercises' ? (exerciseId ? `exercise:${exerciseId}` : 'exercises')
+    : categoryOpen ? `category:${session.presetCategory}` : workoutState;
   const screenRef = useRef(screen);
   const scrolls = useRef<Record<string, number>>({});
-  const keepsScroll = (s: string) => s === 'config' || s.startsWith('category:');
+  const keepsScroll = (s: string) => s === 'config' || s === 'exercises' || s.startsWith('category:');
   useEffect(() => {
     // The app places the scroll itself; the browser would otherwise restore it on the back button.
     history.scrollRestoration = 'manual';
@@ -104,8 +126,9 @@ export default function App() {
     if (screenRef.current === screen) return;
     const from = screenRef.current;
     screenRef.current = screen;
-    // A page opened from the home screen starts at the top.
-    if (from === 'config' && screen.startsWith('category:')) delete scrolls.current[screen];
+    // A page opened from the home screen or an exercise starts at the top.
+    if ((from === 'config' || from.startsWith('exercise:')) && screen.startsWith('category:')) delete scrolls.current[screen];
+    if (screen === 'exercises' && !from.startsWith('exercise:')) delete scrolls.current[screen];
     window.scrollTo(0, keepsScroll(screen) ? scrolls.current[screen] ?? 0 : 0);
   }, [screen]);
 
@@ -134,9 +157,15 @@ export default function App() {
             onClear={session.clearHistory}
             account={<AccountCard auth={auth} />}
           />
+        ) : activeTab === 'exercises' ? (
+          exerciseId ? (
+            <ExercisePage exerciseId={exerciseId} onBack={() => setExerciseId(null)} onOpen={setExerciseId} onOpenCategory={openCategory} />
+          ) : (
+            <ExerciseList onBack={closeExercises} onOpen={setExerciseId} />
+          )
         ) : (
           <>
-            {workoutState === 'config' && <ConfigScreen session={session} onOpenHistory={openStats} />}
+            {workoutState === 'config' && <ConfigScreen session={session} onOpenHistory={openStats} onOpenExercises={openExercises} />}
 
             {workoutState === 'summary' && summaryPlanGroups && (
               <SummaryScreen

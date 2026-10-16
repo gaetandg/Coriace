@@ -3,12 +3,14 @@ import react from '@vitejs/plugin-react';
 import {Plugin, defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
 import {staticPages} from './src/staticPages';
+import {shareImage} from './src/ogImage';
 
 // The Android app ships its files inside the app: no service worker there.
 const androidBuild = process.env.BUILD_TARGET === 'android';
 
-// One HTML file per page (home, each race distance, targeted sessions) with its own title,
-// description and text readable without JavaScript, plus the sitemap and robots.txt.
+// One HTML file per page (home, each race distance, targeted sessions, exercises) with its own
+// title, description, structured data and text readable without JavaScript, its share image, plus
+// the sitemap and robots.txt. The Android app has no use for the share images.
 function seoPages(): Plugin {
   let base = '/';
   return {
@@ -22,8 +24,10 @@ function seoPages(): Plugin {
       const index = bundle['index.html'];
       if (index?.type !== 'asset') return this.error('index.html is missing from the build');
       for (const file of staticPages(String(index.source), base)) {
-        if (file.fileName === 'index.html') index.source = file.source;
-        else this.emitFile({type: 'asset', fileName: file.fileName, source: file.source});
+        if ('card' in file && androidBuild) continue;
+        const source = 'card' in file ? shareImage(file.card) : file.source;
+        if (file.fileName === 'index.html') index.source = source;
+        else this.emitFile({type: 'asset', fileName: file.fileName, source});
       }
     },
   };
@@ -59,6 +63,8 @@ export default defineConfig(() => {
           ],
         },
         workbox: {
+          // Exercise pages are served by the app itself when offline (navigation fallback).
+          globIgnores: ['**/node_modules/**/*', 'exercices/**'],
           // Cache Google Fonts so the app keeps its typography offline.
           runtimeCaching: [
             {

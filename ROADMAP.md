@@ -67,7 +67,10 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [ ] Pages HTML statiques générées au build (une page par article, titre, description, données structurées `Article`, sitemap) : l'app actuelle est une page unique que les moteurs lisent mal
 - [x] Nom de domaine propre plutôt que github.io (coriace.app), pour que le référencement profite à la marque
 - [x] Une page par distance et pour les séances ciblées (`/marathon/`…) : adresse, titre, description et texte lisible sans JavaScript, écrits au build ; sitemap et robots.txt
-- [ ] Déclarer le site dans Google Search Console (propriété Domaine, enregistrement TXT chez OVH) et y envoyer le sitemap
+- [x] Une page par exercice (`/exercices/…`) et la liste des exercices : fiche complète, image de la position, séances qui l'utilisent ; dans l'app aussi
+- [x] Données structurées (Organization, WebSite, WebApplication, fil d'Ariane, listes de séances et d'exercices) et une image de partage par page (1200 × 630)
+- [ ] Déclarer le site dans Google Search Console (propriété Domaine, enregistrement TXT chez OVH) et y envoyer le sitemap ; l'importer dans Bing Webmaster Tools
+- [ ] Faire connaître l'app ailleurs (forums, clubs, fiche Play Store) : les mentions comptent pour être cité par les assistants IA
 - [ ] Publication par une tâche planifiée qui propose l'article en pull request : rien n'est publié sans relecture (Google pénalise les contenus produits en masse sans valeur ajoutée)
 - [ ] Chaque article renvoie vers une séance de l'app adaptée au sujet
 
