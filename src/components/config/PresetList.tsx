@@ -1,13 +1,18 @@
+import type { MouseEvent } from 'react';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import {
-  LEVELS, OBJECTIVES, PresetCategory, PresetSession, RACE_SESSIONS, TARGETED_INTRO, TARGETED_SESSIONS, presetEquipment,
+  LEVELS, OBJECTIVES, PRESET_EQUIPMENT_LABELS, PresetCategory, PresetSession, RACE_SESSIONS, TARGETED_HINT, TARGETED_INTRO,
+  TARGETED_SESSIONS, categoryLabel, presetEquipment,
 } from '../../sessions';
+import { pagePath } from '../../pages';
 
-// The weight can always be done without: the loaded exercises are then swapped.
-const EQUIPMENT_LABELS = { chaise: 'Chaise', poids_8kg: 'Poids facultatif', corde_a_sauter: 'Corde à sauter' } as const;
-
-export const categoryLabel = (category: PresetCategory) =>
-  category === 'ciblees' ? 'Séances ciblées' : OBJECTIVES.find(o => o.id === category)!.label;
+// Pages are real links, which search engines follow and a long press can share; a plain tap
+// opens the page inside the app.
+const inApp = (open: () => void) => (event: MouseEvent) => {
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  open();
+};
 
 const chip = 'px-2.5 py-0.5 rounded-full bg-ink/10 text-[13px] font-semibold';
 
@@ -15,7 +20,7 @@ const chip = 'px-2.5 py-0.5 rounded-full bg-ink/10 text-[13px] font-semibold';
 export function PresetCategories({ onOpen }: { onOpen: (category: PresetCategory) => void }) {
   const rows: { id: PresetCategory; label: string; hint: string; count: number }[] = [
     ...OBJECTIVES.map(o => ({ id: o.id, label: o.label, hint: o.hint, count: RACE_SESSIONS.filter(p => p.objective === o.id).length })),
-    { id: 'ciblees', label: 'Séances ciblées', hint: 'Une zone précise : mollets, gainage, genoux…', count: TARGETED_SESSIONS.length },
+    { id: 'ciblees', label: categoryLabel('ciblees'), hint: TARGETED_HINT, count: TARGETED_SESSIONS.length },
   ];
   return (
     <div id="preset-list" className="relative flex flex-col gap-2.5">
@@ -23,9 +28,10 @@ export function PresetCategories({ onOpen }: { onOpen: (category: PresetCategory
       <ul className="flex flex-col gap-2.5">
         {rows.map((row, i) => (
           <li key={row.id} className={i === OBJECTIVES.length ? 'mt-3' : ''}>
-            <button
+            <a
               id={`category-${row.id}`}
-              onClick={() => onOpen(row.id)}
+              href={pagePath(row.id, import.meta.env.BASE_URL)}
+              onClick={inApp(() => onOpen(row.id))}
               className="w-full bg-cream text-ink rounded-[18px] px-4 py-3.5 flex items-center gap-3 text-left cursor-pointer active:scale-[0.99] transition-transform"
             >
               <span className="flex-1 flex flex-col gap-0.5">
@@ -34,7 +40,7 @@ export function PresetCategories({ onOpen }: { onOpen: (category: PresetCategory
               </span>
               <span className="text-sm font-semibold text-clay shrink-0">{row.count} séances</span>
               <ChevronRight className="w-5 h-5 shrink-0 text-clay" aria-hidden="true" />
-            </button>
+            </a>
           </li>
         ))}
       </ul>
@@ -58,7 +64,7 @@ function PresetCard({ preset, onStart }: { preset: PresetSession; onStart: (pres
           </span>
           <span className="text-[15px] leading-snug text-clay">{preset.description}</span>
           <span className="flex flex-wrap gap-1.5 pt-1">
-            {(equipment.length > 0 ? equipment.map(eq => EQUIPMENT_LABELS[eq]) : ['Sans matériel']).map(label => (
+            {(equipment.length > 0 ? equipment.map(eq => PRESET_EQUIPMENT_LABELS[eq]) : ['Sans matériel']).map(label => (
               <span key={label} className={chip}>{label}</span>
             ))}
           </span>
@@ -84,10 +90,14 @@ export function PresetCategoryPage({ category, onBack, onStart }: {
   );
   return (
     <div id="preset-category" className="flex-1 flex flex-col gap-5">
-      <button onClick={onBack} className="-ml-2.5 self-start h-11 pr-3 flex items-center gap-2 text-sand font-semibold text-[15px] cursor-pointer">
+      <a
+        href={pagePath(null, import.meta.env.BASE_URL)}
+        onClick={inApp(onBack)}
+        className="-ml-2.5 self-start h-11 pr-3 flex items-center gap-2 text-sand font-semibold text-[15px] cursor-pointer"
+      >
         <ArrowLeft className="w-[22px] h-[22px] text-white" />
         Séances prédéfinies
-      </button>
+      </a>
       <h1 className="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">{categoryLabel(category)}</h1>
       <p className="text-base leading-snug">{intro}</p>
       {category !== 'ciblees' && (

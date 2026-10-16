@@ -1,10 +1,33 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import {defineConfig} from 'vite';
+import {Plugin, defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
+import {staticPages} from './src/staticPages';
 
 // The Android app ships its files inside the app: no service worker there.
 const androidBuild = process.env.BUILD_TARGET === 'android';
+
+// One HTML file per page (home, each race distance, targeted sessions) with its own title,
+// description and text readable without JavaScript, plus the sitemap and robots.txt.
+function seoPages(): Plugin {
+  let base = '/';
+  return {
+    name: 'coriace-seo-pages',
+    apply: 'build',
+    enforce: 'post',
+    configResolved(config) {
+      base = config.base;
+    },
+    generateBundle(_options, bundle) {
+      const index = bundle['index.html'];
+      if (index?.type !== 'asset') return this.error('index.html is missing from the build');
+      for (const file of staticPages(String(index.source), base)) {
+        if (file.fileName === 'index.html') index.source = file.source;
+        else this.emitFile({type: 'asset', fileName: file.fileName, source: file.source});
+      }
+    },
+  };
+}
 
 export default defineConfig(() => {
   return {
@@ -13,6 +36,7 @@ export default defineConfig(() => {
     plugins: [
       react(),
       tailwindcss(),
+      seoPages(),
       VitePWA({
         disable: androidBuild,
         registerType: 'autoUpdate',

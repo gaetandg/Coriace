@@ -37,9 +37,14 @@ export const LEVELS: { id: Level; label: string; heading: string; hint: string }
 ];
 
 export const TARGETED_INTRO = 'Des séances courtes sur une zone précise, à glisser entre deux sorties ou en complément d\'une séance de préparation.';
+export const TARGETED_HINT = 'Une zone précise : mollets, gainage, genoux…';
 
 // The pages of ready-made sessions: one per race distance, then the targeted sessions.
 export type PresetCategory = Objective | 'ciblees';
+export const PRESET_CATEGORIES: PresetCategory[] = [...OBJECTIVES.map(o => o.id), 'ciblees'];
+
+export const categoryLabel = (category: PresetCategory) =>
+  category === 'ciblees' ? 'Séances ciblées' : OBJECTIVES.find(o => o.id === category)!.label;
 
 export interface PresetSession {
   id: string;
@@ -233,6 +238,9 @@ export function presetExercises(preset: PresetSession): Exercise[] {
   const ids = [...preset.blocks.flatMap(block => block.exerciseIds), ...preset.finisherIds];
   return [...new Set(ids)].map(exerciseById);
 }
+
+// The weight can always be done without: the loaded exercises are then swapped.
+export const PRESET_EQUIPMENT_LABELS = { chaise: 'Chaise', poids_8kg: 'Poids facultatif', corde_a_sauter: 'Corde à sauter' } as const;
 
 // Equipment the session needs, in display order.
 export function presetEquipment(preset: PresetSession): Exercise['equipmentRequired'] {

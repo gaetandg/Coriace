@@ -58,17 +58,17 @@ export function AccountSheet({ auth, onOpenStats, onClose }: AccountSheetProps) 
               Se connecter avec Google
             </button>
             <p className="text-[13px] text-clay leading-snug">
-              En te connectant, tu acceptes les <a href="conditions.html" className="underline">conditions d'utilisation</a> et
-              la <a href="confidentialite.html" className="underline">politique de confidentialité</a>.
+              En te connectant, tu acceptes les <a href={`${import.meta.env.BASE_URL}conditions.html`} className="underline">conditions d'utilisation</a> et
+              la <a href={`${import.meta.env.BASE_URL}confidentialite.html`} className="underline">politique de confidentialité</a>.
             </p>
           </>
         )}
 
         {user && (
           <p className="text-[13px] text-clay">
-            <a href="conditions.html" className="underline">Conditions d'utilisation</a>
+            <a href={`${import.meta.env.BASE_URL}conditions.html`} className="underline">Conditions d'utilisation</a>
             {' · '}
-            <a href="confidentialite.html" className="underline">Confidentialité</a>
+            <a href={`${import.meta.env.BASE_URL}confidentialite.html`} className="underline">Confidentialité</a>
           </p>
         )}
 

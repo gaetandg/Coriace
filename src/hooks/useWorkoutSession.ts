@@ -21,19 +21,24 @@ export type { SoundSettings, SessionMode };
 
 // Workout configuration, generated plan and player state, with every action on them.
 // `userId` is the signed-in account, whose history is kept in sync with this device's.
-export function useWorkoutSession(notify: (message: string) => void, userId: string | null = null) {
+// `initialCategory` is the page of ready-made sessions to open on, when the app is opened at its address.
+export function useWorkoutSession(
+  notify: (message: string) => void,
+  userId: string | null = null,
+  initialCategory: PresetCategory | null = null,
+) {
   // --- STATE ---
   // Saved settings are read once, when the app opens.
   const [initialPreferences] = useState(loadPreferences);
   const [config, setConfig] = useState<WorkoutConfig>(initialPreferences.config);
 
   const [workoutState, setWorkoutState] = useState<WorkoutState>('config');
-  const [mode, setMode] = useState<SessionMode>(initialPreferences.mode);
+  const [mode, setMode] = useState<SessionMode>(initialCategory ? 'preset' : initialPreferences.mode);
   // The ready-made session being run, or null for a custom one.
   const [activePreset, setActivePreset] = useState<PresetSession | null>(null);
   // The page of ready-made sessions open on the home screen (a race distance or the targeted
   // sessions), or null for the list of pages.
-  const [presetCategory, setPresetCategory] = useState<PresetCategory | null>(null);
+  const [presetCategory, setPresetCategory] = useState<PresetCategory | null>(initialCategory);
   // Kind of the session on screen (the mode can change afterwards on the home screen).
   const [planKind, setPlanKind] = useState<SessionMode>('random');
   const [history, setHistory] = useState<HistoryEntry[]>(loadHistory);

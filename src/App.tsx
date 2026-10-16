@@ -14,8 +14,8 @@ import { useAuth } from './hooks/useAuth';
 import { AccountCard } from './components/AccountCard';
 import { AccountSheet } from './components/AccountSheet';
 import { track } from './lib/analytics';
-import { presetUsesWeight } from './sessions';
-import { categoryLabel } from './components/config/PresetList';
+import { categoryLabel, presetUsesWeight } from './sessions';
+import { pageAt, pagePath, pageTitle } from './pages';
 
 const accountInitial = (user: User | null) =>
   user ? ((user.user_metadata?.full_name as string | undefined) || user.email || '?').charAt(0).toUpperCase() : '';
@@ -34,7 +34,9 @@ export default function App() {
   };
 
   const auth = useAuth();
-  const session = useWorkoutSession(notify, auth.user?.id ?? null);
+  // Opened at a page's address (coriace.app/marathon/…): the app starts on that page.
+  const [landingPage] = useState(() => pageAt(window.location.pathname, import.meta.env.BASE_URL));
+  const session = useWorkoutSession(notify, auth.user?.id ?? null, landingPage);
   const { config, workoutState, activeInterval, summaryPlanGroups } = session;
 
   // Phone back button, from the deepest level: sheets, stats, then the workout screens.
@@ -56,6 +58,23 @@ export default function App() {
   const openStats = () => { setActiveTab('stats'); track('statistiques'); };
   useBackHandler(showSound, () => setShowSound(false));
   useBackHandler(showAccount, () => setShowAccount(false));
+
+  // The address bar and tab title follow the page of ready-made sessions in use, also during one of
+  // its sessions, so a reload or a shared link comes back to it. Replaced rather than pushed: the
+  // back button is handled above. Also run after its moves through history, which can land on an
+  // entry with another address.
+  const page = session.mode === 'preset' ? session.presetCategory : null;
+  useEffect(() => {
+    const path = pagePath(page, import.meta.env.BASE_URL);
+    document.title = pageTitle(page);
+    const showPath = () => {
+      if (window.location.pathname === path) return;
+      window.history.replaceState(window.history.state, '', path + window.location.search + window.location.hash);
+    };
+    showPath();
+    window.addEventListener('popstate', showPath);
+    return () => window.removeEventListener('popstate', showPath);
+  }, [page]);
 
   // The logo leads home, except during a session, which only "Quitter" ends.
   const goHome = () => {
