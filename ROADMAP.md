@@ -83,6 +83,12 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [ ] Envoi automatique sur le test interne par l'API Google Play (compte de service)
 - [ ] Polices dans l'app Android plutôt que chargées depuis Google Fonts (hors ligne)
 
+### Langues
+- [ ] Gestion des langues : textes sortis du code dans un fichier par langue, langue du téléphone par défaut, choix dans les réglages
+- [ ] Traduire l'app, anglais d'abord, puis espagnol, allemand et italien : écrans, fiches des 35 exercices, annonces de la voix (voix du téléphone dans la langue choisie)
+- [ ] Pages du site par langue (`/en/…`), reliées entre elles pour les moteurs de recherche (`hreflang`), sitemap compris
+- [ ] Fiche Play Store dans chaque langue (textes et captures) et diffusion dans tous les pays, plus seulement les pays francophones
+
 ### Plus tard
 - [ ] Applications Android et iPhone avec Capacitor (minuteur et voix qui continuent écran verrouillé)
 - [ ] Vérifier la disponibilité du nom « Coriace » avant publication sur les stores (marques INPI et EUIPO, classe 9)
