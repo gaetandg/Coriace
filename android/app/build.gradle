@@ -25,12 +25,25 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        // The Play Store upload key, kept out of the repository: CI decodes it from its secrets.
+        // Without UPLOAD_KEYSTORE, the release build is left unsigned.
+        if (System.getenv("UPLOAD_KEYSTORE")) {
+            release {
+                storeFile file(System.getenv("UPLOAD_KEYSTORE"))
+                storePassword System.getenv("UPLOAD_KEYSTORE_PASSWORD")
+                keyAlias 'upload'
+                keyPassword System.getenv("UPLOAD_KEYSTORE_PASSWORD")
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
+            if (System.getenv("UPLOAD_KEYSTORE")) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
