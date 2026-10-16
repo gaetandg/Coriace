@@ -75,6 +75,14 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [ ] Publication par une tâche planifiée qui propose l'article en pull request : rien n'est publié sans relecture (Google pénalise les contenus produits en masse sans valeur ajoutée)
 - [ ] Chaque article renvoie vers une séance de l'app adaptée au sujet
 
+### Publication Play Store
+- [x] Bundle signé (AAB) fabriqué par le workflow Android, clé d'importation hors du dépôt (secrets GitHub)
+- [x] Fiche du Store (textes, icône, image de présentation, 8 captures) et réponses de la Play Console, sur le Drive
+- [x] Lien vers la politique de confidentialité dans l'app (bas de l'accueil)
+- [ ] Créer l'app dans la Play Console, test interne, puis production (ou test fermé de 14 jours avec 12 testeurs selon le compte)
+- [ ] Envoi automatique sur le test interne par l'API Google Play (compte de service)
+- [ ] Polices dans l'app Android plutôt que chargées depuis Google Fonts (hors ligne)
+
 ### Plus tard
 - [ ] Applications Android et iPhone avec Capacitor (minuteur et voix qui continuent écran verrouillé)
 - [ ] Vérifier la disponibilité du nom « Coriace » avant publication sur les stores (marques INPI et EUIPO, classe 9)

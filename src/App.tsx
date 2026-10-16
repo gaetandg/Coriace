@@ -201,6 +201,15 @@ export default function App() {
             )}
           </>
         )}
+
+        {/* Also the only way to the privacy policy in the Android app, which has no account sheet. */}
+        {activeTab === 'workout' && workoutState === 'config' && !categoryOpen && (
+          <footer className="text-sm text-sand">
+            <a href={`${import.meta.env.BASE_URL}conditions.html`} className="underline">Conditions d'utilisation</a>
+            {' · '}
+            <a href={`${import.meta.env.BASE_URL}confidentialite.html`} className="underline">Confidentialité</a>
+          </footer>
+        )}
       </div>
 
       {showSound && (

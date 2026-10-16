@@ -144,4 +144,6 @@ Dans l'app, la voix passe par le moteur du téléphone (la vue web d'Android n'e
 
 - `npm run build:android` : build web pour l'app puis copie dans `android/`.
 - Fabrication : le workflow `.github/workflows/android.yml` construit l'APK de test à chaque push sur `main` et le publie à l'adresse https://github.com/gaetandg/Coriace/releases/download/android-test/coriace.apk. Il est signé avec une clé de test partagée (`android/app/debug.keystore`, pas un secret), pour que chaque nouvelle version s'installe par-dessus la précédente.
-- En local : JDK 21 et le SDK Android (plateforme 36), puis `cd android && ./gradlew assembleDebug`.
+- Play Store : avec les secrets `UPLOAD_KEYSTORE_BASE64` (la clé d'importation `coriace-upload.jks`, encodée en base64) et `UPLOAD_KEYSTORE_PASSWORD` dans le dépôt, le même workflow fabrique aussi le bundle signé (`.aab`), gardé comme artefact du run (`coriace-<numéro>`) ; le numéro du run sert de code de version. La clé reste hors du dépôt. Fiche du Store, réponses de la Play Console et visuels : dossier Drive « Application Coriace › Play Store ».
+- La politique de confidentialité et les conditions sont en lien en bas de l'accueil, la seule entrée dans l'app Android (le Play Store l'exige).
+- En local : JDK 21 et le SDK Android (plateforme 36), puis `cd android && ./gradlew assembleDebug` (test) ou `UPLOAD_KEYSTORE=… UPLOAD_KEYSTORE_PASSWORD=… ./gradlew bundleRelease` (Play Store).

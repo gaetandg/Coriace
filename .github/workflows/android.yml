@@ -2,6 +2,8 @@ name: Android app
 
 # Builds the Android test app on each push to main and publishes it as a download:
 # https://github.com/gaetandg/Coriace/releases/download/android-test/coriace.apk
+# With the upload key in the repository secrets, also builds the Play Store bundle (.aab),
+# kept as an artifact of the run.
 on:
   push:
     branches: [main]
@@ -44,3 +46,21 @@ jobs:
             --title "Coriace pour Android (version de test)" \
             --notes "Version de test de l'app Android, refaite à chaque modification. Télécharge coriace.apk depuis ton téléphone et installe-le."
           gh release upload android-test coriace.apk --clobber
+      - name: Build the Play Store bundle
+        working-directory: android
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          UPLOAD_KEYSTORE_BASE64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
+          UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$UPLOAD_KEYSTORE_BASE64" ]; then echo "No upload key in the secrets: no Play Store bundle."; exit 0; fi
+          export UPLOAD_KEYSTORE="$RUNNER_TEMP/upload.jks"
+          echo "$UPLOAD_KEYSTORE_BASE64" | base64 -d > "$UPLOAD_KEYSTORE"
+          ./gradlew bundleRelease --no-daemon
+          rm "$UPLOAD_KEYSTORE"
+      - name: Keep the Play Store bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: coriace-${{ github.run_number }}
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: ignore
