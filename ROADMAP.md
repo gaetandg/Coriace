@@ -49,6 +49,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Mesure d'audience avec Umami (sans cookie) : séances préparées, lancées, terminées, quittées, écrans ouverts — à activer avec l'identifiant du site
 - [x] Visites de l'app Android comptées aussi, avec l'étiquette `android`
 - [x] Connexion Google (Supabase) et synchronisation de l'historique entre appareils, accessible depuis l'en-tête
+- [ ] Connexion Google dans l'app Android (connexion native) et « Supprimer mon compte » dans l'app : Google Play l'exige dès qu'on peut créer un compte dans l'app. Comptes, données et page de suppression déjà déclarés dans la Play Console
 - [ ] Synchroniser aussi les préférences et les séances enregistrées
 - [ ] Connexion avec Apple, obligatoire pour publier l'app iPhone sur l'App Store dès qu'une connexion Google est proposée (compte développeur Apple, 99 $ par an)
 - [x] Sans compte : proposer de se connecter en fin de séance pour sauvegarder son historique (l'historique local est repris à la connexion)

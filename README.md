@@ -107,6 +107,8 @@ Mise en place, une seule fois, dans le tableau de bord Supabase :
 2. **Authentication → Sign In / Providers** : désactiver *Email*, activer *Google* avec l'identifiant et le secret d'un client OAuth Google Cloud dont l'URI de redirection autorisée est `https://prfadpnawhrphxigiyag.supabase.co/auth/v1/callback`.
 3. **Authentication → URL Configuration** : *Site URL* `https://coriace.app/`, et ajouter cette adresse (plus `http://localhost:3000/` pour le développement) aux *Redirect URLs*.
 
+Suppression d'un compte : la demande arrive par e-mail à contact@coriace.app (page `public/suppression-compte.html`, déclarée dans la Play Console), à traiter sous 30 jours depuis l'adresse du compte. **Authentication → Users** : retrouver l'adresse, *Delete user* ; l'historique part avec (`on delete cascade`). Puis, dans **SQL Editor**, effacer ses traces de connexion : `delete from auth.audit_log_entries where payload->>'actor_id' = '<id du compte>';`. Répondre pour confirmer.
+
 ## Mesure d'audience (Umami)
 
 L'app compte les visites et quelques actions avec [Umami Cloud](https://umami.is) : sans cookie, sans donnée personnelle, et rien n'est mesuré si le navigateur demande à ne pas être suivi. Seul le site publié est mesuré, jamais le développement local. L'app Android est mesurée aussi : ses visites portent l'étiquette `android` (filtre *Tag* dans Umami).
