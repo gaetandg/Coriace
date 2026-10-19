@@ -55,7 +55,8 @@ export function mergeHistories(local: HistoryEntry[], remote: HistoryEntry[]): H
   return [...byId.values()].sort((a, b) => Date.parse(b.completedAt) - Date.parse(a.completedAt));
 }
 
-// Sends the sessions only known on this device, then returns the merged history.
+// Sends the sessions only known on this device, then returns the merged history. The account's
+// sessions show even if sending fails: those not sent stay on the device and go next time.
 export async function syncHistory(client: SupabaseClient, local: HistoryEntry[]): Promise<HistoryEntry[]> {
   const { data, error } = await client.from('session_history').select('*');
   if (error) throw error;
@@ -63,7 +64,7 @@ export async function syncHistory(client: SupabaseClient, local: HistoryEntry[])
   const remoteIds = new Set(remote.map(e => e.id));
   const missing = local.filter(e => !remoteIds.has(e.id));
   if (missing.length > 0) {
-    await insertRows(client, missing.map(toRow));
+    await insertRows(client, missing.map(toRow)).catch(() => {});
   }
   return mergeHistories(local, remote);
 }

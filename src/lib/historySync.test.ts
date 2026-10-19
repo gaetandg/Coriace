@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { mergeHistories, pushHistoryEntry } from './historySync';
+import { mergeHistories, pushHistoryEntry, syncHistory } from './historySync';
 import { HistoryEntry } from './history';
 
 const entry = (id: string, day: number): HistoryEntry => ({
@@ -53,5 +53,26 @@ describe('pushHistoryEntry', () => {
   it('reports other errors', async () => {
     const { client } = fakeClient({ code: '42501' });
     await expect(pushHistoryEntry(client, withExercises)).rejects.toMatchObject({ code: '42501' });
+  });
+});
+
+describe('syncHistory', () => {
+  // The account holds two sessions; sending this device's session fails.
+  const failingClient = {
+    from: () => ({
+      select: async () => ({
+        data: [
+          { id: 'r1', completed_at: '2026-10-01T10:00:00Z', name: 'Gainage', preset_id: 'gainage', minutes: 15, rythme: 'doux', exercise_count: 4 },
+          { id: 'r2', completed_at: '2026-10-05T10:00:00Z', name: 'Côtes', preset_id: null, minutes: 20, rythme: 'intense', exercise_count: 5 },
+        ],
+        error: null,
+      }),
+      insert: async () => ({ error: { code: '42501' } }),
+    }),
+  } as unknown as SupabaseClient;
+
+  it('shows the account\'s sessions even when this device\'s cannot be sent', async () => {
+    const merged = await syncHistory(failingClient, [entry('local', 18)]);
+    expect(merged.map(e => e.id)).toEqual(['local', 'r2', 'r1']);
   });
 });
