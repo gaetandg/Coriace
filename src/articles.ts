@@ -38,11 +38,11 @@ export const HEALTH_NOTICE = 'Cet article partage une expérience et des repère
 // "Qui écrit ?": the author, without name or photo.
 export const AUTHOR_PAGE = {
   title: 'Qui écrit ?',
-  description: 'Le Coureur Coriace court depuis douze ans, prépare le marathon de Bordeaux 2027 et a créé Coriace pour faire son renfo.',
+  description: 'Le Coureur Coriace court depuis douze ans, prépare le marathon de Bordeaux et a créé Coriace pour faire son renfo.',
   draft: true,
   blocks: [
     { type: 'p', text: 'Je signe Le Coureur Coriace. Je cours depuis douze ans : d\'abord le 10 km du dimanche, puis deux sorties par semaine, puis trois.' },
-    { type: 'p', text: 'Ma première course, c\'était les 24 km de Saint-Émilion, il y a trois ans. Ensuite le semi-marathon de Bordeaux, en 2024 et en 2025, puis deux marathons : Saint-Émilion en 2025, [nom à confirmer] en 2026. Je prépare maintenant le marathon de Bordeaux 2027.' },
+    { type: 'p', text: 'Ma première course, c\'était les 23 km de Saint-Émilion, en mars 2023. Ensuite le semi-marathon de Bordeaux, trois années de suite, puis deux marathons : le marathon trail de Saint-Émilion en 2025 et le Marathon des 2 Rives en 2026. Je prépare maintenant le marathon de Bordeaux [date à confirmer], avec un objectif de 3 h 20.' },
     { type: 'p', text: 'Sur mes deux marathons, la même chose s\'est produite : des crampes vers le 30e kilomètre. C\'est pour ça que je me suis mis sérieusement au renforcement musculaire. Et comme je perdais un quart d\'heure à chercher des exercices avant chaque séance, pour finir par refaire toujours les mêmes, j\'ai créé Coriace.' },
     { type: 'p', text: 'Ici, je raconte ce que je vis et ce que je teste, avec mes vrais chiffres, y compris quand ça ne marche pas. Je ne suis ni coach ni médecin : les articles qui parlent du corps et des blessures sont relus par un kinésithérapeute.' },
     { type: 'p', text: 'Une question, une remarque, une expérience à partager : [contact@coriace.app](mailto:contact@coriace.app).' },
@@ -63,8 +63,8 @@ export const ARTICLES: Article[] = [
     coverExerciseId: 'calves_standing_slow',
     blocks: [
       { type: 'h2', text: 'Douze ans de course, et un mur toujours au même endroit' },
-      { type: 'p', text: 'Je cours depuis douze ans. Au début, c\'était le 10 km du dimanche. Puis deux sorties par semaine, puis trois. Ma première course remonte à trois ans : les 24 km de Saint-Émilion. Ensuite le semi de Bordeaux, en 2024 et en 2025, puis mon premier marathon, à Saint-Émilion en 2025, et un deuxième à [nom] en 2026.' },
-      { type: 'p', text: 'Sur les deux marathons, le même scénario. Vers le 30e kilomètre, les crampes arrivent : surtout dans les mollets, un peu dans les adducteurs. [À compléter : ce que tu as ressenti, ce que tu as fait, ton temps final et ton objectif.]' },
+      { type: 'p', text: 'Je cours depuis douze ans. Au début, c\'était le 10 km du dimanche. Puis deux sorties par semaine, puis trois. Ma première course remonte à mars 2023 : les 23 km de Saint-Émilion. Ensuite le semi de Bordeaux, trois années de suite, en 1 h 28, 1 h 27 puis 1 h 26. Mon premier marathon, c\'était le marathon trail de Saint-Émilion en 2025, et le deuxième le Marathon des 2 Rives, en mai 2026.' },
+      { type: 'p', text: 'Sur les deux marathons, le même scénario. Vers le 30e kilomètre, les crampes arrivent : surtout dans les mollets, un peu dans les adducteurs. Résultat : 3 h 40 à Saint-Émilion, sur un parcours de trail avec 470 mètres de dénivelé, et 3 h 37 aux 2 Rives. [À compléter : ce que tu as ressenti, ce que tu as fait quand les crampes sont arrivées, et le temps que tu visais.]' },
       { type: 'h2', text: 'Ce qu\'on sait des crampes, et ce qu\'on ne sait pas' },
       { type: 'p', text: 'Pendant longtemps, j\'ai cru que c\'était une question d\'eau et de sels minéraux. Les études récentes nuancent beaucoup cette idée.' },
       { type: 'p', text: 'Une équipe a suivi 210 triathlètes sur un Ironman. Ceux qui ont eu des crampes n\'étaient ni plus déshydratés ni plus pauvres en sodium que les autres. Ce qui les distinguait : ils étaient allés plus vite que prévu, et ils avaient déjà eu des crampes par le passé (Schwellnus, 2011).' },
@@ -85,13 +85,13 @@ export const ARTICLES: Article[] = [
       {
         type: 'list',
         items: [
-          '**Trois sorties par semaine**, parfois quatre.',
+          '**Trois sorties par semaine**, parfois quatre : fractionné, endurance fondamentale, côtes et sortie longue.',
           '**Une séance de renfo par semaine, parfois deux.** L\'objectif : trois.',
           '**Ce que je travaille** : les mollets, les adducteurs, les fessiers et le gainage, les zones qui lâchent en fin de marathon.',
         ],
       },
       { type: 'exercises', ids: ['calves_standing_slow', 'copenhagen_plank'], caption: 'Deux exercices que je fais pour les mollets et les adducteurs : les mollets en descente lente et la Copenhagen plank.' },
-      { type: 'p', text: 'Je raconterai la préparation ici, avec mes chiffres, jusqu\'au jour de la course. Si les crampes reviennent au 30e kilomètre, je le dirai aussi.' },
+      { type: 'p', text: 'L\'objectif à Bordeaux : 3 h 20, et surtout passer le 30e kilomètre sans crampe. Je raconterai la préparation ici, avec mes chiffres, jusqu\'au jour de la course. Si les crampes reviennent, je le dirai aussi.' },
       { type: 'try', items: ['Les [séances Marathon](/marathon/) de Coriace. Si tu débutes le renfo, commence par une séance courte de 20 minutes, sans matériel.'] },
     ],
     sources: [
@@ -113,7 +113,7 @@ export const ARTICLES: Article[] = [
     coverExerciseId: 'copenhagen_plank',
     blocks: [
       { type: 'h2', text: 'Pourquoi le renfo compte au marathon' },
-      { type: 'p', text: 'À 170 pas par minute pendant 3 h 30, un marathon représente plus de 35 000 appuis. Chacun demande aux mollets, aux cuisses et aux hanches d\'amortir puis de relancer. Au bout de 30 kilomètres, ce sont souvent eux qui lâchent avant le souffle. C\'est ce qui m\'est arrivé deux fois.' },
+      { type: 'p', text: 'Aux 2 Rives, ma montre a compté une cadence moyenne de 170 pas par minute. Sur 3 h 37 de course, ça fait environ 37 000 appuis. Chacun demande aux mollets, aux cuisses et aux hanches d\'amortir puis de relancer. Au bout de 30 kilomètres, ce sont souvent eux qui lâchent avant le souffle. C\'est ce qui m\'est arrivé deux fois. À Bordeaux, je vise 3 h 20.' },
       { type: 'p', text: 'Les études vont dans le même sens. Une revue de 24 études sur les coureurs de demi-fond et de fond montre que le renforcement musculaire améliore l\'économie de course, c\'est-à-dire l\'énergie dépensée à une allure donnée (Blagrove, 2018). Une autre, tous sports confondus, montre que le renforcement fait nettement baisser le nombre de blessures (Lauersen, 2014).' },
       { type: 'h2', text: 'Les quatre zones que je travaille' },
       { type: 'p', text: '**1. Les mollets.** Ils amortissent chaque appui. J\'en fais deux types : jambes tendues, et genoux pliés pour le muscle profond du mollet (le soléaire).' },
@@ -136,7 +136,7 @@ export const ARTICLES: Article[] = [
           '**Dans les dix derniers jours avant la course**, je compte garder une séance courte et légère, juste pour entretenir.',
         ],
       },
-      { type: 'p', text: '[À compléter : ta semaine type, jour par jour.]' },
+      { type: 'p', text: 'Ma semaine type : une séance de fractionné, une sortie en endurance fondamentale, une séance de côtes et la sortie longue, plus une ou deux séances de renfo. Le renfo trouve sa place après l\'endurance fondamentale, ou un jour sans course, loin du fractionné, des côtes et de la sortie longue. [À compléter : tes jours exacts.]' },
       { type: 'h2', text: 'Progresser jusqu\'à la course' },
       {
         type: 'list',
