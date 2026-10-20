@@ -64,16 +64,17 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [ ] Une fois l'app Android publiée : sur Android, lien vers le Play Store à la place de l'installation navigateur ; rien si l'app du Store est déjà installée (`related_applications` dans le manifeste) ; rien dans l'app Android elle-même
 
 ### Articles (SEO et GEO)
-- [ ] Section d'articles sur la course à pied et le renfo, publiés à intervalle régulier, rédigés par IA et relus avant publication
-- [ ] Définir le ton (tutoiement, sobre et direct, comme l'app), la liste de sujets et un calendrier
-- [ ] Pages HTML statiques générées au build (une page par article, titre, description, données structurées `Article`, sitemap) : l'app actuelle est une page unique que les moteurs lisent mal
+- [ ] Section d'articles sur la course à pied et le renfo (`/articles/`) : liste des articles et une page par article, HTML écrit au build (titre, description, données structurées `Article` avec l'auteur, sitemap)
+- [x] Charte éditoriale (dossier Drive « Application Coriace ») : contenu qu'on est seuls à pouvoir écrire (vécu de l'auteur, données Coriace, illustrations Coriace, tests, avis du kiné, interviews), première personne et tutoiement, rien d'inventé, illustrations maison sans images générées par IA, mention santé, relecture du kiné pour tout ce qui touche au corps
+- [ ] Auteur signé d'un pseudo, page « Qui écrit ? » sans nom ni photo de visage
+- [ ] Six premiers articles : pourquoi j'ai fini par faire du renfo, le renfo pour préparer un marathon, teste tes mollets en 2 minutes, renfo avant ou après la sortie, journal de prépa du marathon de Bordeaux, interview du kiné ; plus tard un baromètre tiré des données de l'app (chiffres agrégés et anonymes, mentionnés dans la page de confidentialité)
+- [ ] Rythme : deux articles par mois. Brouillon rédigé à partir de la matière de l'auteur (notes, Strava, photos), relu par l'auteur et le kiné avant publication
 - [x] Nom de domaine propre plutôt que github.io (coriace.app), pour que le référencement profite à la marque
 - [x] Une page par distance et pour les séances ciblées (`/marathon/`…) : adresse, titre, description et texte lisible sans JavaScript, écrits au build ; sitemap et robots.txt
 - [x] Une page par exercice (`/exercices/…`) et la liste des exercices : fiche complète, image de la position, séances qui l'utilisent ; dans l'app aussi
 - [x] Données structurées (Organization, WebSite, WebApplication, fil d'Ariane, listes de séances et d'exercices) et une image de partage par page (1200 × 630)
 - [x] Déclarer le site dans Google Search Console (propriété Domaine, enregistrement TXT chez OVH) et y envoyer le sitemap ; l'importer dans Bing Webmaster Tools
 - [ ] Faire connaître l'app ailleurs (forums, clubs, fiche Play Store) : les mentions comptent pour être cité par les assistants IA
-- [ ] Publication par une tâche planifiée qui propose l'article en pull request : rien n'est publié sans relecture (Google pénalise les contenus produits en masse sans valeur ajoutée)
 - [ ] Chaque article renvoie vers une séance de l'app adaptée au sujet
 
 ### Publication Play Store
