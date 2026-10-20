@@ -30,10 +30,11 @@ const MODE_OPTIONS: { value: SessionMode; label: string; hint: string }[] = [
 
 const ROUNDS = [2, 3, 4];
 
-export function ConfigScreen({ session, onOpenHistory, onOpenExercises }: {
+export function ConfigScreen({ session, onOpenHistory, onOpenExercises, onOpenArticles }: {
   session: WorkoutSession;
   onOpenHistory: () => void;
   onOpenExercises: () => void;
+  onOpenArticles: () => void;
 }) {
   const {
     config,
@@ -97,7 +98,7 @@ export function ConfigScreen({ session, onOpenHistory, onOpenExercises }: {
       )}
 
       {mode === 'preset' ? (
-        <PresetCategories onOpen={setPresetCategory} onOpenExercises={onOpenExercises} />
+        <PresetCategories onOpen={setPresetCategory} onOpenExercises={onOpenExercises} onOpenArticles={onOpenArticles} />
       ) : (
         <>
         <div className="relative flex flex-col gap-2.5">

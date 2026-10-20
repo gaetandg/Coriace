@@ -17,18 +17,26 @@ import { track } from './lib/analytics';
 import { categoryLabel, presetUsesWeight } from './sessions';
 import { HOME, SitePage, pageAt, pagePath, pageText } from './pages';
 import { ExerciseList, ExercisePage } from './components/exercises/ExercisePages';
+import { ArticleList, ArticlePage, AuthorPage, SHOW_DRAFTS } from './components/articles/ArticlePages';
+import { AUTHOR } from './articles';
 import { PresetCategory } from './sessions';
 
 const accountInitial = (user: User | null) =>
   user ? ((user.user_metadata?.full_name as string | undefined) || user.email || '?').charAt(0).toUpperCase() : '';
 
-type AppTab = 'workout' | 'stats' | 'exercises';
+type AppTab = 'workout' | 'stats' | 'exercises' | 'articles';
 
 export default function App() {
   // Opened at a page's address (coriace.app/marathon/…): the app starts on that page.
-  const [landingPage] = useState(() => pageAt(window.location.pathname, import.meta.env.BASE_URL));
+  const [landingPage] = useState(() => pageAt(window.location.pathname, import.meta.env.BASE_URL, SHOW_DRAFTS));
   const [activeTab, setActiveTab] = useState<AppTab>(
-    landingPage.kind === 'exercises' || landingPage.kind === 'exercise' ? 'exercises' : 'workout',
+    landingPage.kind === 'exercises' || landingPage.kind === 'exercise' ? 'exercises'
+      : landingPage.kind === 'articles' || landingPage.kind === 'article' || landingPage.kind === 'author' ? 'articles'
+      : 'workout',
+  );
+  // On the articles tab: the article open (its slug), the author's page (AUTHOR.slug), or null for the list.
+  const [articleView, setArticleView] = useState<string | null>(
+    landingPage.kind === 'article' ? landingPage.slug : landingPage.kind === 'author' ? AUTHOR.slug : null,
   );
   // On the exercises tab: the exercise whose page is open, or null for the list.
   const [exerciseId, setExerciseId] = useState<string | null>(landingPage.kind === 'exercise' ? landingPage.exerciseId : null);
@@ -67,6 +75,11 @@ export default function App() {
   const closeExercises = () => { setActiveTab('workout'); setExerciseId(null); };
   useBackHandler(activeTab === 'exercises' && exerciseId === null, closeExercises);
   useBackHandler(activeTab === 'exercises' && exerciseId !== null, () => setExerciseId(null));
+  // The articles: an article or the author's page leads back to the list, the list to the home screen.
+  const openArticles = () => { setActiveTab('articles'); setArticleView(null); };
+  const closeArticles = () => { setActiveTab('workout'); setArticleView(null); };
+  useBackHandler(activeTab === 'articles' && articleView === null, closeArticles);
+  useBackHandler(activeTab === 'articles' && articleView !== null, () => setArticleView(null));
   const openCategory = (category: PresetCategory) => {
     closeExercises();
     session.setMode('preset');
@@ -81,6 +94,8 @@ export default function App() {
   // history, which can land on an entry with another address.
   const page: SitePage = activeTab === 'exercises'
     ? (exerciseId ? { kind: 'exercise', exerciseId } : { kind: 'exercises' })
+    : activeTab === 'articles'
+    ? (articleView === AUTHOR.slug ? { kind: 'author' } : articleView ? { kind: 'article', slug: articleView } : { kind: 'articles' })
     : session.mode === 'preset' && session.presetCategory ? { kind: 'category', category: session.presetCategory } : HOME;
   const pathShown = pagePath(page, import.meta.env.BASE_URL);
   const titleShown = pageText(page).title;
@@ -102,6 +117,7 @@ export default function App() {
     setShowAccount(false);
     setActiveTab('workout');
     setExerciseId(null);
+    setArticleView(null);
     if (workoutState === 'summary') session.handleBackToConfig();
     if (workoutState === 'completed') session.resetWorkout();
     session.setPresetCategory(null);
@@ -111,10 +127,11 @@ export default function App() {
   // sessions from one of them, or to the list of exercises from one, finds it where it was left.
   const screen = activeTab === 'stats' ? 'stats'
     : activeTab === 'exercises' ? (exerciseId ? `exercise:${exerciseId}` : 'exercises')
+    : activeTab === 'articles' ? (articleView ? `article:${articleView}` : 'articles')
     : categoryOpen ? `category:${session.presetCategory}` : workoutState;
   const screenRef = useRef(screen);
   const scrolls = useRef<Record<string, number>>({});
-  const keepsScroll = (s: string) => s === 'config' || s === 'exercises' || s.startsWith('category:');
+  const keepsScroll = (s: string) => s === 'config' || s === 'exercises' || s === 'articles' || s.startsWith('category:');
   useEffect(() => {
     // The app places the scroll itself; the browser would otherwise restore it on the back button.
     history.scrollRestoration = 'manual';
@@ -129,6 +146,7 @@ export default function App() {
     // A page opened from the home screen or an exercise starts at the top.
     if ((from === 'config' || from.startsWith('exercise:')) && screen.startsWith('category:')) delete scrolls.current[screen];
     if (screen === 'exercises' && !from.startsWith('exercise:')) delete scrolls.current[screen];
+    if (screen === 'articles' && !from.startsWith('article:')) delete scrolls.current[screen];
     window.scrollTo(0, keepsScroll(screen) ? scrolls.current[screen] ?? 0 : 0);
   }, [screen]);
 
@@ -157,6 +175,14 @@ export default function App() {
             onClear={session.clearHistory}
             account={<AccountCard auth={auth} />}
           />
+        ) : activeTab === 'articles' ? (
+          articleView === AUTHOR.slug ? (
+            <AuthorPage onBack={() => setArticleView(null)} />
+          ) : articleView ? (
+            <ArticlePage slug={articleView} onBack={() => setArticleView(null)} onOpenAuthor={() => setArticleView(AUTHOR.slug)} />
+          ) : (
+            <ArticleList onBack={closeArticles} onOpen={setArticleView} onOpenAuthor={() => setArticleView(AUTHOR.slug)} />
+          )
         ) : activeTab === 'exercises' ? (
           exerciseId ? (
             <ExercisePage exerciseId={exerciseId} onBack={() => setExerciseId(null)} onOpen={setExerciseId} onOpenCategory={openCategory} />
@@ -165,7 +191,7 @@ export default function App() {
           )
         ) : (
           <>
-            {workoutState === 'config' && <ConfigScreen session={session} onOpenHistory={openStats} onOpenExercises={openExercises} />}
+            {workoutState === 'config' && <ConfigScreen session={session} onOpenHistory={openStats} onOpenExercises={openExercises} onOpenArticles={openArticles} />}
 
             {workoutState === 'summary' && summaryPlanGroups && (
               <SummaryScreen

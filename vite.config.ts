@@ -23,7 +23,8 @@ function seoPages(): Plugin {
     generateBundle(_options, bundle) {
       const index = bundle['index.html'];
       if (index?.type !== 'asset') return this.error('index.html is missing from the build');
-      for (const file of staticPages(String(index.source), base)) {
+      // CORIACE_DRAFTS=1 also writes the draft articles, for a local preview.
+      for (const file of staticPages(String(index.source), base, process.env.CORIACE_DRAFTS === '1')) {
         if ('card' in file && androidBuild) continue;
         const source = 'card' in file ? shareImage(file.card) : file.source;
         if (file.fileName === 'index.html') index.source = source;

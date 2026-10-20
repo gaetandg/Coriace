@@ -149,3 +149,9 @@ Dans l'app, la voix passe par le moteur du téléphone (la vue web d'Android n'e
 - Play Store : avec les secrets `UPLOAD_KEYSTORE_BASE64` (la clé d'importation `coriace-upload.jks`, encodée en base64) et `UPLOAD_KEYSTORE_PASSWORD` dans le dépôt, le même workflow fabrique aussi le bundle signé (`.aab`), gardé comme artefact du run (`coriace-<numéro>`) ; le numéro du run sert de code de version. La clé reste hors du dépôt. Fiche du Store, réponses de la Play Console et visuels : dossier Drive « Application Coriace › Play Store ».
 - La politique de confidentialité et les conditions sont en lien en bas de l'accueil, la seule entrée dans l'app Android (le Play Store l'exige).
 - En local : JDK 21 et le SDK Android (plateforme 36), puis `cd android && ./gradlew assembleDebug` (test) ou `UPLOAD_KEYSTORE=… UPLOAD_KEYSTORE_PASSWORD=… ./gradlew bundleRelease` (Play Store).
+
+## Articles
+
+Les articles (`/articles/`) et la page de l'auteur (« Le Coureur Coriace », `/articles/qui-ecrit/`) sont dans `src/articles.ts` : texte par blocs (intertitres, paragraphes avec `**gras**` et `[liens](/marathon/)`, listes, exercices animés de l'app, encadré « À essayer »), sources, mention santé, relecture du kiné. Ils suivent la charte éditoriale du dossier Drive « Application Coriace » : rien d'inventé, vécu de l'auteur, illustrations maison.
+
+Un article `draft: true` n'est visible que sur le serveur de développement (`npm run dev`) ; `CORIACE_DRAFTS=1 npm run build` l'écrit aussi, pour un aperçu. La section, son lien sur l'accueil et ses pages dans le plan du site n'apparaissent en ligne qu'à partir du premier article publié.

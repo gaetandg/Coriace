@@ -1,6 +1,7 @@
 import { EXERCISE_DATABASE } from './exercises';
 import { Objective, PRESET_CATEGORIES, PresetCategory, RACE_SESSIONS, TARGETED_SESSIONS } from './sessions';
 import { Exercise } from './types';
+import { AUTHOR, AUTHOR_PAGE, authorPageVisible, visibleArticles } from './articles';
 
 // The site's pages: the home page, one page per race distance, one for the targeted sessions, the
 // list of exercises and one page per exercise. Each has its own address (coriace.app/marathon/…)
@@ -13,7 +14,10 @@ export type SitePage =
   | { kind: 'home' }
   | { kind: 'category'; category: PresetCategory }
   | { kind: 'exercises' }
-  | { kind: 'exercise'; exerciseId: string };
+  | { kind: 'exercise'; exerciseId: string }
+  | { kind: 'articles' }
+  | { kind: 'article'; slug: string }
+  | { kind: 'author' };
 
 export const HOME: SitePage = { kind: 'home' };
 
@@ -77,6 +81,15 @@ export const EXERCISES_PAGE: PageText & { heading: string; intro: string } = {
   description: `${EXERCISE_DATABASE.length} exercices de renforcement pour coureurs, expliqués et animés : mollets, adducteurs, fessiers, cuisses, gainage. Mouvement, conseil, version plus facile et plus dure.`,
 };
 
+export const ARTICLES_SLUG = 'articles';
+
+export const ARTICLES_PAGE: PageText & { heading: string; intro: string } = {
+  heading: 'Les articles',
+  intro: 'Ce que je vis et teste en préparant mes courses : le renfo, les crampes, les blessures, avec mes vrais chiffres. Les articles qui parlent du corps sont relus par un kinésithérapeute.',
+  title: 'Articles sur le renfo et la course à pied · Coriace',
+  description: 'Le renfo pour les coureurs, raconté par un marathonien amateur : préparation, crampes, tests, avec de vrais chiffres. Articles relus par un kinésithérapeute.',
+};
+
 // From the exercise's name, without accents: "Mollets debout, descente lente" → mollets-debout-descente-lente.
 // Renaming an exercise changes its address.
 export const exerciseSlug = (exercise: Exercise) =>
@@ -98,15 +111,25 @@ export function pagePath(page: SitePage, base = '/'): string {
     case 'category': return `${base}${CATEGORY_PAGES[page.category].slug}/`;
     case 'exercises': return `${base}${EXERCISES_SLUG}/`;
     case 'exercise': return `${base}${EXERCISES_SLUG}/${exerciseSlug(exerciseById(page.exerciseId)!)}/`;
+    case 'articles': return `${base}${ARTICLES_SLUG}/`;
+    case 'article': return `${base}${ARTICLES_SLUG}/${page.slug}/`;
+    case 'author': return `${base}${ARTICLES_SLUG}/${AUTHOR.slug}/`;
   }
 }
 
 // The page at an address, also without its trailing slash or with index.html; the home page for any
-// address the site doesn't have.
-export function pageAt(pathname: string, base = '/'): SitePage {
+// address the site doesn't have. Drafts of articles only have an address on the development server.
+export function pageAt(pathname: string, base = '/', includeDrafts = false): SitePage {
   if (!pathname.startsWith(base)) return HOME;
   const [first, second, ...rest] = pathname.slice(base.length).replace(/\/(index\.html)?$/, '').split('/');
   if (rest.length > 0) return HOME;
+  if (first === ARTICLES_SLUG) {
+    const articles = visibleArticles(includeDrafts);
+    if (articles.length === 0) return HOME;
+    if (second === undefined) return { kind: 'articles' };
+    if (second === AUTHOR.slug) return authorPageVisible(includeDrafts) ? { kind: 'author' } : HOME;
+    return articles.some(a => a.slug === second) ? { kind: 'article', slug: second } : HOME;
+  }
   if (first === EXERCISES_SLUG) {
     if (second === undefined) return { kind: 'exercises' };
     const exercise = EXERCISE_DATABASE.find(ex => exerciseSlug(ex) === second);
@@ -128,5 +151,13 @@ export function pageText(page: SitePage): PageText {
         description: snippet(`${exercise.target}. ${exercise.description}`),
       };
     }
+    case 'articles': return ARTICLES_PAGE;
+    case 'article': {
+      const article = articleBySlug(page.slug)!;
+      return { title: `${article.title} · Coriace`, description: article.description };
+    }
+    case 'author': return { title: `${AUTHOR_PAGE.title} ${AUTHOR.name} · Coriace`, description: AUTHOR_PAGE.description };
   }
 }
+
+export const articleBySlug = (slug: string) => visibleArticles(true).find(a => a.slug === slug);

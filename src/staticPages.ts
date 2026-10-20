@@ -2,8 +2,11 @@ import { EXERCISE_DATABASE } from './exercises';
 import { EQUIPMENT_LABELS, EXERCISE_GROUPS } from './lib/groups';
 import { SCENES, sceneFrame, sceneThumb, sceneTop } from './illustrations/scenes';
 import {
-  CATEGORY_PAGES, EXERCISES_PAGE, HOME, HOME_PAGE, PageText, SITE_URL, SitePage, exerciseSlug, pagePath, pageText,
+  ARTICLES_PAGE, CATEGORY_PAGES, EXERCISES_PAGE, HOME, HOME_PAGE, PageText, SITE_URL, SitePage, articleBySlug, exerciseSlug, pagePath, pageText,
 } from './pages';
+import {
+  AUTHOR, AUTHOR_PAGE, Article, ArticleBlock, HEALTH_NOTICE, Inline, articleDate, authorPageVisible, parseInline, readingMinutes, visibleArticles,
+} from './articles';
 import {
   LEVELS, OBJECTIVES, PRESET_CATEGORIES, PRESET_EQUIPMENT_LABELS, PresetCategory, PresetSession, RACE_SESSIONS,
   TARGETED_HINT, TARGETED_INTRO, TARGETED_SESSIONS, categoriesWithExercise, categoryLabel, presetEquipment, presetExercises,
@@ -37,6 +40,9 @@ function cardPath(page: SitePage): string {
     case 'category': return `og/${CATEGORY_PAGES[page.category].slug}.png`;
     case 'exercises': return 'og/exercices.png';
     case 'exercise': return `og/exercices/${exerciseSlug(exerciseOf(page.exerciseId))}.png`;
+    case 'articles': return 'og/articles.png';
+    case 'article': return `og/articles/${page.slug}.png`;
+    case 'author': return `og/articles/${AUTHOR.slug}.png`;
   }
 }
 
@@ -55,6 +61,14 @@ function card(page: SitePage): ShareCard {
       const exercise = exerciseOf(page.exerciseId);
       return { title: exercise.name, subtitle: exercise.target, exerciseId: exercise.id };
     }
+    case 'articles':
+      return { title: ARTICLES_PAGE.heading, subtitle: `Le renfo raconté par ${AUTHOR.name}` };
+    case 'article': {
+      const article = articleBySlug(page.slug)!;
+      return { title: article.title, subtitle: `${article.kind} · ${AUTHOR.name}`, exerciseId: article.coverExerciseId };
+    }
+    case 'author':
+      return { title: AUTHOR_PAGE.title, subtitle: AUTHOR.name };
   }
 }
 
@@ -62,6 +76,7 @@ function card(page: SitePage): ShareCard {
 
 const ORGANIZATION_ID = `${SITE_URL}/#organization`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
+const AUTHOR_ID = `${SITE_URL}/#author`;
 
 function breadcrumb(url: string, trail: { name: string; url: string }[]) {
   return {
@@ -71,7 +86,7 @@ function breadcrumb(url: string, trail: { name: string; url: string }[]) {
   };
 }
 
-function structuredData(page: SitePage, base: string): object[] {
+function structuredData(page: SitePage, base: string, includeDrafts: boolean): object[] {
   const url = (p: SitePage) => `${SITE_URL}${pagePath(p, base)}`;
   const text = pageText(page);
   const home = { name: 'Accueil', url: url(HOME) };
@@ -132,6 +147,36 @@ function structuredData(page: SitePage, base: string): object[] {
       const exercise = exerciseOf(page.exerciseId);
       return webPage('WebPage', exercise.name, [home, { name: 'Exercices', url: url({ kind: 'exercises' }) }, { name: exercise.name, url: url(page) }]);
     }
+    case 'articles': {
+      const articles = visibleArticles(includeDrafts);
+      return webPage('CollectionPage', ARTICLES_PAGE.heading, [home, { name: 'Articles', url: url(page) }], {
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: articles.length,
+          itemListElement: articles.map((a, i) => ({ '@type': 'ListItem', position: i + 1, name: a.title, url: url({ kind: 'article', slug: a.slug }) })),
+        },
+      });
+    }
+    case 'article': {
+      const article = articleBySlug(page.slug)!;
+      const articles = { name: 'Articles', url: url({ kind: 'articles' }) };
+      return [
+        {
+          '@type': 'BlogPosting', '@id': `${url(page)}#article`, mainEntityOfPage: url(page), url: url(page),
+          headline: article.title, description: article.description, inLanguage: 'fr-FR',
+          datePublished: article.publishedAt, dateModified: article.updatedAt ?? article.publishedAt,
+          author: { '@type': 'Person', '@id': AUTHOR_ID, name: AUTHOR.name, url: url({ kind: 'author' }) },
+          publisher: { '@id': ORGANIZATION_ID },
+          image: { '@type': 'ImageObject', url: `${SITE_URL}${base}${cardPath(page)}`, width: 1200, height: 630 },
+          isPartOf: { '@id': WEBSITE_ID },
+        },
+        breadcrumb(url(page), [home, articles, { name: article.title, url: url(page) }]),
+      ];
+    }
+    case 'author':
+      return webPage('ProfilePage', AUTHOR_PAGE.title, [home, { name: 'Articles', url: url({ kind: 'articles' }) }, { name: AUTHOR_PAGE.title, url: url(page) }], {
+        mainEntity: { '@type': 'Person', '@id': AUTHOR_ID, name: AUTHOR.name, description: AUTHOR_PAGE.description, url: url(page) },
+      });
   }
 }
 
@@ -195,11 +240,12 @@ const chip = 'px-2.5 py-0.5 rounded-full bg-ink/10 text-[13px] font-semibold';
 const pill = 'h-11 px-4 rounded-full border-[1.5px] border-white/55 font-semibold text-[15px] flex items-center';
 
 // Links to every page but this one, at the foot of the pages.
-function otherPages(page: SitePage, base: string) {
+function otherPages(page: SitePage, base: string, includeDrafts: boolean) {
   const pages: { page: SitePage; label: string }[] = [
     { page: HOME, label: 'Accueil' },
     ...PRESET_CATEGORIES.map(category => ({ page: { kind: 'category', category } as SitePage, label: categoryLabel(category) })),
     { page: { kind: 'exercises' }, label: 'Les exercices' },
+    ...(visibleArticles(includeDrafts).length > 0 ? [{ page: { kind: 'articles' } as SitePage, label: 'Les articles' }] : []),
   ];
   const links = pages
     .filter(p => pagePath(p.page, base) !== pagePath(page, base))
@@ -252,7 +298,8 @@ ${sessionList(sessions.filter(p => p.level === level.id), base)}
 const cardRow = (href: string, label: string, hint: string, count: string) =>
   `<li><a href="${href}" class="w-full bg-cream text-ink rounded-[18px] px-4 py-3.5 flex items-center gap-3"><span class="flex-1 flex flex-col gap-0.5"><span class="font-display font-bold text-[22px] leading-tight">${esc(label)}</span><span class="text-[15px] leading-snug text-clay">${esc(hint)}</span></span><span class="text-sm font-semibold text-clay shrink-0">${esc(count)}</span></a></li>`;
 
-function homeMain(base: string) {
+function homeMain(base: string, includeDrafts: boolean) {
+  const articles = visibleArticles(includeDrafts);
   const rows = [
     ...PRESET_CATEGORIES.map(category => {
       const objective = OBJECTIVES.find(o => o.id === category);
@@ -260,6 +307,9 @@ function homeMain(base: string) {
       return cardRow(pagePath({ kind: 'category', category }, base), categoryLabel(category), objective?.hint ?? TARGETED_HINT, `${count} séances`);
     }),
     cardRow(pagePath({ kind: 'exercises' }, base), 'Les exercices', 'Chaque mouvement expliqué et animé.', `${EXERCISE_DATABASE.length} fiches`),
+    ...(articles.length > 0
+      ? [cardRow(pagePath({ kind: 'articles' }, base), 'Les articles', 'Le renfo raconté par un coureur, chiffres à l\'appui.', `${articles.length} article${articles.length > 1 ? 's' : ''}`)]
+      : []),
   ];
   return `<h1 class="font-display font-extrabold text-[44px] leading-none tracking-[-0.03em]">Le renfo pour les coureurs</h1>
 <p class="text-base leading-snug">Des séances de renforcement musculaire guidées, pensées pour la course à pied : mollets, adducteurs, fessiers, gainage. Prêtes pour ton objectif, ou composées selon ton matériel et ton temps.</p>
@@ -341,37 +391,125 @@ function exerciseMain(exercise: Exercise, base: string) {
   ].filter(Boolean).join('\n');
 }
 
+// --- Articles ---
+
+// Links inside the site ("/marathon/") follow the base the site is served from.
+const siteHref = (href: string, base: string) => (href.startsWith('/') ? `${base}${href.slice(1)}` : href);
+
+const inline = (text: Inline, base: string) => parseInline(text).map(part =>
+  part.kind === 'bold' ? `<strong>${esc(part.text)}</strong>`
+    : part.kind === 'link' ? `<a href="${esc(siteHref(part.href, base))}" class="underline underline-offset-2">${esc(part.text)}</a>`
+    : esc(part.text)).join('');
+
+function articleBlock(block: ArticleBlock, base: string) {
+  switch (block.type) {
+    case 'h2': return `<h2 class="font-display font-extrabold text-[26px] leading-tight mt-2">${esc(block.text)}</h2>`;
+    case 'p': return `<p class="text-[17px] leading-relaxed">${inline(block.text, base)}</p>`;
+    case 'list': {
+      const tag = block.ordered ? 'ol' : 'ul';
+      return `<${tag} class="flex flex-col gap-1.5 pl-5 text-[17px] leading-relaxed ${block.ordered ? 'list-decimal' : 'list-disc'}">${block.items.map(item => `<li>${inline(item, base)}</li>`).join('')}</${tag}>`;
+    }
+    case 'exercises': {
+      const figures = block.ids.map(id => {
+        const exercise = exerciseOf(id);
+        const scene = SCENES[id];
+        const svg = scene
+          ? `<svg viewBox="0 ${sceneTop(scene)} 200 ${160 - sceneTop(scene)}" role="img" aria-label="${esc(exercise.name)}" class="block w-full h-28">${sceneFrame(scene, scene.motion.still ?? 0, {})}</svg>`
+          : '';
+        return `<a href="${pagePath({ kind: 'exercise', exerciseId: id }, base)}" class="flex-1 min-w-0 bg-cream text-ink rounded-2xl p-2 flex flex-col gap-1">${svg}<span class="px-1 pb-1 text-sm font-semibold leading-tight">${esc(exercise.name)}</span></a>`;
+      });
+      return `<figure class="flex flex-col gap-2"><div class="flex gap-2">${figures.join('')}</div><figcaption class="text-sm text-sand">${esc(block.caption)}</figcaption></figure>`;
+    }
+    case 'try':
+      return `<aside class="bg-cream text-ink rounded-[18px] px-4 py-3.5 flex flex-col gap-1.5"><h2 class="font-display font-bold text-[21px] leading-tight">À essayer</h2>${block.items.map(item => `<p class="text-[15px] leading-snug">${inline(item, base)}</p>`).join('')}</aside>`;
+  }
+}
+
+const articleMeta = (article: Article, base: string) =>
+  `<p class="text-sm text-sand">Par <a href="${pagePath({ kind: 'author' }, base)}" class="underline underline-offset-2">${esc(AUTHOR.name)}</a> · ${esc(articleDate(article.publishedAt))} · ${readingMinutes(article)} min de lecture</p>`;
+
+function articleMain(article: Article, base: string) {
+  const footer = [
+    article.updatedAt ? `Mis à jour le ${articleDate(article.updatedAt)}.` : '',
+    article.reviewedByPhysio ? 'Relu par un kinésithérapeute.' : '',
+  ].filter(Boolean).join(' ');
+  return [
+    backLink(pagePath({ kind: 'articles' }, base), 'Les articles'),
+    `<header class="flex flex-col gap-2"><span class="text-sm font-semibold text-sand">${esc(article.kind)}</span><h1 class="font-display font-extrabold text-[36px] leading-[1.05] tracking-[-0.02em]">${esc(article.title)}</h1>${articleMeta(article, base)}</header>`,
+    `<p class="text-[18px] leading-relaxed font-semibold">${esc(article.lead)}</p>`,
+    ...article.blocks.map(block => articleBlock(block, base)),
+    article.sources.length > 0
+      ? `<section class="flex flex-col gap-1.5 mt-2"><h2 class="text-sm font-semibold text-sand">Sources</h2><ol class="flex flex-col gap-1 pl-5 list-decimal text-sm text-sand leading-snug">${article.sources.map(s => `<li>${esc(s)}</li>`).join('')}</ol></section>`
+      : '',
+    footer ? `<p class="text-sm font-semibold">${esc(footer)}</p>` : '',
+    article.healthNotice ? `<p class="text-sm text-sand italic">${esc(HEALTH_NOTICE)}</p>` : '',
+  ].filter(Boolean).join('\n');
+}
+
+function articlesMain(base: string, includeDrafts: boolean) {
+  const cards = visibleArticles(includeDrafts).map(article =>
+    `<li><a href="${pagePath({ kind: 'article', slug: article.slug }, base)}" class="w-full bg-cream text-ink rounded-[18px] px-4 py-3.5 flex flex-col gap-1"><span class="text-[13px] font-semibold text-clay">${esc(article.kind)} · ${esc(articleDate(article.publishedAt))} · ${readingMinutes(article)} min</span><span class="font-display font-bold text-[21px] leading-tight">${esc(article.title)}</span><span class="text-[15px] leading-snug text-clay">${esc(article.description)}</span></a></li>`);
+  return [
+    backLink(base, 'Accueil'),
+    `<h1 class="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">${esc(ARTICLES_PAGE.heading)}</h1>`,
+    `<p class="text-base leading-snug">${esc(ARTICLES_PAGE.intro)}</p>`,
+    `<ul class="flex flex-col gap-2.5">${cards.join('')}</ul>`,
+    authorPageVisible(includeDrafts) ? `<p class="text-base"><a href="${pagePath({ kind: 'author' }, base)}" class="underline underline-offset-2 font-semibold">Qui écrit ?</a></p>` : '',
+  ].filter(Boolean).join('\n');
+}
+
+const authorMain = (base: string) => [
+  backLink(pagePath({ kind: 'articles' }, base), 'Les articles'),
+  `<h1 class="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">${esc(AUTHOR_PAGE.title)}</h1>`,
+  ...AUTHOR_PAGE.blocks.map(block => articleBlock(block, base)),
+].join('\n');
+
 // --- All files ---
 
-export const SITE_PAGES: SitePage[] = [
-  HOME,
-  ...PRESET_CATEGORIES.map(category => ({ kind: 'category', category }) as SitePage),
-  { kind: 'exercises' },
-  ...EXERCISE_DATABASE.map(ex => ({ kind: 'exercise', exerciseId: ex.id }) as SitePage),
-];
+// Article pages only once there is an article to show (drafts are left out of the published site).
+export function sitePages(includeDrafts = false): SitePage[] {
+  const articles = visibleArticles(includeDrafts);
+  return [
+    HOME,
+    ...PRESET_CATEGORIES.map(category => ({ kind: 'category', category }) as SitePage),
+    { kind: 'exercises' },
+    ...EXERCISE_DATABASE.map(ex => ({ kind: 'exercise', exerciseId: ex.id }) as SitePage),
+    ...(articles.length > 0 ? [{ kind: 'articles' } as SitePage] : []),
+    ...articles.map(a => ({ kind: 'article', slug: a.slug }) as SitePage),
+    ...(articles.length > 0 && authorPageVisible(includeDrafts) ? [{ kind: 'author' } as SitePage] : []),
+  ];
+}
 
-function pageBody(page: SitePage, base: string) {
+export const SITE_PAGES = sitePages();
+
+function pageBody(page: SitePage, base: string, includeDrafts: boolean) {
+  const others = otherPages(page, base, includeDrafts);
   switch (page.kind) {
-    case 'home': return layout(base, homeMain(base));
-    case 'category': return layout(base, categoryMain(page.category, base), otherPages(page, base));
-    case 'exercises': return layout(base, exercisesMain(base), otherPages(page, base));
-    case 'exercise': return layout(base, exerciseMain(exerciseOf(page.exerciseId), base), otherPages(page, base));
+    case 'home': return layout(base, homeMain(base, includeDrafts));
+    case 'category': return layout(base, categoryMain(page.category, base), others);
+    case 'exercises': return layout(base, exercisesMain(base), others);
+    case 'exercise': return layout(base, exerciseMain(exerciseOf(page.exerciseId), base), others);
+    case 'articles': return layout(base, articlesMain(base, includeDrafts), others);
+    case 'article': return layout(base, articleMain(articleBySlug(page.slug)!, base), others);
+    case 'author': return layout(base, authorMain(base), others);
   }
 }
 
 // `template` is the built index.html, `base` where the site is served from ('/' on coriace.app).
-export function staticPages(template: string, base = '/'): BuiltFile[] {
+// `includeDrafts` writes the draft articles too, for a local preview.
+export function staticPages(template: string, base = '/', includeDrafts = false): BuiltFile[] {
   const url = (page: SitePage) => `${SITE_URL}${pagePath(page, base)}`;
-  const files: BuiltFile[] = SITE_PAGES.flatMap(page => [
+  const pages = sitePages(includeDrafts);
+  const files: BuiltFile[] = pages.flatMap(page => [
     {
       fileName: `${pagePath(page, '')}index.html`,
-      source: withPage(template, pageText(page), url(page), `${SITE_URL}${base}${cardPath(page)}`, structuredData(page, base), pageBody(page, base)),
+      source: withPage(template, pageText(page), url(page), `${SITE_URL}${base}${cardPath(page)}`, structuredData(page, base, includeDrafts), pageBody(page, base, includeDrafts)),
     },
     { fileName: cardPath(page), card: card(page) },
   ]);
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${SITE_PAGES.map(page => `  <url><loc>${url(page)}</loc></url>`).join('\n')}
+${pages.map(page => `  <url><loc>${url(page)}</loc></url>`).join('\n')}
 </urlset>
 `;
   const robots = `User-agent: *
