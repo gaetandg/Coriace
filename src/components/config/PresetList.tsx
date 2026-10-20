@@ -7,6 +7,7 @@ import { EXERCISE_DATABASE } from '../../exercises';
 import { HOME, pagePath } from '../../pages';
 import { inApp } from '../../lib/links';
 import { BackLink } from '../BackLink';
+import { DurationDial } from '../DurationDial';
 
 const chip = 'px-2.5 py-0.5 rounded-full bg-ink/10 text-[13px] font-semibold';
 
@@ -69,7 +70,10 @@ function PresetCard({ preset, onStart }: { preset: PresetSession; onStart: (pres
         <span className="flex-1 flex flex-col gap-1">
           <span className="flex items-baseline justify-between gap-3">
             <span className="font-display font-bold text-[21px] leading-tight">{preset.formula ?? preset.name}</span>
-            <span className="font-display font-extrabold text-[17px] shrink-0">{preset.durationMinutes} min</span>
+            <span className="flex items-center gap-1.5 font-display font-extrabold text-[17px] shrink-0">
+              <DurationDial minutes={preset.durationMinutes} className="w-5 h-5 text-clay" />
+              {preset.durationMinutes} min
+            </span>
           </span>
           <span className="text-[15px] leading-snug text-clay">{preset.description}</span>
           <span className="flex flex-wrap gap-1.5 pt-1">
@@ -112,7 +116,10 @@ export function PresetCategoryPage({ category, onBack, onStart }: {
         : LEVELS.map(level => (
           <section key={level.id} id={`level-${level.id}`} className="flex flex-col gap-2.5 mt-2">
             <div className="flex flex-col gap-0.5">
-              <h2 className="font-display font-extrabold text-[26px] leading-tight">{level.heading}</h2>
+              <h2 className="flex items-center gap-2.5 font-display font-extrabold text-[26px] leading-tight">
+                <DurationDial minutes={RACE_SESSIONS.find(p => p.level === level.id)!.durationMinutes} className="w-7 h-7 shrink-0" />
+                {level.heading}
+              </h2>
               <p className="text-sm text-sand">{level.hint}</p>
             </div>
             {list(RACE_SESSIONS.filter(p => p.objective === category && p.level === level.id))}

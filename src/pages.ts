@@ -85,9 +85,9 @@ export const ARTICLES_SLUG = 'articles';
 
 export const ARTICLES_PAGE: PageText & { heading: string; intro: string } = {
   heading: 'Les articles',
-  intro: 'Ce que je vis et teste en préparant mes courses : le renfo, les crampes, les blessures, avec mes vrais chiffres. Les articles qui parlent du corps sont relus par un kinésithérapeute.',
+  intro: 'Ce que je vis et teste en préparant mes courses : le renfo, les crampes, les blessures, avec mes vrais chiffres.',
   title: 'Articles sur le renfo et la course à pied · Coriace',
-  description: 'Le renfo pour les coureurs, raconté par un marathonien amateur : préparation, crampes, tests, avec de vrais chiffres. Articles relus par un kinésithérapeute.',
+  description: 'Le renfo pour les coureurs, raconté par un marathonien amateur : préparation, crampes, tests, avec de vrais chiffres.',
 };
 
 // From the exercise's name, without accents: "Mollets debout, descente lente" → mollets-debout-descente-lente.

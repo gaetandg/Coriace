@@ -8,6 +8,7 @@ import { ExerciseDetailModal } from './ExerciseDetailModal';
 import { ExerciseThumb } from '../ExerciseThumb';
 import { Switch } from '../Switch';
 import { RhythmPicker } from '../RhythmPicker';
+import { DurationDial } from '../DurationDial';
 
 interface PlanSectionProps {
   label: string;
@@ -70,7 +71,7 @@ export function SummaryScreen({
   const tours = (rounds: number) => `${rounds} ${rounds > 1 ? 'tours' : 'tour'}`;
 
   const stats = [
-    { value: String(minutes), label: 'minutes' },
+    { value: String(minutes), label: 'minutes', dial: true },
     { value: rhythmTiming(rythme), label: RHYTHMS[rythme].label.toLowerCase() },
     { value: String(plan.circuitExercises.length + plan.finishers.length), label: 'exercices' },
   ];
@@ -89,7 +90,10 @@ export function SummaryScreen({
       <div className="grid grid-cols-3 bg-cream text-ink rounded-[18px] py-3.5">
         {stats.map((stat, i) => (
           <div key={stat.label} className={`flex flex-col items-center gap-0.5 ${i === 1 ? 'border-x border-cream-line' : ''}`}>
-            <span className="font-display font-extrabold text-[26px] leading-tight">{stat.value}</span>
+            <span className="flex items-center gap-1.5 font-display font-extrabold text-[26px] leading-tight">
+              {stat.dial && <DurationDial minutes={minutes} className="w-6 h-6 text-clay" />}
+              {stat.value}
+            </span>
             <span className="text-[13px] text-clay">{stat.label}</span>
           </div>
         ))}
