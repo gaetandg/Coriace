@@ -22,7 +22,7 @@ describe('articles', () => {
     expect(isPublished(article, '2026-10-26')).toBe(false);
     expect(isPublished(article, '2026-10-27')).toBe(true);
     expect(isPublished({ ...article, draft: true }, '2026-12-01')).toBe(false);
-    expect(articleStatus(article, '2026-10-26')).toBe('Programmé le 27 octobre 2026 · ');
+    expect(articleStatus(article, '2026-10-26')).toBe('Programmé · ');
     expect(articleStatus({ ...article, draft: true }, '2026-10-26')).toBe('Brouillon · ');
     expect(articleStatus(article, '2026-10-27')).toBe('');
   });
@@ -61,6 +61,16 @@ describe('articles', () => {
     expect(ARTICLES.some(a => a.slug === AUTHOR.slug)).toBe(false);
     const ids = ARTICLES.flatMap(a => [...a.blocks.flatMap(b => (b.type === 'exercises' ? b.ids : [])), ...(a.coverExerciseId ? [a.coverExerciseId] : [])]);
     for (const id of ids) expect(EXERCISE_DATABASE.some(ex => ex.id === id), id).toBe(true);
+  });
+
+  it('links to pages that exist', () => {
+    for (const article of ARTICLES) {
+      const texts = article.blocks.flatMap(b => ('text' in b ? [b.text] : 'items' in b ? b.items : []));
+      for (const part of texts.flatMap(parseInline)) {
+        if (part.kind !== 'link' || !part.href.startsWith('/')) continue;
+        expect(pageAt(part.href, '/', true), `${article.slug}: ${part.href}`).not.toEqual({ kind: 'home' });
+      }
+    }
   });
 
   it('keeps titles short enough for search results', () => {
