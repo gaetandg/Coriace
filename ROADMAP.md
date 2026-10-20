@@ -66,7 +66,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 ### Articles (SEO et GEO)
 - [ ] Section d'articles sur la course à pied et le renfo (`/articles/`) : liste des articles et une page par article, HTML écrit au build (titre, description, données structurées `Article` avec l'auteur, sitemap)
 - [x] Charte éditoriale (dossier Drive « Application Coriace ») : contenu qu'on est seuls à pouvoir écrire (vécu de l'auteur, données Coriace, illustrations Coriace, tests, avis du kiné, interviews), première personne et tutoiement, rien d'inventé, illustrations maison sans images générées par IA, mention santé, relecture du kiné pour tout ce qui touche au corps
-- [ ] Auteur signé d'un pseudo, page « Qui écrit ? » sans nom ni photo de visage
+- [ ] Auteur signé « Le Coureur Coriace », page « Qui écrit ? » sans nom ni photo de visage
 - [ ] Six premiers articles : pourquoi j'ai fini par faire du renfo, le renfo pour préparer un marathon, teste tes mollets en 2 minutes, renfo avant ou après la sortie, journal de prépa du marathon de Bordeaux, interview du kiné ; plus tard un baromètre tiré des données de l'app (chiffres agrégés et anonymes, mentionnés dans la page de confidentialité)
 - [ ] Rythme : deux articles par mois. Brouillon rédigé à partir de la matière de l'auteur (notes, Strava, photos), relu par l'auteur et le kiné avant publication
 - [x] Nom de domaine propre plutôt que github.io (coriace.app), pour que le référencement profite à la marque
@@ -92,6 +92,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [ ] Fiche Play Store dans chaque langue (textes et captures) et diffusion dans tous les pays, plus seulement les pays francophones
 
 ### Plus tard
+- [ ] Coriace pour les kinés : composer une séance pour un patient (exercices, tours, rythme, consignes), lui envoyer par lien ou QR code, voir s'il l'a faite. À creuser avec un kiné : besoins, cadre (données de santé), modèle (gratuit pour le patient, payant pour le cabinet ?)
 - [ ] Applications Android et iPhone avec Capacitor (minuteur et voix qui continuent écran verrouillé)
 - [ ] Vérifier la disponibilité du nom « Coriace » avant publication sur les stores (marques INPI et EUIPO, classe 9)
 
