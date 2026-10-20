@@ -30,11 +30,10 @@ const MODE_OPTIONS: { value: SessionMode; label: string; hint: string }[] = [
 
 const ROUNDS = [2, 3, 4];
 
-export function ConfigScreen({ session, onOpenHistory, onOpenExercises, onOpenArticles }: {
+export function ConfigScreen({ session, onOpenHistory, onOpenExercises }: {
   session: WorkoutSession;
   onOpenHistory: () => void;
   onOpenExercises: () => void;
-  onOpenArticles: () => void;
 }) {
   const {
     config,
@@ -98,7 +97,7 @@ export function ConfigScreen({ session, onOpenHistory, onOpenExercises, onOpenAr
       )}
 
       {mode === 'preset' ? (
-        <PresetCategories onOpen={setPresetCategory} onOpenExercises={onOpenExercises} onOpenArticles={onOpenArticles} />
+        <PresetCategories onOpen={setPresetCategory} onOpenExercises={onOpenExercises} />
       ) : (
         <>
         <div className="relative flex flex-col gap-2.5">
@@ -249,7 +248,7 @@ export function ConfigScreen({ session, onOpenHistory, onOpenExercises, onOpenAr
           })}
         </div>
 
-        <div className="sticky bottom-0 mt-auto -mx-5 px-5 pt-3 pb-1 bg-brick flex flex-col gap-1.5">
+        <div className="sticky bottom-[var(--tab-bar,0px)] mt-auto -mx-5 px-5 pt-3 pb-1 bg-brick flex flex-col gap-1.5">
           {mode === 'custom' && (
             <p id="custom-summary" className="text-sm text-sand text-center">
               {noExercise

@@ -7,19 +7,15 @@ import { EXERCISE_DATABASE } from '../../exercises';
 import { HOME, pagePath } from '../../pages';
 import { inApp } from '../../lib/links';
 import { BackLink } from '../BackLink';
-import { visibleArticles } from '../../articles';
-import { SHOW_DRAFTS } from '../articles/ArticlePages';
 
 const chip = 'px-2.5 py-0.5 rounded-full bg-ink/10 text-[13px] font-semibold';
 
 // Home of the ready-made sessions: one row per race distance, then the targeted sessions, then
 // the exercises.
-export function PresetCategories({ onOpen, onOpenExercises, onOpenArticles }: {
+export function PresetCategories({ onOpen, onOpenExercises }: {
   onOpen: (category: PresetCategory) => void;
   onOpenExercises: () => void;
-  onOpenArticles: () => void;
 }) {
-  const articles = visibleArticles(SHOW_DRAFTS);
   const base = import.meta.env.BASE_URL;
   const categoryRow = (category: PresetCategory, label: string, hint: string, count: number) => ({
     id: `category-${category}`,
@@ -34,10 +30,6 @@ export function PresetCategories({ onOpen, onOpenExercises, onOpenArticles }: {
       id: 'exercises-link', href: pagePath({ kind: 'exercises' }, base), open: onOpenExercises,
       label: 'Les exercices', hint: 'Chaque mouvement expliqué et animé.', count: `${EXERCISE_DATABASE.length} fiches`,
     },
-    ...(articles.length > 0 ? [{
-      id: 'articles-link', href: pagePath({ kind: 'articles' }, base), open: onOpenArticles,
-      label: 'Les articles', hint: 'Le renfo raconté par un coureur, chiffres à l\'appui.', count: `${articles.length} article${articles.length > 1 ? 's' : ''}`,
-    }] : []),
   ];
   return (
     <div id="preset-list" className="relative flex flex-col gap-2.5">

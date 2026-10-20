@@ -1,10 +1,8 @@
-import { ChartColumn, UserRound, Volume2, VolumeX } from 'lucide-react';
+import { UserRound, Volume2, VolumeX } from 'lucide-react';
 import { Logo } from './Logo';
 
 interface HeaderProps {
   onHome: () => void;
-  statsOpen: boolean;
-  onToggleStats: () => void;
   soundOn: boolean;
   onOpenSound: () => void;
   // null when accounts aren't available; otherwise the initial of the signed-in runner, or '' when signed out.
@@ -12,7 +10,7 @@ interface HeaderProps {
   onOpenAccount: () => void;
 }
 
-export function Header({ onHome, statsOpen, onToggleStats, soundOn, onOpenSound, accountInitial, onOpenAccount }: HeaderProps) {
+export function Header({ onHome, soundOn, onOpenSound, accountInitial, onOpenAccount }: HeaderProps) {
   return (
     <header className="relative flex items-center justify-between">
       <button onClick={onHome} aria-label="Accueil" className="flex items-center gap-2 text-left cursor-pointer">
@@ -24,15 +22,6 @@ export function Header({ onHome, statsOpen, onToggleStats, soundOn, onOpenSound,
       </button>
 
       <div className="flex items-center gap-1">
-        <button
-          id="btn-stats"
-          onClick={onToggleStats}
-          aria-label="Statistiques"
-          aria-pressed={statsOpen}
-          className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer ${statsOpen ? 'bg-cream text-ink' : 'border-[1.5px] border-white/55'}`}
-        >
-          <ChartColumn className="w-5 h-5" />
-        </button>
         <button
           id="btn-toggle-sound"
           onClick={onOpenSound}

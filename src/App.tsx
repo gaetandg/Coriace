@@ -1,7 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { useWorkoutSession } from './hooks/useWorkoutSession';
 import { Header } from './components/Header';
+import { TAB_BAR_HEIGHT, TabBar, TabBarTab } from './components/TabBar';
 import { ConfigScreen } from './components/config/ConfigScreen';
 import { SummaryScreen } from './components/summary/SummaryScreen';
 import { PlayerScreen } from './components/player/PlayerScreen';
@@ -150,16 +152,30 @@ export default function App() {
     window.scrollTo(0, keepsScroll(screen) ? scrolls.current[screen] ?? 0 : 0);
   }, [screen]);
 
+  // The menu at the bottom, except during a session and on the screen that launches it.
+  const showTabBar = workoutState !== 'active' && workoutState !== 'summary';
+  const tabBarTab: TabBarTab = activeTab === 'stats' ? 'stats' : activeTab === 'articles' ? 'articles' : 'sessions';
+  const selectTab = (tab: TabBarTab) => {
+    if (tab === 'stats') {
+      if (activeTab !== 'stats') openStats();
+    } else if (tab === 'articles') {
+      openArticles();
+    } else {
+      goHome();
+    }
+  };
+
   // Rest turns the screen green so effort and recovery read at a glance from the floor.
   const isBreak = activeTab === 'workout' && workoutState === 'active' && activeInterval?.type === 'rest';
 
   return (
-    <div className={`min-h-dvh overflow-x-clip text-white transition-colors duration-500 ${isBreak ? 'bg-grass' : 'bg-brick'}`}>
-      <div className="relative w-full max-w-md min-h-dvh mx-auto px-5 pt-5 pb-6 flex flex-col gap-[22px]">
+    <div
+      className={`min-h-dvh overflow-x-clip text-white transition-colors duration-500 ${isBreak ? 'bg-grass' : 'bg-brick'}`}
+      style={{ '--tab-bar': showTabBar ? TAB_BAR_HEIGHT : '0px' } as CSSProperties}
+    >
+      <div className="relative w-full max-w-md min-h-dvh mx-auto px-5 pt-5 pb-[calc(1.5rem+var(--tab-bar))] flex flex-col gap-[22px]">
         <Header
           onHome={goHome}
-          statsOpen={activeTab === 'stats'}
-          onToggleStats={() => (activeTab === 'stats' ? closeStats() : openStats())}
           soundOn={session.sound.beeps || (session.sound.voice && session.speechSupported)}
           onOpenSound={() => { setShowSound(true); track('reglages-son'); }}
           accountInitial={auth.enabled ? accountInitial(auth.user) : null}
@@ -191,7 +207,7 @@ export default function App() {
           )
         ) : (
           <>
-            {workoutState === 'config' && <ConfigScreen session={session} onOpenHistory={openStats} onOpenExercises={openExercises} onOpenArticles={openArticles} />}
+            {workoutState === 'config' && <ConfigScreen session={session} onOpenHistory={openStats} onOpenExercises={openExercises} />}
 
             {workoutState === 'summary' && summaryPlanGroups && (
               <SummaryScreen
@@ -237,6 +253,8 @@ export default function App() {
           </footer>
         )}
       </div>
+
+      {showTabBar && <TabBar active={tabBarTab} onSelect={selectTab} />}
 
       {showSound && (
         <SoundSheet
