@@ -420,6 +420,8 @@ function articleBlock(block: ArticleBlock, base: string) {
       });
       return `<figure class="flex flex-col gap-2"><div class="flex gap-2">${figures.join('')}</div><figcaption class="text-sm text-sand">${esc(block.caption)}</figcaption></figure>`;
     }
+    case 'image':
+      return `<figure class="flex flex-col gap-2"><img src="${esc(siteHref(block.src, base))}" alt="${esc(block.alt)}" width="${block.width}" height="${block.height}" loading="lazy" class="w-full h-auto rounded-2xl" /><figcaption class="text-sm text-sand">${esc(block.caption)}</figcaption></figure>`;
     case 'try':
       return `<aside class="bg-cream text-ink rounded-[18px] px-4 py-3.5 flex flex-col gap-1.5"><h2 class="font-display font-bold text-[21px] leading-tight">À essayer</h2>${block.items.map(item => `<p class="text-[15px] leading-snug">${inline(item, base)}</p>`).join('')}</aside>`;
   }

@@ -11,6 +11,8 @@ export type ArticleBlock =
   | { type: 'list'; items: Inline[]; ordered?: boolean }
   // Animated exercises from the app, side by side, with a caption.
   | { type: 'exercises'; ids: string[]; caption: string }
+  // A chart or photo from public/articles/, as wide as the text.
+  | { type: 'image'; src: string; alt: string; caption: string; width: number; height: number }
   // "À essayer": the app's sessions or pages that go with the article.
   | { type: 'try'; items: Inline[] };
 
@@ -65,9 +67,14 @@ export const ARTICLES: Article[] = [
       { type: 'h2', text: 'Douze ans de course, et un mur toujours au même endroit' },
       { type: 'p', text: 'Je cours depuis douze ans. Au début, c\'était le 10 km du dimanche. Puis deux sorties par semaine, puis trois. Ma première course remonte à mars 2023 : les 23 km de Saint-Émilion. Ensuite le semi de Bordeaux, trois années de suite, en 1 h 28, 1 h 27 puis 1 h 26. Mon premier marathon, c\'était le marathon trail de Saint-Émilion en 2025, et le deuxième le Marathon des 2 Rives, en mai 2026.' },
       { type: 'p', text: 'Sur les deux marathons, le même scénario. Vers le 30e kilomètre, les crampes arrivent : surtout dans les mollets, un peu dans les adducteurs. Résultat : 3 h 40 à Saint-Émilion, sur un parcours de trail avec 470 mètres de dénivelé, et 3 h 37 aux 2 Rives. [À compléter : ce que tu as ressenti, ce que tu as fait quand les crampes sont arrivées, et le temps que tu visais.]' },
+      { type: 'p', text: 'Ma montre raconte la même histoire. Aux 2 Rives, j\'ai couru les 22 premiers kilomètres à 4 min 34 de moyenne, l\'allure d\'un marathon en 3 h 13, avec un cardio qui grimpait de 155 à 167 pulsations. L\'allure a commencé à baisser au 23e kilomètre. Au 27e, j\'ai marché pour la première fois. À partir du 31e, j\'ai alterné course et marche jusqu\'à l\'arrivée, avec un 36e kilomètre en 8 min 35. Au total : 1 h 37 pour la première moitié, 2 h 01 pour la seconde.' },
+      { type: 'image', src: '/articles/marathon-2-rives-allure.svg', width: 440, height: 500, alt: 'Graphique de l\'allure au kilomètre sur le Marathon des 2 Rives : stable autour de 4 min 34 jusqu\'au 22e kilomètre, puis de plus en plus lente, avec des passages en marche à partir du 27e.', caption: 'Mon allure au kilomètre aux 2 Rives, d\'après ma montre. En bas, le temps passé à marcher dans chaque kilomètre.' },
+      { type: 'p', text: 'À Saint-Émilion, sur un parcours plus vallonné, c\'est arrivé plus tard mais plus fort : la deuxième moitié m\'a pris 29 minutes de plus que la première, et entre le 38e et le 40e kilomètre, j\'ai plus marché que couru.' },
+      { type: 'p', text: 'À l\'inverse, sur le semi de Bordeaux en 2025, j\'ai tenu entre 3 min 54 et 4 min 08 au kilomètre du début à la fin, sans faiblir. Le problème n\'apparaît qu\'au-delà de 25 kilomètres.' },
       { type: 'h2', text: 'Ce qu\'on sait des crampes, et ce qu\'on ne sait pas' },
       { type: 'p', text: 'Pendant longtemps, j\'ai cru que c\'était une question d\'eau et de sels minéraux. Les études récentes nuancent beaucoup cette idée.' },
       { type: 'p', text: 'Une équipe a suivi 210 triathlètes sur un Ironman. Ceux qui ont eu des crampes n\'étaient ni plus déshydratés ni plus pauvres en sodium que les autres. Ce qui les distinguait : ils étaient allés plus vite que prévu, et ils avaient déjà eu des crampes par le passé (Schwellnus, 2011).' },
+      { type: 'p', text: 'Les deux me ressemblent : des crampes à chaque marathon, et aux 2 Rives, un départ à l\'allure d\'un 3 h 13 pour finir en 3 h 37.' },
       { type: 'p', text: 'L\'explication qui tient le mieux aujourd\'hui, c\'est la fatigue du muscle. Quand il est trop fatigué pour l\'effort qu\'on lui demande, les signaux nerveux qui le commandent se dérèglent : il se contracte et n\'arrive plus à se relâcher (Schwellnus, 2009 ; Miller, 2022).' },
       { type: 'p', text: 'Pour moi, ça veut dire deux choses :' },
       {
@@ -91,6 +98,8 @@ export const ARTICLES: Article[] = [
         ],
       },
       { type: 'exercises', ids: ['calves_standing_slow', 'copenhagen_plank'], caption: 'Deux exercices que je fais pour les mollets et les adducteurs : les mollets en descente lente et la Copenhagen plank.' },
+      { type: 'p', text: 'Sur Strava, je comptais 10 séances de renfo en 2025. En 2026, j\'en suis à 18, dont une chaque semaine depuis septembre. [À confirmer : les séances « Entraînement » sont bien du renfo.]' },
+      { type: 'p', text: 'Le 14 octobre, pour ma séance test de 30 kilomètres, j\'ai couru du 17e au 26e kilomètre autour de 4 min 45, l\'allure visée pour Bordeaux, avec un cardio entre 150 et 157, sans marcher. Les trois kilomètres suivants ont été plus lents, entre 5 min 10 et 5 min 33. Il reste du travail, mais c\'est un départ bien plus raisonnable qu\'aux 2 Rives.' },
       { type: 'p', text: 'L\'objectif à Bordeaux : 3 h 20, et surtout passer le 30e kilomètre sans crampe. Je raconterai la préparation ici, avec mes chiffres, jusqu\'au jour de la course. Si les crampes reviennent, je le dirai aussi.' },
       { type: 'try', items: ['Les [séances Marathon](/marathon/) de Coriace. Si tu débutes le renfo, commence par une séance courte de 20 minutes, sans matériel.'] },
     ],
@@ -136,7 +145,7 @@ export const ARTICLES: Article[] = [
           '**Dans les dix derniers jours avant la course**, je compte garder une séance courte et légère, juste pour entretenir.',
         ],
       },
-      { type: 'p', text: 'Ma semaine type : une séance de fractionné, une sortie en endurance fondamentale, une séance de côtes et la sortie longue, plus une ou deux séances de renfo. Le renfo trouve sa place après l\'endurance fondamentale, ou un jour sans course, loin du fractionné, des côtes et de la sortie longue. [À compléter : tes jours exacts.]' },
+      { type: 'p', text: 'Ma semaine : fractionné le lundi, endurance fondamentale le mardi, côtes le mercredi, sortie longue le vendredi, et une sortie d\'endurance en plus quand je peux. Sur Strava, mes séances de renfo de septembre tombaient le mercredi ; en octobre, plutôt le soir en début de semaine, ou le dimanche. La seule règle que je m\'impose : jamais la veille de la sortie longue du vendredi.' },
       { type: 'h2', text: 'Progresser jusqu\'à la course' },
       {
         type: 'list',

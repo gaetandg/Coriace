@@ -59,6 +59,13 @@ function Block({ block }: { block: ArticleBlock }) {
           <figcaption className="text-sm text-sand">{block.caption}</figcaption>
         </figure>
       );
+    case 'image':
+      return (
+        <figure className="flex flex-col gap-2">
+          <img src={siteHref(block.src)} alt={block.alt} width={block.width} height={block.height} loading="lazy" className="w-full h-auto rounded-2xl" />
+          <figcaption className="text-sm text-sand">{block.caption}</figcaption>
+        </figure>
+      );
     case 'try':
       return (
         <aside className="bg-cream text-ink rounded-[18px] px-4 py-3.5 flex flex-col gap-1.5">

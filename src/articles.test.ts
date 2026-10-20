@@ -57,3 +57,14 @@ describe('articles', () => {
     for (const article of ARTICLES) expect(article.title.length, article.title).toBeLessThanOrEqual(60);
   });
 });
+
+describe('article images', () => {
+  it('point to files that exist', async () => {
+    const { existsSync } = await import('node:fs');
+    for (const article of ARTICLES) {
+      for (const block of article.blocks) {
+        if (block.type === 'image') expect(existsSync(`public${block.src}`), block.src).toBe(true);
+      }
+    }
+  });
+});
