@@ -7,21 +7,21 @@
 <rect x="250.5" y="96" width="125.3" height="284" fill="#E3CDBA" opacity="0.45"/>
 <text x="313.2" y="372" font-size="13" text-anchor="middle" fill="#7A3424">10 km à l'allure marathon</text>
 <line x1="50" x2="426" y1="124.4" y2="124.4" stroke="#E3CDBA"/>
-<text x="43" y="129.4" font-size="14" text-anchor="end" fill="#7A3424">4:30</text>
+<text x="43" y="129.4" font-size="14" text-anchor="end" fill="#7A3424">4'30</text>
 <line x1="50" x2="426" y1="209.6" y2="209.6" stroke="#E3CDBA"/>
-<text x="43" y="214.6" font-size="14" text-anchor="end" fill="#7A3424">5:00</text>
+<text x="43" y="214.6" font-size="14" text-anchor="end" fill="#7A3424">5'00</text>
 <line x1="50" x2="426" y1="294.8" y2="294.8" stroke="#E3CDBA"/>
-<text x="43" y="299.8" font-size="14" text-anchor="end" fill="#7A3424">5:30</text>
+<text x="43" y="299.8" font-size="14" text-anchor="end" fill="#7A3424">5'30</text>
 <line x1="50" x2="426" y1="380.0" y2="380.0" stroke="#E3CDBA"/>
-<text x="43" y="385.0" font-size="14" text-anchor="end" fill="#7A3424">6:00</text>
+<text x="43" y="385.0" font-size="14" text-anchor="end" fill="#7A3424">6'00</text>
 <line x1="50" x2="426" y1="164.2" y2="164.2" stroke="#2E5E3E" stroke-width="2.5" stroke-dasharray="7 5"/>
-<text x="54" y="158.2" font-size="13" font-weight="700" fill="#2E5E3E">Visé à Bordeaux : 4:44</text>
+<text x="54" y="158.2" font-size="13" font-weight="700" fill="#2E5E3E">Visé à Bordeaux : 4'44/km</text>
 <polyline points="56.3,260.8 68.8,246.5 81.3,236.1 93.9,248.0 106.4,246.6 118.9,244.9 131.5,205.3 144.0,225.4 156.5,279.7 169.1,243.5 181.6,237.1 194.1,247.1 206.7,241.9 219.2,236.8 231.7,249.6 244.3,202.1 256.8,131.3 269.3,134.9 281.9,135.3 294.4,122.8 306.9,130.4 319.5,171.3 332.0,272.1 344.5,142.8 357.1,145.4 369.6,137.4 382.1,268.4 394.7,147.1 407.2,155.5 419.7,357.6" fill="none" stroke="#7A3424" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="5 4"/>
 <polyline points="56.3,342.9 68.8,296.8 81.3,274.7 93.9,266.2 106.4,264.6 118.9,271.7 131.5,254.9 144.0,247.9 156.5,238.6 169.1,243.4 181.6,245.0 194.1,255.4 206.7,231.0 219.2,229.9 231.7,234.6 244.3,248.5 256.8,180.1 269.3,173.9 281.9,211.8 294.4,153.9 306.9,170.2 319.5,163.4 332.0,173.9 344.5,155.0 357.1,153.4 369.6,158.7 382.1,274.2 394.7,238.3 407.2,305.3 419.7,232.0" fill="none" stroke="#A13D2B" stroke-width="3.5" stroke-linejoin="round" />
 <text x="56.3" y="402" font-size="14" text-anchor="middle" fill="#7A3424">1er km</text>
 <text x="169.1" y="402" font-size="14" text-anchor="middle" fill="#7A3424">10e km</text>
 <text x="294.4" y="402" font-size="14" text-anchor="middle" fill="#7A3424">20e km</text>
 <text x="427.7" y="402" font-size="14" text-anchor="end" fill="#7A3424">30e km</text>
-<text x="20" y="432" font-size="14" fill="#3B140C">Cardio sur les 10 km : <tspan font-weight="700">153</tspan> en octobre, <tspan font-weight="700">158</tspan> en avril.</text>
+<text x="20" y="432" font-size="14" fill="#3B140C">Cardio sur les 10 km : <tspan font-weight="700">153 bpm</tspan> en octobre, <tspan font-weight="700">158</tspan> en avril.</text>
 <text x="20" y="454" font-size="13" fill="#7A3424">Données de ma montre.</text>
 </svg>

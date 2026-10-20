@@ -3,17 +3,17 @@
 <text x="20" y="32" font-size="19" font-weight="700" fill="#3B140C">Marathon des 2 Rives, mai 2026</text>
 <text x="20" y="54" font-size="15" fill="#7A3424">Mon allure au kilomètre (min/km)</text>
 <line x1="50" x2="426" y1="83.7" y2="83.7" stroke="#E3CDBA"/>
-<text x="43" y="88.7" font-size="14" text-anchor="end" fill="#7A3424">4:30</text>
+<text x="43" y="88.7" font-size="14" text-anchor="end" fill="#7A3424">4'30</text>
 <line x1="50" x2="426" y1="111.1" y2="111.1" stroke="#E3CDBA"/>
-<text x="43" y="116.1" font-size="14" text-anchor="end" fill="#7A3424">5:00</text>
+<text x="43" y="116.1" font-size="14" text-anchor="end" fill="#7A3424">5'00</text>
 <line x1="50" x2="426" y1="165.8" y2="165.8" stroke="#E3CDBA"/>
-<text x="43" y="170.8" font-size="14" text-anchor="end" fill="#7A3424">6:00</text>
+<text x="43" y="170.8" font-size="14" text-anchor="end" fill="#7A3424">6'00</text>
 <line x1="50" x2="426" y1="220.5" y2="220.5" stroke="#E3CDBA"/>
-<text x="43" y="225.5" font-size="14" text-anchor="end" fill="#7A3424">7:00</text>
+<text x="43" y="225.5" font-size="14" text-anchor="end" fill="#7A3424">7'00</text>
 <line x1="50" x2="426" y1="275.3" y2="275.3" stroke="#E3CDBA"/>
-<text x="43" y="280.3" font-size="14" text-anchor="end" fill="#7A3424">8:00</text>
+<text x="43" y="280.3" font-size="14" text-anchor="end" fill="#7A3424">8'00</text>
 <line x1="50" x2="426" y1="330.0" y2="330.0" stroke="#E3CDBA"/>
-<text x="43" y="335.0" font-size="14" text-anchor="end" fill="#7A3424">9:00</text>
+<text x="43" y="335.0" font-size="14" text-anchor="end" fill="#7A3424">9'00</text>
 <line x1="50" x2="426" y1="96.5" y2="96.5" stroke="#2E5E3E" stroke-width="2.5" stroke-dasharray="7 5"/>
 <polyline points="54.4,92.1 63.1,86.5 71.9,85.9 80.6,87.6 89.3,86.0 98.1,87.6 106.8,86.6 115.6,86.9 124.3,87.0 133.1,84.9 141.8,88.0 150.6,89.9 159.3,88.8 168.0,89.1 176.8,88.6 185.5,89.6 194.3,90.2 203.0,88.2 211.8,89.3 220.5,87.6 229.3,90.6 238.0,89.2 246.7,94.0 255.5,96.8 264.2,94.0 273.0,100.3 281.7,144.6 290.5,114.4 299.2,123.4 308.0,125.8 316.7,192.4 325.4,143.7 334.2,144.6 342.9,172.0 351.7,129.3 360.4,307.5 369.2,156.2 377.9,189.2 386.7,236.3 395.4,152.2 404.1,169.2 412.9,144.6 421.6,134.3" fill="none" stroke="#A13D2B" stroke-width="3.5" stroke-linejoin="round"/>
 <text x="54.4" y="352" font-size="14" text-anchor="middle" fill="#7A3424">1er km</text>
@@ -21,10 +21,10 @@
 <text x="220.5" y="352" font-size="14" text-anchor="middle" fill="#7A3424">20e km</text>
 <text x="308.0" y="352" font-size="14" text-anchor="middle" fill="#7A3424">30e km</text>
 <text x="395.4" y="352" font-size="14" text-anchor="middle" fill="#7A3424">40e km</text>
-<text x="71.9" y="74.7" font-size="15" font-weight="700" fill="#3B140C">4:34 jusqu'au 22e km</text>
-<text x="80.6" y="118.5" font-size="15" font-weight="700" fill="#2E5E3E">Visé à Bordeaux : 4:44</text>
-<text x="267.0" y="150.6" font-size="15" font-weight="700" text-anchor="end" fill="#3B140C">27e : je marche</text>
-<text x="352.4" y="312.5" font-size="15" font-weight="700" text-anchor="end" fill="#3B140C">36e : 8:35</text>
+<text x="71.9" y="74.7" font-size="15" font-weight="700" fill="#3B140C">4'34/km jusqu'au 22e km</text>
+<text x="80.6" y="118.5" font-size="15" font-weight="700" fill="#2E5E3E">Visé à Bordeaux : 4'44/km</text>
+<text x="267.0" y="150.6" font-size="15" font-weight="700" text-anchor="end" fill="#3B140C">27e km : je marche</text>
+<text x="352.4" y="312.5" font-size="15" font-weight="700" text-anchor="end" fill="#3B140C">36e km : 8 min 35</text>
 <text x="20" y="382" font-size="15" fill="#7A3424">Temps passé à marcher dans chaque km</text>
 <line x1="50" x2="426" y1="432" y2="432" stroke="#E3CDBA"/>
 <rect x="278.1" y="424.3" width="7.2" height="7.7" rx="1.5" fill="#A13D2B" opacity="0.6"/>
