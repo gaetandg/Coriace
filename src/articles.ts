@@ -41,10 +41,10 @@ export const HEALTH_NOTICE = 'Cet article partage une expérience et des repère
 export const AUTHOR_PAGE = {
   title: 'Qui écrit ?',
   description: 'Le Coureur Coriace court depuis douze ans, prépare le marathon de Bordeaux et a créé Coriace pour faire son renfo.',
-  draft: true,
+  draft: false,
   blocks: [
     { type: 'p', text: 'Je signe Le Coureur Coriace. Je cours depuis douze ans : d\'abord le 10 km du dimanche, puis deux sorties par semaine, puis trois.' },
-    { type: 'p', text: 'Ma première course, c\'était les 23 km de Saint-Émilion, en mars 2023. Ensuite le semi-marathon de Bordeaux, trois années de suite, puis deux marathons : le marathon trail de Saint-Émilion en 2025 et le Marathon des 2 Rives en 2026. Je prépare maintenant le marathon de Bordeaux [date à confirmer], avec un objectif de 3 h 20.' },
+    { type: 'p', text: 'Ma première course, c\'était les 23 km de Saint-Émilion, en mars 2023. Ensuite le semi-marathon de Bordeaux, trois années de suite, puis deux marathons : le marathon trail de Saint-Émilion en 2025 et le Marathon des 2 Rives en 2026. Je prépare maintenant le marathon de Bordeaux, le 8 novembre 2026, avec un objectif de 3 h 20.' },
     { type: 'p', text: 'Sur mes deux marathons, la même chose s\'est produite : des crampes vers le 30e kilomètre. C\'est pour ça que je me suis mis sérieusement au renforcement musculaire. Et comme je perdais un quart d\'heure à chercher des exercices avant chaque séance, pour finir par refaire toujours les mêmes, j\'ai créé Coriace.' },
     { type: 'p', text: 'Ici, je raconte ce que je vis et ce que je teste, avec mes vrais chiffres, y compris quand ça ne marche pas. Je ne suis ni coach ni médecin : les articles qui parlent du corps et des blessures sont relus par un kinésithérapeute.' },
     { type: 'p', text: 'Une question, une remarque, une expérience à partager : [contact@coriace.app](mailto:contact@coriace.app).' },
@@ -61,12 +61,12 @@ export const ARTICLES: Article[] = [
     publishedAt: '2026-10-20',
     reviewedByPhysio: false,
     healthNotice: true,
-    draft: true,
+    draft: false,
     coverExerciseId: 'calves_standing_slow',
     blocks: [
       { type: 'h2', text: 'Douze ans de course, et un mur toujours au même endroit' },
       { type: 'p', text: 'Je cours depuis douze ans. Au début, c\'était le 10 km du dimanche. Puis deux sorties par semaine, puis trois. Ma première course remonte à mars 2023 : les 23 km de Saint-Émilion. Ensuite le semi de Bordeaux, trois années de suite, en 1 h 28, 1 h 27 puis 1 h 26. Mon premier marathon, c\'était le marathon trail de Saint-Émilion en 2025, et le deuxième le Marathon des 2 Rives, en mai 2026.' },
-      { type: 'p', text: 'Sur les deux marathons, le même scénario. Vers le 30e kilomètre, les crampes arrivent : surtout dans les mollets, un peu dans les adducteurs. Résultat : 3 h 40 à Saint-Émilion, sur un parcours de trail avec 470 mètres de dénivelé, et 3 h 37 aux 2 Rives. [À compléter : ce que tu as ressenti, ce que tu as fait quand les crampes sont arrivées, et le temps que tu visais.]' },
+      { type: 'p', text: 'Sur les deux marathons, le même scénario. Vers le 30e kilomètre, les crampes arrivent : surtout dans les mollets, un peu dans les adducteurs. Résultat : 3 h 40 à Saint-Émilion, sur un parcours de trail avec 470 mètres de dénivelé, et 3 h 37 aux 2 Rives. À chaque fois, le même réflexe : m\'arrêter pour étirer, marcher, puis recourir dès que je le pouvais.' },
       { type: 'p', text: 'Ma montre raconte la même histoire. Aux 2 Rives, j\'ai couru les 22 premiers kilomètres à 4 min 34 de moyenne, l\'allure d\'un marathon en 3 h 13, avec un cardio qui grimpait de 155 à 167 pulsations. L\'allure a commencé à baisser au 23e kilomètre. Au 27e, j\'ai marché pour la première fois. À partir du 31e, j\'ai alterné course et marche jusqu\'à l\'arrivée, avec un 36e kilomètre en 8 min 35. Au total : 1 h 37 pour la première moitié, 2 h 01 pour la seconde.' },
       { type: 'image', src: '/articles/marathon-2-rives-allure.svg', width: 440, height: 500, alt: 'Graphique de l\'allure au kilomètre sur le Marathon des 2 Rives : stable autour de 4 min 34 jusqu\'au 22e kilomètre, puis de plus en plus lente, avec des passages en marche à partir du 27e.', caption: 'Mon allure au kilomètre aux 2 Rives, d\'après ma montre. En bas, le temps passé à marcher dans chaque kilomètre.' },
       { type: 'p', text: 'À Saint-Émilion, sur un parcours plus vallonné, c\'est arrivé plus tard mais plus fort : la deuxième moitié m\'a pris 29 minutes de plus que la première, et entre le 38e et le 40e kilomètre, j\'ai plus marché que couru.' },
@@ -98,9 +98,9 @@ export const ARTICLES: Article[] = [
         ],
       },
       { type: 'exercises', ids: ['calves_standing_slow', 'copenhagen_plank'], caption: 'Deux exercices que je fais pour les mollets et les adducteurs : les mollets en descente lente et la Copenhagen plank.' },
-      { type: 'p', text: 'Sur Strava, je comptais 10 séances de renfo en 2025. En 2026, j\'en suis à 18, dont une chaque semaine depuis septembre. [À confirmer : les séances « Entraînement » sont bien du renfo.]' },
+      { type: 'p', text: 'Sur Strava, je comptais 10 séances de renfo en 2025. En 2026, j\'en suis à 18, dont une chaque semaine depuis septembre.' },
       { type: 'p', text: 'Le 14 octobre, pour ma séance test de 30 kilomètres, j\'ai couru du 17e au 26e kilomètre autour de 4 min 45, l\'allure visée pour Bordeaux, avec un cardio entre 150 et 157, sans marcher. Les trois kilomètres suivants ont été plus lents, entre 5 min 10 et 5 min 33. Il reste du travail, mais c\'est un départ bien plus raisonnable qu\'aux 2 Rives.' },
-      { type: 'p', text: 'L\'objectif à Bordeaux : 3 h 20, et surtout passer le 30e kilomètre sans crampe. Je raconterai la préparation ici, avec mes chiffres, jusqu\'au jour de la course. Si les crampes reviennent, je le dirai aussi.' },
+      { type: 'p', text: 'L\'objectif au marathon de Bordeaux, le 8 novembre : 3 h 20, et surtout passer le 30e kilomètre sans crampe. Je raconterai la préparation ici, avec mes chiffres, jusqu\'au jour de la course. Si les crampes reviennent, je le dirai aussi.' },
       { type: 'try', items: ['Les [séances Marathon](/marathon/) de Coriace. Si tu débutes le renfo, commence par une séance courte de 20 minutes, sans matériel.'] },
     ],
     sources: [
@@ -118,7 +118,7 @@ export const ARTICLES: Article[] = [
     publishedAt: '2026-10-20',
     reviewedByPhysio: false,
     healthNotice: true,
-    draft: true,
+    draft: false,
     coverExerciseId: 'copenhagen_plank',
     blocks: [
       { type: 'h2', text: 'Pourquoi le renfo compte au marathon' },
@@ -155,7 +155,7 @@ export const ARTICLES: Article[] = [
           '**Varier** : les séances Complète A, B et C font travailler tout le corps avec des exercices différents. Les séances Mollets, Gainage et Cardio insistent sur un point.',
         ],
       },
-      { type: 'p', text: '[À compléter : où tu en es aujourd\'hui.]' },
+      { type: 'p', text: 'Où j\'en suis : une séance de renfo par semaine depuis septembre, et quatre déjà sur les trois premières semaines d\'octobre. Le marathon de Bordeaux, c\'est le 8 novembre.' },
       { type: 'try', items: ['Les 18 [séances Marathon](/marathon/) de Coriace.'] },
     ],
     sources: [

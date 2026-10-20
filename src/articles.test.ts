@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ARTICLES, AUTHOR, parseInline, visibleArticles } from './articles';
+import { ARTICLES, AUTHOR, AUTHOR_PAGE, parseInline, visibleArticles } from './articles';
 import { EXERCISE_DATABASE } from './exercises';
 import { pageAt } from './pages';
 import { sitePages, staticPages } from './staticPages';
@@ -66,5 +66,17 @@ describe('article images', () => {
         if (block.type === 'image') expect(existsSync(`public${block.src}`), block.src).toBe(true);
       }
     }
+  });
+});
+
+describe('published articles', () => {
+  // "[À compléter …]" left in a draft; "[texte](lien)" is a link and is fine.
+  const gap = /\[[^\]]*\](?!\()/;
+  it('have no gap left to fill', () => {
+    for (const article of visibleArticles(false)) {
+      const texts = [article.title, article.lead, ...article.blocks.flatMap(b => ('text' in b ? [b.text] : 'items' in b ? b.items : [b.caption]))];
+      for (const text of texts) expect(gap.test(text), `${article.slug}: ${text}`).toBe(false);
+    }
+    if (!AUTHOR_PAGE.draft) for (const block of AUTHOR_PAGE.blocks) expect(gap.test('text' in block ? block.text : ''), JSON.stringify(block)).toBe(false);
   });
 });
