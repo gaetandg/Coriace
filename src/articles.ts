@@ -66,8 +66,8 @@ export const ARTICLES: Article[] = [
     coverExerciseId: 'calves_standing_slow',
     blocks: [
       { type: 'h2', text: 'Le 30e kilomètre, toujours' },
-      { type: 'p', text: "Je cours depuis douze ans. Le 10 km du dimanche pendant longtemps, puis deux sorties par semaine, puis trois. Ma première course, je l'ai faite en mars 2023 : les 23 km de Saint-Émilion. Ensuite trois semis de Bordeaux d'affilée (1 h 28, 1 h 27, 1 h 26), et deux marathons : le trail de Saint-Émilion en 2025, les 2 Rives en mai dernier." },
-      { type: 'p', text: "Les deux fois, ça a lâché au même endroit. Les mollets surtout, un peu les adducteurs. Je m'arrête, j'étire, je marche, et je repars dès que je peux. Résultat : 3 h 40 à Saint-Émilion, avec 470 mètres de dénivelé, et 3 h 37 aux 2 Rives." },
+      { type: 'p', text: "Je cours depuis douze ans. Longtemps, c'était le 10 km du dimanche, puis deux sorties par semaine, puis trois. Je me suis mis aux courses en 2023 : un 23 km à Saint-Émilion, trois semis de Bordeaux, puis deux marathons, le trail de Saint-Émilion et les 2 Rives en mai dernier." },
+      { type: 'p', text: "Les deux fois, ça a lâché au même endroit, vers le 30e km. Les mollets surtout, un peu les adducteurs. Je m'arrête, j'étire, je marche, et je repars dès que je peux. Résultat : 3 h 40 à Saint-Émilion et 3 h 37 aux 2 Rives." },
       { type: 'h2', text: 'Ce que montre ma montre' },
       { type: 'p', text: "Aux 2 Rives, j'ai couru les 22 premiers kilomètres à 4'34/km de moyenne. C'est l'allure d'un marathon en 3 h 13. Mon cardio, lui, est passé de 155 à 167 bpm. J'ai commencé à ralentir au 23e km, j'ai marché une première fois au 27e km, et à partir du 31e km, je n'ai plus fait qu'alterner marche et course. Le 36e km m'a pris 8 min 35. Première moitié du marathon en 1 h 37, deuxième en 2 h 01." },
       { type: 'image', src: '/articles/marathon-2-rives-allure.svg', width: 440, height: 500, alt: "Graphique de l'allure au kilomètre sur le Marathon des 2 Rives : stable autour de 4'34/km jusqu'au 22e km, puis de plus en plus lente, avec des passages en marche à partir du 27e km.", caption: "Mon allure au kilomètre aux 2 Rives. En bas, le temps passé à marcher dans chaque kilomètre." },
@@ -107,7 +107,7 @@ export const ARTICLES: Article[] = [
     coverExerciseId: 'copenhagen_plank',
     blocks: [
       { type: 'h2', text: '37 000 appuis' },
-      { type: 'p', text: "Aux 2 Rives, ma montre a compté 170 pas par minute en moyenne. Sur 3 h 37, ça fait environ 37 000 appuis. À chacun, les mollets, les cuisses et les hanches amortissent puis relancent. Au 30e kilomètre, c'est eux qui ont lâché, pas le souffle." },
+      { type: 'p', text: "Aux 2 Rives, ma montre a compté 170 pas par minute en moyenne. Sur 3 h 37, ça fait environ 37 000 appuis. À chacun, les mollets, les cuisses et les hanches amortissent puis relancent. Au 30e kilomètre, ce sont eux qui ont lâché, pas le souffle." },
       { type: 'p', text: "Je ne suis pas le seul à le constater. Une revue de 24 études sur les coureurs de fond conclut que le renfo améliore l'économie de course, autrement dit l'énergie qu'on dépense à une allure donnée (Blagrove, 2018). Une autre, tous sports confondus, montre qu'il réduit nettement les blessures (Lauersen, 2014)." },
       { type: 'h2', text: 'Ce que je travaille' },
       { type: 'p', text: "Quatre zones, celles qui lâchent en fin de marathon. D'abord les mollets, qui amortissent chaque appui. Je les fais jambes tendues, et genoux pliés pour toucher aussi le soléaire, le muscle profond du mollet." },
