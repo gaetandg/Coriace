@@ -69,6 +69,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [ ] Faire relire ces deux articles par le kiné, puis afficher « Relu par un kinésithérapeute »
 - [ ] Articles « analyse de sortie » à partir des fichiers de la montre (allure, cardio, cadence, marche au kilomètre, graphique) : d'abord la séance test de 30 km du 14 octobre 2026, puis le marathon de Bordeaux du 8 novembre
 - [ ] « Teste tes mollets en 2 minutes » : attend le résultat du test de l'auteur et l'avis du kiné
+- [ ] Articles « ce que dit la science » : une idée qui circule sur les réseaux (étirements avant la course, renfo qui alourdit, crampes et magnésium…), ce que montrent vraiment les études, leur niveau de preuve et ce qu'on ne sait pas, sources citées ; relus par le kiné
 - [x] Charte éditoriale (dossier Drive « Application Coriace ») : contenu qu'on est seuls à pouvoir écrire (vécu de l'auteur, données Coriace, illustrations Coriace, tests, avis du kiné, interviews), première personne et tutoiement, rien d'inventé, illustrations maison sans images générées par IA, mention santé, relecture du kiné pour tout ce qui touche au corps
 - [x] Auteur signé « Le Coureur Coriace », page « Qui écrit ? » sans nom ni photo de visage
 - [ ] Six premiers articles : pourquoi j'ai fini par faire du renfo, le renfo pour préparer un marathon, teste tes mollets en 2 minutes, renfo avant ou après la sortie, journal de prépa du marathon de Bordeaux, interview du kiné ; plus tard un baromètre tiré des données de l'app (chiffres agrégés et anonymes, mentionnés dans la page de confidentialité)
