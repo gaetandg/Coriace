@@ -1,6 +1,7 @@
 // The articles (coriace.app/articles/…) and the author's page, written following the editorial
 // charter: real experience, nothing invented, home-made illustrations, health notice. Drafts are
-// only shown by the development server until the author has proofread them.
+// only shown by the development server until the author has proofread them. An article dated in
+// the future goes out on its date: the site is rebuilt every morning.
 
 // Paragraph text with **bold** and [links](/marathon/).
 export type Inline = string;
@@ -24,7 +25,7 @@ export interface Article {
   lead: string; // the opening paragraph, in bold
   blocks: ArticleBlock[];
   sources: string[];
-  publishedAt: string; // YYYY-MM-DD
+  publishedAt: string; // YYYY-MM-DD, the day it goes out
   updatedAt?: string;
   reviewedByPhysio: boolean;
   healthNotice: boolean;
@@ -219,9 +220,23 @@ export const ARTICLES: Article[] = [
   },
 ];
 
-// Articles to show: published ones, plus drafts on the development server.
-export const visibleArticles = (includeDrafts: boolean) =>
-  ARTICLES.filter(a => includeDrafts || !a.draft).sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+// Today, YYYY-MM-DD, in local time.
+export function today() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+}
+
+// Proofread, and its date has come.
+export const isPublished = (article: Article, day = today()) => !article.draft && article.publishedAt <= day;
+
+// Articles to show, most recent first: published ones, plus drafts and scheduled ones on the
+// development server.
+export const visibleArticles = (includeDrafts: boolean, day = today()) =>
+  ARTICLES.filter(a => includeDrafts || isPublished(a, day)).sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+
+// "Brouillon" or "Programmé" before an article not published yet, in a preview.
+export const articleStatus = (article: Article, day = today()) =>
+  article.draft ? 'Brouillon · ' : article.publishedAt > day ? `Programmé le ${articleDate(article.publishedAt)} · ` : '';
 
 export const authorPageVisible = (includeDrafts: boolean) => includeDrafts || !AUTHOR_PAGE.draft;
 

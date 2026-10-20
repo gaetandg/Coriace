@@ -21,6 +21,7 @@ import { HOME, SitePage, pageAt, pagePath, pageText } from './pages';
 import { ExerciseList, ExercisePage } from './components/exercises/ExercisePages';
 import { ArticleList, ArticlePage, AuthorPage, SHOW_DRAFTS } from './components/articles/ArticlePages';
 import { AUTHOR } from './articles';
+import { useArticles } from './hooks/useArticles';
 import { PresetCategory } from './sessions';
 
 const accountInitial = (user: User | null) =>
@@ -52,6 +53,9 @@ export default function App() {
   };
 
   const auth = useAuth();
+  const articles = useArticles(SHOW_DRAFTS);
+  // The article open, if it is one of those shown.
+  const article = articles.find(a => a.slug === articleView);
   const session = useWorkoutSession(notify, auth.user?.id ?? null, landingPage.kind === 'category' ? landingPage.category : null);
   const { config, workoutState, activeInterval, summaryPlanGroups } = session;
 
@@ -194,10 +198,10 @@ export default function App() {
         ) : activeTab === 'articles' ? (
           articleView === AUTHOR.slug ? (
             <AuthorPage onBack={() => setArticleView(null)} />
-          ) : articleView ? (
-            <ArticlePage slug={articleView} onBack={() => setArticleView(null)} onOpenAuthor={() => setArticleView(AUTHOR.slug)} />
+          ) : article ? (
+            <ArticlePage article={article} onBack={() => setArticleView(null)} onOpen={setArticleView} onOpenAuthor={() => setArticleView(AUTHOR.slug)} />
           ) : (
-            <ArticleList onBack={closeArticles} onOpen={setArticleView} onOpenAuthor={() => setArticleView(AUTHOR.slug)} />
+            <ArticleList articles={articles} onBack={closeArticles} onOpen={setArticleView} onOpenAuthor={() => setArticleView(AUTHOR.slug)} />
           )
         ) : activeTab === 'exercises' ? (
           exerciseId ? (

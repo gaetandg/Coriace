@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ARTICLES, AUTHOR, AUTHOR_PAGE, parseInline, visibleArticles } from './articles';
+import { ARTICLES, AUTHOR, AUTHOR_PAGE, Article, articleStatus, isPublished, parseInline, visibleArticles } from './articles';
 import { EXERCISE_DATABASE } from './exercises';
 import { pageAt } from './pages';
 import { sitePages, staticPages } from './staticPages';
@@ -17,9 +17,19 @@ describe('articles', () => {
     ]);
   });
 
-  it('only shows drafts on request', () => {
-    const drafts = ARTICLES.filter(a => a.draft);
-    expect(visibleArticles(false).some(a => a.draft)).toBe(false);
+  it('goes out on its date once proofread', () => {
+    const article = { draft: false, publishedAt: '2026-10-27' } as Article;
+    expect(isPublished(article, '2026-10-26')).toBe(false);
+    expect(isPublished(article, '2026-10-27')).toBe(true);
+    expect(isPublished({ ...article, draft: true }, '2026-12-01')).toBe(false);
+    expect(articleStatus(article, '2026-10-26')).toBe('Programmé le 27 octobre 2026 · ');
+    expect(articleStatus({ ...article, draft: true }, '2026-10-26')).toBe('Brouillon · ');
+    expect(articleStatus(article, '2026-10-27')).toBe('');
+  });
+
+  it('only shows drafts and scheduled articles on request', () => {
+    const drafts = ARTICLES.filter(a => !isPublished(a));
+    expect(visibleArticles(false).every(a => isPublished(a))).toBe(true);
     expect(visibleArticles(true)).toHaveLength(ARTICLES.length);
     for (const draft of drafts) {
       expect(pageAt(`/articles/${draft.slug}/`)).toEqual({ kind: 'home' });
@@ -30,7 +40,7 @@ describe('articles', () => {
   it('leaves drafts out of the published site and its sitemap', () => {
     const published = staticPages(template);
     const sitemap = published.find(f => f.fileName === 'sitemap.xml')!;
-    for (const draft of ARTICLES.filter(a => a.draft)) {
+    for (const draft of ARTICLES.filter(a => !isPublished(a))) {
       expect(published.some(f => f.fileName === `articles/${draft.slug}/index.html`)).toBe(false);
       expect('source' in sitemap && sitemap.source.includes(draft.slug)).toBe(false);
     }
@@ -38,7 +48,7 @@ describe('articles', () => {
 
   it('writes every article, the list and the author page in a preview', () => {
     const preview = staticPages(template, '/', true);
-    expect(sitePages(true).length).toBe(sitePages(false).length + (visibleArticles(false).length === 0 ? ARTICLES.length + 2 : ARTICLES.filter(a => a.draft).length));
+    expect(sitePages(true).length).toBe(sitePages(false).length + (visibleArticles(false).length === 0 ? ARTICLES.length + 2 : ARTICLES.filter(a => !isPublished(a)).length));
     for (const article of ARTICLES) {
       const page = preview.find(f => f.fileName === `articles/${article.slug}/index.html`);
       expect(page && 'source' in page && page.source).toContain('"BlogPosting"');
@@ -72,8 +82,8 @@ describe('article images', () => {
 describe('published articles', () => {
   // "[À compléter …]" left in a draft; "[texte](lien)" is a link and is fine.
   const gap = /\[[^\]]*\](?!\()/;
-  it('have no gap left to fill', () => {
-    for (const article of visibleArticles(false)) {
+  it('have no gap left to fill, scheduled ones included', () => {
+    for (const article of ARTICLES.filter(a => !a.draft)) {
       const texts = [article.title, article.lead, ...article.blocks.flatMap(b => ('text' in b ? [b.text] : 'items' in b ? b.items : [b.caption]))];
       for (const text of texts) expect(gap.test(text), `${article.slug}: ${text}`).toBe(false);
     }

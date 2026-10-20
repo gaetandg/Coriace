@@ -1,11 +1,12 @@
 import { Fragment } from 'react';
 import { ChevronRight } from 'lucide-react';
 import {
-  AUTHOR, AUTHOR_PAGE, Article, ArticleBlock, HEALTH_NOTICE, Inline, articleDate, authorPageVisible, parseInline, readingMinutes, visibleArticles,
+  AUTHOR, AUTHOR_PAGE, Article, ArticleBlock, HEALTH_NOTICE, Inline, articleDate, articleStatus, authorPageVisible, parseInline, readingMinutes,
 } from '../../articles';
 import { EXERCISE_DATABASE } from '../../exercises';
 import { inApp } from '../../lib/links';
-import { ARTICLES_PAGE, HOME, articleBySlug, pagePath } from '../../pages';
+import { isNativeApp } from '../../lib/native';
+import { ARTICLES_PAGE, HOME, SITE_URL, pagePath } from '../../pages';
 import { BackLink } from '../BackLink';
 import { ExerciseAnimation } from '../ExerciseAnimation';
 
@@ -16,29 +17,41 @@ export const SHOW_DRAFTS = import.meta.env.DEV;
 // Links inside the site ("/marathon/") follow the base the site is served from; they reload the
 // app on that page.
 const siteHref = (href: string) => (href.startsWith('/') ? `${base}${href.slice(1)}` : href);
+// The charts: the Android app takes them from the site, which also has those of articles newer
+// than the app.
+const imageSrc = (src: string) => (isNativeApp ? `${SITE_URL}${src}` : siteHref(src));
+// A link to another article ("/articles/<slug>/") opens it in the app.
+const articleLink = /^\/articles\/([^/]+)\/$/;
 
-function Text({ text }: { text: Inline }) {
+type OpenArticle = (slug: string) => void;
+
+function Text({ text, onOpenArticle }: { text: Inline; onOpenArticle?: OpenArticle }) {
   return (
     <>
-      {parseInline(text).map((part, i) =>
-        part.kind === 'bold' ? <strong key={i}>{part.text}</strong>
-          : part.kind === 'link' ? <a key={i} href={siteHref(part.href)} className="underline underline-offset-2">{part.text}</a>
-          : <Fragment key={i}>{part.text}</Fragment>)}
+      {parseInline(text).map((part, i) => {
+        if (part.kind !== 'link') return part.kind === 'bold' ? <strong key={i}>{part.text}</strong> : <Fragment key={i}>{part.text}</Fragment>;
+        const slug = part.href.match(articleLink)?.[1];
+        return (
+          <a key={i} href={siteHref(part.href)} onClick={slug && onOpenArticle ? inApp(() => onOpenArticle(slug)) : undefined} className="underline underline-offset-2">
+            {part.text}
+          </a>
+        );
+      })}
     </>
   );
 }
 
-function Block({ block }: { block: ArticleBlock }) {
+function Block({ block, onOpenArticle }: { block: ArticleBlock; onOpenArticle?: OpenArticle }) {
   switch (block.type) {
     case 'h2':
       return <h2 className="font-display font-extrabold text-[26px] leading-tight mt-2">{block.text}</h2>;
     case 'p':
-      return <p className="text-[17px] leading-relaxed"><Text text={block.text} /></p>;
+      return <p className="text-[17px] leading-relaxed"><Text text={block.text} onOpenArticle={onOpenArticle} /></p>;
     case 'list': {
       const List = block.ordered ? 'ol' : 'ul';
       return (
         <List className={`flex flex-col gap-1.5 pl-5 text-[17px] leading-relaxed ${block.ordered ? 'list-decimal' : 'list-disc'}`}>
-          {block.items.map((item, i) => <li key={i}><Text text={item} /></li>)}
+          {block.items.map((item, i) => <li key={i}><Text text={item} onOpenArticle={onOpenArticle} /></li>)}
         </List>
       );
     }
@@ -62,7 +75,7 @@ function Block({ block }: { block: ArticleBlock }) {
     case 'image':
       return (
         <figure className="flex flex-col gap-2">
-          <img src={siteHref(block.src)} alt={block.alt} width={block.width} height={block.height} loading="lazy" className="w-full h-auto rounded-2xl" />
+          <img src={imageSrc(block.src)} alt={block.alt} width={block.width} height={block.height} loading="lazy" className="w-full h-auto rounded-2xl" />
           <figcaption className="text-sm text-sand">{block.caption}</figcaption>
         </figure>
       );
@@ -70,14 +83,15 @@ function Block({ block }: { block: ArticleBlock }) {
       return (
         <aside className="bg-cream text-ink rounded-[18px] px-4 py-3.5 flex flex-col gap-1.5">
           <h2 className="font-display font-bold text-[21px] leading-tight">À essayer</h2>
-          {block.items.map((item, i) => <p key={i} className="text-[15px] leading-snug"><Text text={item} /></p>)}
+          {block.items.map((item, i) => <p key={i} className="text-[15px] leading-snug"><Text text={item} onOpenArticle={onOpenArticle} /></p>)}
         </aside>
       );
   }
 }
 
 // Every article, most recent first, and the author's page.
-export function ArticleList({ onBack, onOpen, onOpenAuthor }: {
+export function ArticleList({ articles, onBack, onOpen, onOpenAuthor }: {
+  articles: Article[];
   onBack: () => void;
   onOpen: (slug: string) => void;
   onOpenAuthor: () => void;
@@ -88,7 +102,7 @@ export function ArticleList({ onBack, onOpen, onOpenAuthor }: {
       <h1 className="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">{ARTICLES_PAGE.heading}</h1>
       <p className="text-base leading-snug">{ARTICLES_PAGE.intro}</p>
       <ul className="flex flex-col gap-2.5">
-        {visibleArticles(SHOW_DRAFTS).map(article => (
+        {articles.map(article => (
           <li key={article.slug}>
             <a
               id={`article-${article.slug}`}
@@ -98,7 +112,7 @@ export function ArticleList({ onBack, onOpen, onOpenAuthor }: {
             >
               <span className="flex-1 flex flex-col gap-1">
                 <span className="text-[13px] font-semibold text-clay">
-                  {article.draft && 'Brouillon · '}{article.kind} · {articleDate(article.publishedAt)} · {readingMinutes(article)} min
+                  {articleStatus(article)}{article.kind} · {articleDate(article.publishedAt)} · {readingMinutes(article)} min
                 </span>
                 <span className="font-display font-bold text-[21px] leading-tight">{article.title}</span>
                 <span className="text-[15px] leading-snug text-clay">{article.description}</span>
@@ -138,13 +152,17 @@ function ArticleFooter({ article }: { article: Article }) {
   );
 }
 
-export function ArticlePage({ slug, onBack, onOpenAuthor }: { slug: string; onBack: () => void; onOpenAuthor: () => void }) {
-  const article = articleBySlug(slug)!;
+export function ArticlePage({ article, onBack, onOpen, onOpenAuthor }: {
+  article: Article;
+  onBack: () => void;
+  onOpen: OpenArticle;
+  onOpenAuthor: () => void;
+}) {
   return (
     <article id="article-page" className="flex-1 flex flex-col gap-5">
       <BackLink href={pagePath({ kind: 'articles' }, base)} label="Les articles" onBack={onBack} />
       <header className="flex flex-col gap-2">
-        <span className="text-sm font-semibold text-sand">{article.draft && 'Brouillon · '}{article.kind}</span>
+        <span className="text-sm font-semibold text-sand">{articleStatus(article)}{article.kind}</span>
         <h1 className="font-display font-extrabold text-[36px] leading-[1.05] tracking-[-0.02em]">{article.title}</h1>
         <p className="text-sm text-sand">
           Par{' '}
@@ -153,7 +171,7 @@ export function ArticlePage({ slug, onBack, onOpenAuthor }: { slug: string; onBa
         </p>
       </header>
       <p className="text-[18px] leading-relaxed font-semibold">{article.lead}</p>
-      {article.blocks.map((block, i) => <Block key={i} block={block} />)}
+      {article.blocks.map((block, i) => <Block key={i} block={block} onOpenArticle={onOpen} />)}
       <ArticleFooter article={article} />
     </article>
   );

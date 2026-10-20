@@ -153,8 +153,9 @@ export function pageText(page: SitePage): PageText {
     }
     case 'articles': return ARTICLES_PAGE;
     case 'article': {
-      const article = articleBySlug(page.slug)!;
-      return { title: `${article.title} · Coriace`, description: article.description };
+      // The Android app can show an article newer than itself, read from the site.
+      const article = articleBySlug(page.slug);
+      return article ? { title: `${article.title} · Coriace`, description: article.description } : ARTICLES_PAGE;
     }
     case 'author': return { title: `${AUTHOR_PAGE.title} ${AUTHOR.name} · Coriace`, description: AUTHOR_PAGE.description };
   }

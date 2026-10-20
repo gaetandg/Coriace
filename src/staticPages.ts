@@ -7,6 +7,7 @@ import {
 import {
   AUTHOR, AUTHOR_PAGE, Article, ArticleBlock, HEALTH_NOTICE, Inline, articleDate, authorPageVisible, parseInline, readingMinutes, visibleArticles,
 } from './articles';
+import { ARTICLE_FEED } from './lib/articleFeed';
 import {
   LEVELS, OBJECTIVES, PRESET_CATEGORIES, PRESET_EQUIPMENT_LABELS, PresetCategory, PresetSession, RACE_SESSIONS,
   TARGETED_HINT, TARGETED_INTRO, TARGETED_SESSIONS, categoriesWithExercise, categoryLabel, presetEquipment, presetExercises,
@@ -509,6 +510,8 @@ export function staticPages(template: string, base = '/', includeDrafts = false)
     },
     { fileName: cardPath(page), card: card(page) },
   ]);
+  // The articles for the Android app, which reads them from the site.
+  files.push({ fileName: ARTICLE_FEED, source: JSON.stringify(visibleArticles(includeDrafts)) });
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${pages.map(page => `  <url><loc>${url(page)}</loc></url>`).join('\n')}

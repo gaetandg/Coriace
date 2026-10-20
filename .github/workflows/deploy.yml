@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Every morning, so that an article dated today goes out on its own.
+  schedule:
+    - cron: '47 4 * * *'
   workflow_dispatch:
 
 permissions:
