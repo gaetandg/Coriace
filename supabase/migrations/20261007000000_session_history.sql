@@ -13,6 +13,11 @@ create table if not exists public.session_history (
   primary key (user_id, id)
 );
 
+-- Since 30 October 2026, Supabase no longer opens new tables to the Data API by itself. Signed-in
+-- runners read, add and delete their own sessions; nothing for visitors who aren't signed in.
+grant select, insert, delete on public.session_history to authenticated;
+grant all on public.session_history to service_role;
+
 alter table public.session_history enable row level security;
 
 create policy "Read own history" on public.session_history
