@@ -8,6 +8,7 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         // The app's own plugins, registered before the bridge starts.
         registerPlugin(GoogleSignInPlugin.class);
+        registerPlugin(InAppReviewPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }

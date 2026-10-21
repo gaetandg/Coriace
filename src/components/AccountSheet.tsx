@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { Auth } from '../hooks/useAuth';
+import { InstallRoute } from '../lib/install';
+import { InstallLine } from './InstallApp';
 
 interface AccountSheetProps {
   auth: Auth;
   onOpenStats: () => void;
+  installRoute: InstallRoute;
+  onOpenFeedback?: () => void; // when feedback can be sent
   onClose: () => void;
 }
 
 // Bottom sheet opened from the header: Google sign-in, or the signed-in account.
-export function AccountSheet({ auth, onOpenStats, onClose }: AccountSheetProps) {
+export function AccountSheet({ auth, onOpenStats, installRoute, onOpenFeedback, onClose }: AccountSheetProps) {
   const user = auth.user;
   const name = user?.user_metadata?.full_name as string | undefined;
   // Deleting the account asks for a second tap, on a step of its own.
@@ -108,6 +112,15 @@ export function AccountSheet({ auth, onOpenStats, onClose }: AccountSheetProps) 
             {' · '}
             <a href={`${import.meta.env.BASE_URL}confidentialite.html`} className="underline">Confidentialité</a>
           </p>
+        )}
+
+        {!confirmDelete && (installRoute || onOpenFeedback) && (
+          <div className="flex flex-col gap-2 text-[15px]">
+            <InstallLine route={installRoute} place="compte" />
+            {onOpenFeedback && (
+              <p><button id="btn-account-feedback" onClick={onOpenFeedback} className="underline cursor-pointer">Donner ton avis</button></p>
+            )}
+          </div>
         )}
 
         <button onClick={onClose} className="h-14 rounded-[18px] bg-ink/10 font-display font-extrabold text-lg cursor-pointer">

@@ -4,4 +4,6 @@
     <string name="title_activity_main">Coriace</string>
     <string name="package_name">app.coriace</string>
     <string name="custom_url_scheme">app.coriace</string>
+    <!-- The site this app belongs to, so that coriace.app can tell it is installed. -->
+    <string name="asset_statements" translatable="false">[{\"relation\": [\"delegate_permission/common.handle_all_urls\"], \"target\": {\"namespace\": \"web\", \"site\": \"https://coriace.app\"}}]</string>
 </resources>

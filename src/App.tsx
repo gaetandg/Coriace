@@ -23,6 +23,10 @@ import { ArticleList, ArticlePage, AuthorPage, SHOW_DRAFTS } from './components/
 import { AUTHOR } from './articles';
 import { useArticles } from './hooks/useArticles';
 import { PresetCategory } from './sessions';
+import { InstallCard, InstallLine, useInstallRoute } from './components/InstallApp';
+import { FeedbackCard, FeedbackSheet } from './components/FeedbackSheet';
+import { feedbackAvailable } from './lib/feedback';
+import { useEndOfSession } from './hooks/useEndOfSession';
 
 const accountInitial = (user: User | null) =>
   user ? ((user.user_metadata?.full_name as string | undefined) || user.email || '?').charAt(0).toUpperCase() : '';
@@ -46,6 +50,7 @@ export default function App() {
   const [feedbackMessage, setFeedbackMessage] = useState<string>('');
   const [showSound, setShowSound] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   const notify = (message: string) => {
     setFeedbackMessage(message);
@@ -58,6 +63,9 @@ export default function App() {
   const article = articles.find(a => a.slug === articleView);
   const session = useWorkoutSession(notify, auth.user?.id ?? null, landingPage.kind === 'category' ? landingPage.category : null);
   const { config, workoutState, activeInterval, summaryPlanGroups } = session;
+  const installRoute = useInstallRoute();
+  const endOfSession = useEndOfSession(workoutState === 'completed', session.history.length, installRoute);
+  const openFeedback = (place: string) => { setShowFeedback(true); track('avis-ouvert', { emplacement: place }); };
 
   // Phone back button, from the deepest level: sheets, stats, then the workout screens.
   useBackHandler(workoutState === 'summary', session.handleBackToConfig);
@@ -93,6 +101,7 @@ export default function App() {
   };
   useBackHandler(showSound, () => setShowSound(false));
   useBackHandler(showAccount, () => setShowAccount(false));
+  useBackHandler(showFeedback, () => setShowFeedback(false));
 
   // The address bar and tab title follow the page shown: an exercise page, or the page of ready-made
   // sessions in use, also during one of its sessions, so a reload or a shared link comes back to it.
@@ -199,7 +208,7 @@ export default function App() {
           articleView === AUTHOR.slug ? (
             <AuthorPage onBack={() => setArticleView(null)} />
           ) : article ? (
-            <ArticlePage article={article} onBack={() => setArticleView(null)} onOpen={setArticleView} onOpenAuthor={() => setArticleView(AUTHOR.slug)} />
+            <ArticlePage article={article} installRoute={installRoute} onBack={() => setArticleView(null)} onOpen={setArticleView} onOpenAuthor={() => setArticleView(AUTHOR.slug)} />
           ) : (
             <ArticleList articles={articles} onBack={closeArticles} onOpen={setArticleView} onOpenAuthor={() => setArticleView(AUTHOR.slug)} />
           )
@@ -242,7 +251,15 @@ export default function App() {
                 recentCount={sessionsInLastDays(session.history, 7)}
                 onRestart={session.resetWorkout}
                 onOpenStats={openStats}
-                account={<AccountCard auth={auth} compact />}
+                card={
+                  endOfSession.card === 'install' && installRoute ? (
+                    <InstallCard route={installRoute} onDone={endOfSession.doneInstall} onLater={endOfSession.laterInstall} />
+                  ) : endOfSession.card === 'feedback' ? (
+                    <FeedbackCard onOpen={() => { endOfSession.dismiss(); openFeedback('fin-seance'); }} onLater={endOfSession.dismiss} />
+                  ) : endOfSession.showSignIn ? (
+                    <AccountCard auth={auth} compact />
+                  ) : null
+                }
               />
             )}
           </>
@@ -250,10 +267,18 @@ export default function App() {
 
         {/* Also the way to the privacy policy in the Android app, which the Play Store requires. */}
         {activeTab === 'workout' && workoutState === 'config' && !categoryOpen && (
-          <footer className="text-sm text-sand">
-            <a href={`${import.meta.env.BASE_URL}conditions.html`} className="underline">Conditions d'utilisation</a>
-            {' · '}
-            <a href={`${import.meta.env.BASE_URL}confidentialite.html`} className="underline">Confidentialité</a>
+          <footer className="text-sm text-sand flex flex-col gap-2">
+            <InstallLine route={installRoute} place="pied-de-page" />
+            {feedbackAvailable && (
+              <p>
+                <button id="btn-footer-feedback" onClick={() => openFeedback('pied-de-page')} className="underline cursor-pointer">Donner ton avis</button>
+              </p>
+            )}
+            <p>
+              <a href={`${import.meta.env.BASE_URL}conditions.html`} className="underline">Conditions d'utilisation</a>
+              {' · '}
+              <a href={`${import.meta.env.BASE_URL}confidentialite.html`} className="underline">Confidentialité</a>
+            </p>
           </footer>
         )}
       </div>
@@ -274,8 +299,14 @@ export default function App() {
         <AccountSheet
           auth={auth}
           onOpenStats={() => { setShowAccount(false); openStats(); }}
+          installRoute={installRoute}
+          onOpenFeedback={feedbackAvailable ? () => { setShowAccount(false); openFeedback('compte'); } : undefined}
           onClose={() => setShowAccount(false)}
         />
+      )}
+
+      {showFeedback && (
+        <FeedbackSheet sessions={session.history.length} notify={notify} onClose={() => setShowFeedback(false)} />
       )}
 
       {feedbackMessage && (

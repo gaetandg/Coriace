@@ -9,6 +9,8 @@ import { AUTHOR, AUTHOR_PAGE, authorPageVisible, visibleArticles } from './artic
 // shown; the build writes each page's HTML (see staticPages.ts).
 
 export const SITE_URL = 'https://coriace.app';
+// The Android app's page on Google Play.
+export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=app.coriace';
 
 export type SitePage =
   | { kind: 'home' }
