@@ -52,7 +52,7 @@ export default function App() {
     setTimeout(() => setFeedbackMessage(''), 3000);
   };
 
-  const auth = useAuth();
+  const auth = useAuth(notify);
   const articles = useArticles(SHOW_DRAFTS);
   // The article open, if it is one of those shown.
   const article = articles.find(a => a.slug === articleView);
@@ -248,7 +248,7 @@ export default function App() {
           </>
         )}
 
-        {/* Also the only way to the privacy policy in the Android app, which has no account sheet. */}
+        {/* Also the way to the privacy policy in the Android app, which the Play Store requires. */}
         {activeTab === 'workout' && workoutState === 'config' && !categoryOpen && (
           <footer className="text-sm text-sand">
             <a href={`${import.meta.env.BASE_URL}conditions.html`} className="underline">Conditions d'utilisation</a>

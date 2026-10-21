@@ -8,3 +8,7 @@ export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_p
 // Umami Cloud website id for audience measurement (cookieless, no personal data). Public by
 // design, like any analytics snippet. Empty: nothing is loaded and nothing is measured.
 export const UMAMI_WEBSITE_ID = import.meta.env.VITE_UMAMI_WEBSITE_ID || 'aec5b517-321f-407e-8344-7bef0cabf992';
+
+// Google's web OAuth client, the one set in Supabase's Google provider (public, like any OAuth client
+// id). The Android app asks the phone for a Google sign-in on its behalf. Empty: no sign-in in the app.
+export const GOOGLE_WEB_CLIENT_ID = import.meta.env.VITE_GOOGLE_WEB_CLIENT_ID || '763857725433-g572dr0ohb7fg7kprtpbkdcs9preqbu2.apps.googleusercontent.com';
