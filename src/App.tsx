@@ -27,6 +27,7 @@ import { InstallCard, InstallLine, useInstallRoute } from './components/InstallA
 import { FeedbackCard, FeedbackSheet } from './components/FeedbackSheet';
 import { feedbackAvailable } from './lib/feedback';
 import { useEndOfSession } from './hooks/useEndOfSession';
+import { useAppLinks } from './hooks/useAppLinks';
 
 const accountInitial = (user: User | null) =>
   user ? ((user.user_metadata?.full_name as string | undefined) || user.email || '?').charAt(0).toUpperCase() : '';
@@ -66,6 +67,7 @@ export default function App() {
   const installRoute = useInstallRoute();
   const endOfSession = useEndOfSession(workoutState === 'completed', session.history.length, installRoute);
   const openFeedback = (place: string) => { setShowFeedback(true); track('avis-ouvert', { emplacement: place }); };
+  useAppLinks(workoutState === 'active', notify);
 
   // Phone back button, from the deepest level: sheets, stats, then the workout screens.
   useBackHandler(workoutState === 'summary', session.handleBackToConfig);

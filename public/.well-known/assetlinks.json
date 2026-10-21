@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.coriace",
+      "sha256_cert_fingerprints": ["7A:88:30:70:68:ED:9A:29:48:3F:FE:F0:62:86:8F:07:0C:C7:AC:C0:F3:CB:12:01:B2:FF:95:7E:B7:69:DD:53"]
+    }
+  }
+]
