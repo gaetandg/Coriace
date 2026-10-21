@@ -4,7 +4,7 @@
     "target": {
       "namespace": "android_app",
       "package_name": "app.coriace",
-      "sha256_cert_fingerprints": ["7A:88:30:70:68:ED:9A:29:48:3F:FE:F0:62:86:8F:07:0C:C7:AC:C0:F3:CB:12:01:B2:FF:95:7E:B7:69:DD:53"]
+      "sha256_cert_fingerprints": ["BD:73:0F:8E:64:1F:A8:9A:6C:5E:8D:7E:2F:27:8F:BD:13:E5:BE:01:F7:6E:F2:8B:69:80:08:74:B6:DF:6E:19"]
     }
   }
 ]
