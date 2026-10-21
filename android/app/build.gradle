@@ -9,7 +9,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         // Each build sent to the Play Store needs a higher number: CI passes its run number.
         versionCode((System.getenv("VERSION_CODE") ?: "1") as int)
-        versionName "1.0"
+        // The same number, so the phone's settings, the Play Console and the app agree.
+        versionName(System.getenv("VERSION_CODE") ?: "1.0")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Auth } from '../hooks/useAuth';
 import { InstallRoute } from '../lib/install';
 import { InstallLine } from './InstallApp';
+import { Star } from 'lucide-react';
+import { versionLabel } from '../lib/version';
 
 interface AccountSheetProps {
   auth: Auth;
@@ -106,6 +108,21 @@ export function AccountSheet({ auth, onOpenStats, installRoute, onOpenFeedback, 
           </>
         )}
 
+        {!confirmDelete && onOpenFeedback && (
+          <button
+            id="btn-account-feedback"
+            onClick={onOpenFeedback}
+            className="h-14 rounded-[18px] border-[1.5px] border-ink/40 font-semibold flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <Star className="w-5 h-5" aria-hidden="true" />
+            Donner ton avis
+          </button>
+        )}
+
+        {!confirmDelete && installRoute && (
+          <div className="text-[15px]"><InstallLine route={installRoute} place="compte" /></div>
+        )}
+
         {user && (
           <p className="text-[13px] text-clay">
             <a href={`${import.meta.env.BASE_URL}conditions.html`} className="underline">Conditions d'utilisation</a>
@@ -114,18 +131,10 @@ export function AccountSheet({ auth, onOpenStats, installRoute, onOpenFeedback, 
           </p>
         )}
 
-        {!confirmDelete && (installRoute || onOpenFeedback) && (
-          <div className="flex flex-col gap-2 text-[15px]">
-            <InstallLine route={installRoute} place="compte" />
-            {onOpenFeedback && (
-              <p><button id="btn-account-feedback" onClick={onOpenFeedback} className="underline cursor-pointer">Donner ton avis</button></p>
-            )}
-          </div>
-        )}
-
         <button onClick={onClose} className="h-14 rounded-[18px] bg-ink/10 font-display font-extrabold text-lg cursor-pointer">
           Fermer
         </button>
+        <p id="app-version" className="-mt-2 text-center text-[12px] text-clay">{versionLabel()}</p>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import {Plugin, defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
+import {execSync} from 'node:child_process';
 import {staticPages} from './src/staticPages';
 import {shareImage} from './src/ogImage';
 
@@ -34,10 +35,25 @@ function seoPages(): Plugin {
   };
 }
 
+// The build running, shown small in the account sheet: the Android version code (the Play Console's
+// number, passed by CI), the commit and the day of the build.
+function buildVersion() {
+  let commit = process.env.GITHUB_SHA || '';
+  if (!commit) {
+    try {
+      commit = execSync('git rev-parse HEAD', {stdio: ['ignore', 'pipe', 'ignore']}).toString().trim();
+    } catch {
+      // Not a git checkout: the version reads "dev".
+    }
+  }
+  return {code: process.env.VERSION_CODE || null, commit: commit.slice(0, 7) || 'dev', builtAt: new Date().toISOString().slice(0, 10)};
+}
+
 export default defineConfig(() => {
   return {
     // Served at the root of coriace.app; BASE_PATH allows hosting under a sub-path.
     base: process.env.BASE_PATH || '/',
+    define: {__APP_VERSION__: JSON.stringify(buildVersion())},
     plugins: [
       react(),
       tailwindcss(),
