@@ -13,6 +13,8 @@ create table if not exists public.feedback (
   check (rating is not null or message is not null)
 );
 
+-- Older projects give the API roles every right on new tables by default: only sending is kept.
+revoke all on public.feedback from anon, authenticated;
 grant insert on public.feedback to anon, authenticated;
 grant all on public.feedback to service_role;
 
