@@ -102,9 +102,9 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Fiche du Store (textes, icône, image de présentation, 8 captures) et réponses de la Play Console, sur le Drive
 - [x] Lien vers la politique de confidentialité dans l'app (bas de l'accueil)
 - [ ] Vérifier la disponibilité du nom « Coriace » avant la publication (marques INPI et EUIPO, classe 9)
-- [ ] Vérifier sur téléphone l'APK de test avec le menu du bas et les articles (articles lus hors ligne, graphiques, liens « À essayer » vers les séances), puis envoyer ce bundle sur la Play Console
-- [ ] Créer l'app dans la Play Console, test interne, puis production (ou test fermé de 14 jours avec 12 testeurs selon le compte)
-- [ ] Envoi automatique sur le test interne par l'API Google Play (compte de service)
+- [x] Créer l'app dans la Play Console et publier la première version
+- [x] Envoi automatique sur le test interne par l'API Google Play à chaque push sur `main` (compte de service, secret `PLAY_SERVICE_ACCOUNT_JSON`) ; production par la Play Console (promouvoir la version) ou en lançant le workflow à la main
+- [ ] Vérifier sur téléphone la version du test interne avec le menu du bas et les articles (articles lus hors ligne, graphiques, liens « À essayer » vers les séances), puis la promouvoir en production
 - [ ] Polices dans l'app Android plutôt que chargées depuis Google Fonts (hors ligne)
 
 ### Langues

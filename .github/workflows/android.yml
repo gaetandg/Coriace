@@ -3,11 +3,18 @@ name: Android app
 # Builds the Android test app on each push to main and publishes it as a download:
 # https://github.com/gaetandg/Coriace/releases/download/android-test/coriace.apk
 # With the upload key in the repository secrets, also builds the Play Store bundle (.aab),
-# kept as an artifact of the run.
+# kept as an artifact of the run. With the Google Play service account too, sends the bundle
+# to the internal test track; run by hand with "production" to release it to everyone.
 on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      track:
+        description: Piste Google Play
+        type: choice
+        options: [internal, production]
+        default: internal
 
 permissions:
   contents: write
@@ -19,6 +26,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PLAY_UPLOAD: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -64,3 +73,13 @@ jobs:
           name: coriace-${{ github.run_number }}
           path: android/app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: ignore
+      - name: Send the bundle to Google Play
+        if: env.PLAY_UPLOAD == 'true' && hashFiles('android/app/build/outputs/bundle/release/app-release.aab') != ''
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1.1.5
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: app.coriace
+          releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
+          tracks: ${{ inputs.track || 'internal' }}
+          status: completed
+          whatsNewDirectory: android/whatsnew
