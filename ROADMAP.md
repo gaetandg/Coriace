@@ -11,6 +11,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Tests automatiques (générateur, annonces, préférences), lancés à chaque déploiement
 - [x] Nom : **Coriace · Renfo pour coureurs**
 - [x] Direction artistique « Piste » : fond brique (vert pendant la récupération), crème, Bricolage Grotesque + Instrument Sans, logo en trois couloirs
+- [x] Menu en bas de l'écran : Séances, Articles, Statistiques (sur le site et dans l'app Android), masqué pendant une séance
 
 ## À faire
 
@@ -40,6 +41,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Écran Statistiques : chiffres clés, séances par semaine, séances les plus faites
 - [x] Stats par groupe musculaire : chaque séance enregistre ses exercices (séries de travail sur 30 jours)
 - [x] Mode Personnalisée : tous les exercices sélectionnés, 2 à 4 tours, durée affichée en direct
+- [x] Cadran de durée sur chaque séance prédéfinie (liste et résumé)
 - [ ] Enregistrer ses séances personnalisées (nom, ordre choisi) dans « Mes séances »
 
 ### Préférences
@@ -49,7 +51,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Mesure d'audience avec Umami (sans cookie) : séances préparées, lancées, terminées, quittées, écrans ouverts — à activer avec l'identifiant du site
 - [x] Visites de l'app Android comptées aussi, avec l'étiquette `android`
 - [x] Connexion Google (Supabase) et synchronisation de l'historique entre appareils, accessible depuis l'en-tête
-- [ ] Connexion Google dans l'app Android (connexion native) et « Supprimer mon compte » dans l'app : Google Play l'exige dès qu'on peut créer un compte dans l'app. Comptes, données et page de suppression déjà déclarés dans la Play Console
+- [ ] Connexion Google dans l'app Android (connexion native) et « Supprimer mon compte » dans l'app : Google Play l'exige dès qu'on peut créer un compte dans l'app. Comptes, données et page de suppression déjà déclarés dans la Play Console. Client OAuth Android dans Google Cloud avec l'empreinte SHA-1 de la clé de signature de Google Play (visible seulement une fois l'app créée dans la Play Console) et celle de la clé de test ; connexion par jeton Google (`signInWithIdToken` de Supabase) ; suppression par une fonction côté Supabase (un compte ne peut pas s'effacer lui-même avec la clé publique). La première version du Store peut sortir sans : la connexion y est masquée
 - [ ] Synchroniser aussi les préférences et les séances enregistrées
 - [ ] Connexion avec Apple, obligatoire pour publier l'app iPhone sur l'App Store dès qu'une connexion Google est proposée (compte développeur Apple, 99 $ par an)
 - [x] Sans compte : proposer de se connecter en fin de séance pour sauvegarder son historique (l'historique local est repris à la connexion)
@@ -62,12 +64,25 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [ ] Ligne « Installer l'app » dans le menu du compte, tant que l'app n'est pas installée
 - [ ] Mesure Umami : proposition affichée, installation acceptée, refus
 - [ ] Une fois l'app Android publiée : sur Android, lien vers le Play Store à la place de l'installation navigateur ; rien si l'app du Store est déjà installée (`related_applications` dans le manifeste) ; rien dans l'app Android elle-même
+- [ ] Emplacements du lien sur le site : la carte de fin de séance (ci-dessus), un encadré en bas de chaque article sous « À essayer » (« Fais cette séance avec l'app », les articles étant la porte d'entrée depuis Google), une ligne dans le pied de page des pages du site et dans le menu du compte. Badge officiel Google Play sur Android, consignes « Sur l'écran d'accueil » sur iPhone. Pas de bandeau ni de fenêtre à l'arrivée sur le site
+- [ ] Lien Play Store avec un `referrer` par emplacement (fin de séance, article, pied de page), pour voir dans la Play Console ce qui fait installer
+- [ ] Liens coriace.app ouverts dans l'app quand elle est installée (Android App Links : `/.well-known/assetlinks.json` sur le site, `intent-filter` vérifié dans l'app)
+
+### Avis et retours
+- [ ] « Ton avis » : étoiles facultatives et commentaire, depuis le menu du compte et une fois en fin de séance (vers la 3e séance terminée), sur le site comme dans l'app. Enregistré dans Supabase (table `feedback` : date, note, message, plateforme, version, compte si connecté), écriture seule pour tous, lecture depuis le tableau de bord
+- [ ] Demande de note Google Play dans l'app Android (API In-App Review, la carte de Google s'ouvre dans l'app) : en fin de séance, à partir de la 5e séance terminée, jamais pendant une séance ; Google limite lui-même le nombre d'affichages et ne dit pas la note donnée
+- [ ] Règle de Google Play : ne rien demander juste avant la carte de note, et ne pas choisir qui la voit selon son avis (renvoyer vers le Store seulement les 4 étoiles et plus est interdit et peut faire retirer l'app). « Ton avis » et la carte de Google ne s'affichent donc jamais à la même fin de séance, et la réponse à l'un ne décide pas de l'autre
+- [ ] Page de confidentialité et section « Sécurité des données » de la Play Console mises à jour (commentaires envoyés)
+- [ ] Mesure Umami : avis envoyé, carte de note affichée
+- [ ] Répondre aux avis du Play Store depuis la Play Console
 
 ### Articles (SEO et GEO)
 - [x] Section d'articles sur la course à pied et le renfo (`/articles/`) : liste des articles et une page par article, HTML écrit au build (titre, description, données structurées `Article` avec l'auteur, sitemap), brouillons visibles seulement en développement
 - [x] Premiers articles publiés : « Des crampes au 30e kilomètre, à chaque marathon » (avec le graphique d'allure des 2 Rives) et « Renfo et marathon : mon plan pour Bordeaux »
-- [ ] Faire relire ces deux articles par le kiné, puis afficher « Relu par un kinésithérapeute »
-- [ ] Articles « analyse de sortie » à partir des fichiers de la montre (allure, cardio, cadence, marche au kilomètre, graphique) : d'abord la séance test de 30 km du 14 octobre 2026, puis le marathon de Bordeaux du 8 novembre
+- [x] Articles programmés : un article daté sort tout seul (le site est refait chaque matin) ; l'app Android lit les articles du site (`articles.json`) et les garde hors ligne, sans mise à jour du Store
+- [ ] Faire relire par le kiné les articles publiés (crampes au 30e, plan pour Bordeaux, sortie de 30 km) et programmés avant leur date (sel et magnésium le 27 octobre, étirements le 17 novembre, cadence le 8 décembre, adducteurs le 15 décembre), ou décaler ces dates ; puis afficher « Relu par un kinésithérapeute »
+- [x] Analyse de la sortie test de 30 km du 14 octobre, comparée à avril
+- [ ] Brouillons datés à finir, sinon ils ne sortent pas (`draft: true`) : affûtage (3 novembre), marathon de Bordeaux avec le fichier de la montre (11 novembre), reprise après le marathon (24 novembre), test des mollets (1er décembre)
 - [ ] « Teste tes mollets en 2 minutes » : attend le résultat du test de l'auteur et l'avis du kiné
 - [ ] Articles « ce que dit la science » : une idée qui circule sur les réseaux (étirements avant la course, renfo qui alourdit, crampes et magnésium…), ce que montrent vraiment les études, leur niveau de preuve et ce qu'on ne sait pas, sources citées ; relus par le kiné
 - [x] Charte éditoriale (dossier Drive « Application Coriace ») : contenu qu'on est seuls à pouvoir écrire (vécu de l'auteur, données Coriace, illustrations Coriace, tests, avis du kiné, interviews), première personne et tutoiement, rien d'inventé, illustrations maison sans images générées par IA, mention santé, relecture du kiné pour tout ce qui touche au corps
@@ -86,6 +101,8 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Bundle signé (AAB) fabriqué par le workflow Android, clé d'importation hors du dépôt (secrets GitHub)
 - [x] Fiche du Store (textes, icône, image de présentation, 8 captures) et réponses de la Play Console, sur le Drive
 - [x] Lien vers la politique de confidentialité dans l'app (bas de l'accueil)
+- [ ] Vérifier la disponibilité du nom « Coriace » avant la publication (marques INPI et EUIPO, classe 9)
+- [ ] Vérifier sur téléphone l'APK de test avec le menu du bas et les articles (articles lus hors ligne, graphiques, liens « À essayer » vers les séances), puis envoyer ce bundle sur la Play Console
 - [ ] Créer l'app dans la Play Console, test interne, puis production (ou test fermé de 14 jours avec 12 testeurs selon le compte)
 - [ ] Envoi automatique sur le test interne par l'API Google Play (compte de service)
 - [ ] Polices dans l'app Android plutôt que chargées depuis Google Fonts (hors ligne)
@@ -98,8 +115,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 
 ### Plus tard
 - [ ] Coriace pour les kinés : composer une séance pour un patient (exercices, tours, rythme, consignes), lui envoyer par lien ou QR code, voir s'il l'a faite. À creuser avec un kiné : besoins, cadre (données de santé), modèle (gratuit pour le patient, payant pour le cabinet ?)
-- [ ] Applications Android et iPhone avec Capacitor (minuteur et voix qui continuent écran verrouillé)
-- [ ] Vérifier la disponibilité du nom « Coriace » avant publication sur les stores (marques INPI et EUIPO, classe 9)
+- [ ] Application iPhone avec Capacitor, comme celle d'Android (minuteur et voix qui continuent écran verrouillé)
 
 ## Problèmes connus
 
