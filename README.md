@@ -119,7 +119,7 @@ Suppression d'un compte : chacun peut supprimer le sien dans le menu du compte (
 
 L'app compte les visites et quelques actions avec [Umami Cloud](https://umami.is) : sans cookie, sans donnée personnelle, et rien n'est mesuré si le navigateur demande à ne pas être suivi. Seul le site publié est mesuré, jamais le développement local. L'app Android est mesurée aussi : ses visites portent l'étiquette `android` (filtre *Tag* dans Umami).
 
-Événements : `seance-preparee`, `seance-lancee`, `seance-terminee`, `seance-quittee` (avec `progression` en %), `seance-regeneree` (chacun avec `seance`, `minutes`, `rythme`, `deja_echauffe`), `statistiques`, `compte`, `reglages-son`, `fiche-exercice` (avec `exercice`), `connexion-google`, `compte-supprime`, `installation-proposee`, `installation-cliquee` (avec `emplacement` : `fin-seance`, `article`, `pied-de-page`, `compte`), `installation-refusee`, `avis-propose`, `avis-ouvert` (avec `emplacement`), `avis-envoye` (avec `note`), `note-demandee`.
+Événements : `seance-preparee`, `seance-lancee`, `seance-terminee`, `seance-quittee` (avec `progression` en %), `seance-regeneree` (chacun avec `seance`, `minutes`, `rythme`, `deja_echauffe`), `statistiques`, `compte`, `reglages-son`, `fiche-exercice` (avec `exercice`), `connexion-google`, `connexion-echec` (avec `erreur`, le message de Google ou de Supabase), `compte-supprime`, `installation-proposee`, `installation-cliquee` (avec `emplacement` : `fin-seance`, `article`, `pied-de-page`, `compte`), `installation-refusee`, `avis-propose`, `avis-ouvert` (avec `emplacement`), `avis-envoye` (avec `note`), `note-demandee`.
 
 Chaque page a son adresse : Umami compte donc aussi les visites par page (`/marathon/`, `/10-km/`…).
 

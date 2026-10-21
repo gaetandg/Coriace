@@ -43,8 +43,13 @@ export function useAuth(notify: (message: string) => void) {
       const { error } = await supabase.auth.signInWithIdToken({ provider: 'google', token: idToken, nonce: nonce.raw });
       if (error) throw error;
     } catch (error) {
-      // Closing Google's window is a choice, not a failure.
-      if ((error as { code?: string })?.code !== 'canceled') notify('La connexion n\'a pas abouti. Réessaie dans un moment.');
+      const { code, message = '' } = error as { code?: string; message?: string };
+      // Closing Google's window is a choice, not a failure. Google reports an app it refuses (code 16)
+      // as cancelled too.
+      const googleCode = message.match(/\[(\d+)\]/)?.[1];
+      if (code === 'canceled' && !googleCode) return;
+      track('connexion-echec', { erreur: message.slice(0, 200) });
+      notify(`La connexion n'a pas abouti${googleCode ? ` (erreur ${googleCode})` : ''}. Réessaie dans un moment.`);
     }
   };
 
