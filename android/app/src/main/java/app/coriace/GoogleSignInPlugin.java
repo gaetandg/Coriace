@@ -55,9 +55,10 @@ public class GoogleSignInPlugin extends Plugin {
 
                 @Override
                 public void onError(GetCredentialException e) {
-                    // Closing the account picker is not an error worth showing.
-                    if (e instanceof GetCredentialCancellationException) call.reject("Canceled", "canceled");
-                    else call.reject(e.getMessage(), "failed", e);
+                    // Google also reports a sign-in it refuses (an app it doesn't recognise, code 16) as
+                    // cancelled: the message tells them apart.
+                    String message = e.getType() + ": " + e.getMessage();
+                    call.reject(message, e instanceof GetCredentialCancellationException ? "canceled" : "failed", e);
                 }
             }
         );
