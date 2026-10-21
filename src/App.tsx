@@ -28,6 +28,8 @@ import { FeedbackCard, FeedbackSheet } from './components/FeedbackSheet';
 import { feedbackAvailable } from './lib/feedback';
 import { useEndOfSession } from './hooks/useEndOfSession';
 import { useAppLinks } from './hooks/useAppLinks';
+import { Star } from 'lucide-react';
+import { outlineButton } from './lib/ui';
 
 const accountInitial = (user: User | null) =>
   user ? ((user.user_metadata?.full_name as string | undefined) || user.email || '?').charAt(0).toUpperCase() : '';
@@ -270,12 +272,17 @@ export default function App() {
         {/* Also the way to the privacy policy in the Android app, which the Play Store requires. */}
         {activeTab === 'workout' && workoutState === 'config' && !categoryOpen && (
           <footer className="text-sm text-sand flex flex-col gap-2">
-            <InstallLine route={installRoute} place="pied-de-page" />
             {feedbackAvailable && (
-              <p>
-                <button id="btn-footer-feedback" onClick={() => openFeedback('pied-de-page')} className="underline cursor-pointer">Donner ton avis</button>
-              </p>
+              <button
+                id="btn-footer-feedback"
+                onClick={() => openFeedback('pied-de-page')}
+                className={`self-start mb-1 h-11 px-4 rounded-full flex items-center gap-2 text-[15px] ${outlineButton}`}
+              >
+                <Star className="w-[18px] h-[18px]" aria-hidden="true" />
+                Donner ton avis
+              </button>
             )}
+            <InstallLine route={installRoute} place="pied-de-page" />
             <p>
               <a href={`${import.meta.env.BASE_URL}conditions.html`} className="underline">Conditions d'utilisation</a>
               {' · '}

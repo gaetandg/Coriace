@@ -43,6 +43,8 @@ jobs:
           cache: gradle
       - run: npm ci
       - run: npm run build:android
+        env:
+          VERSION_CODE: ${{ github.run_number }}
       - name: Build the test app
         working-directory: android
         env:
