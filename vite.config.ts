@@ -57,6 +57,10 @@ export default defineConfig(() => {
           orientation: 'portrait',
           background_color: '#A13D2B',
           theme_color: '#A13D2B',
+          // The Android app, so that Chrome can tell the site it is already on the phone (the app
+          // names the site back in its asset_statements). The site stays installable as it is.
+          related_applications: [{platform: 'play', url: 'https://play.google.com/store/apps/details?id=app.coriace', id: 'app.coriace'}],
+          prefer_related_applications: false,
           icons: [
             {src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png'},
             {src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png'},

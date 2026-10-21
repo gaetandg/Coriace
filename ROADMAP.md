@@ -59,23 +59,19 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [ ] Export vers Strava : envoyer chaque séance terminée comme activité « Renforcement musculaire » (API Strava, connexion Strava du coureur)
 
 ### Installation de l'app
-- [ ] Proposer d'installer l'app depuis le navigateur. Android et ordinateur (Chrome, Edge, Samsung Internet) : bouton « Installer » qui ouvre la fenêtre du système. iPhone (Safari, aucun moyen de déclencher l'installation) : fenêtre qui montre « Partager » puis « Sur l'écran d'accueil ». Rien si l'app est déjà installée
-- [ ] Moment : jamais à la première visite ni pendant une séance. Carte sur l'écran de fin de la première séance terminée (« Installer » / « Plus tard »), reproposée 3 séances plus tard, abandonnée après deux refus
-- [ ] Une seule carte à la fois en fin de séance : l'installation passe en premier les fois où elle est prévue, la connexion Google les autres fois. Déjà installée : seulement la connexion ; déjà connecté : seulement l'installation
-- [ ] Ligne « Installer l'app » dans le menu du compte, tant que l'app n'est pas installée
-- [ ] Mesure Umami : proposition affichée, installation acceptée, refus
-- [ ] Une fois l'app Android publiée : sur Android, lien vers le Play Store à la place de l'installation navigateur ; rien si l'app du Store est déjà installée (`related_applications` dans le manifeste) ; rien dans l'app Android elle-même
-- [ ] Emplacements du lien sur le site : la carte de fin de séance (ci-dessus), un encadré en bas de chaque article sous « À essayer » (« Fais cette séance avec l'app », les articles étant la porte d'entrée depuis Google), une ligne dans le pied de page des pages du site et dans le menu du compte. Badge officiel Google Play sur Android, consignes « Sur l'écran d'accueil » sur iPhone. Pas de bandeau ni de fenêtre à l'arrivée sur le site
-- [ ] Lien Play Store avec un `referrer` par emplacement (fin de séance, article, pied de page), pour voir dans la Play Console ce qui fait installer
-- [ ] Liens coriace.app ouverts dans l'app quand elle est installée (Android App Links : `/.well-known/assetlinks.json` sur le site, `intent-filter` vérifié dans l'app)
+- [x] Carte en fin de séance (« Plus tard ») : à la première séance terminée, reproposée 3 séances plus tard, abandonnée après deux refus. Une seule carte à la fois : l'installation, puis « Ton avis », sinon la connexion Google
+- [x] Android et ordinateur : badge officiel Google Play ; iPhone : étapes « Partager » puis « Sur l'écran d'accueil ». Rien dans l'app Android, ni sur le site installé, ni si l'app du Store est déjà sur le téléphone (`related_applications` dans le manifeste, `asset_statements` dans l'app)
+- [x] Emplacements : fin de séance, encadré sous chaque article, ligne en bas de l'accueil et dans le menu du compte, lien dans le pied des pages lues par les moteurs. Pas de bandeau ni de fenêtre à l'arrivée sur le site
+- [x] Lien Play Store avec un `referrer` par emplacement (fin de séance, article, pied de page, compte), pour voir dans la Play Console ce qui fait installer ; mesure Umami : proposition, clic, refus
+- [ ] Liens coriace.app ouverts dans l'app quand elle est installée (Android App Links : `/.well-known/assetlinks.json` sur le site avec l'empreinte SHA-256 de la clé de signature de Google Play, `intent-filter` vérifié dans l'app, ouverture de la bonne page avec `@capacitor/app`)
 
 ### Avis et retours
-- [ ] « Ton avis » : étoiles facultatives et commentaire, depuis le menu du compte et une fois en fin de séance (vers la 3e séance terminée), sur le site comme dans l'app. Enregistré dans Supabase (table `feedback` : date, note, message, plateforme, version, compte si connecté), écriture seule pour tous, lecture depuis le tableau de bord
-- [ ] Demande de note Google Play dans l'app Android (API In-App Review, la carte de Google s'ouvre dans l'app) : en fin de séance, à partir de la 5e séance terminée, jamais pendant une séance ; Google limite lui-même le nombre d'affichages et ne dit pas la note donnée
-- [ ] Règle de Google Play : ne rien demander juste avant la carte de note, et ne pas choisir qui la voit selon son avis (renvoyer vers le Store seulement les 4 étoiles et plus est interdit et peut faire retirer l'app). « Ton avis » et la carte de Google ne s'affichent donc jamais à la même fin de séance, et la réponse à l'un ne décide pas de l'autre
-- [ ] Page de confidentialité et section « Sécurité des données » de la Play Console mises à jour (commentaires envoyés)
-- [ ] Mesure Umami : avis envoyé, carte de note affichée
-- [ ] Répondre aux avis du Play Store depuis la Play Console
+- [x] « Ton avis » : note sur 5 facultative et message, depuis le bas de l'accueil, le menu du compte et une fois en fin de séance (à partir de la 3e séance terminée), sur le site comme dans l'app. Table `feedback` dans Supabase (date, note, message, support, nombre de séances), sans compte ni nom, écriture seule pour tous, lecture depuis le tableau de bord
+- [x] Note Google Play dans l'app Android (API In-App Review) : en fin de séance, à partir de la 5e séance terminée, au plus une fois par mois ; Google limite lui-même le nombre d'affichages et ne dit pas la note donnée
+- [x] Règle de Google Play : rien n'est demandé juste avant la carte de note, et tout le monde la voit, quel que soit son avis (renvoyer vers le Store seulement les 4 étoiles et plus est interdit). « Ton avis » et la carte de Google ne s'affichent jamais à la même fin de séance
+- [x] Page de confidentialité mise à jour ; mesure Umami : avis proposé, ouvert, envoyé, note demandée
+- [ ] Exécuter la migration `feedback` dans Supabase ; déclarer les avis dans la section « Sécurité des données » de la Play Console (activité dans l'app, autres contenus générés par l'utilisateur, non liés à l'identité)
+- [ ] Lire les avis régulièrement (Supabase, *Table Editor → feedback*) et répondre à ceux du Play Store depuis la Play Console
 
 ### Articles (SEO et GEO)
 - [x] Section d'articles sur la course à pied et le renfo (`/articles/`) : liste des articles et une page par article, HTML écrit au build (titre, description, données structurées `Article` avec l'auteur, sitemap), brouillons visibles seulement en développement

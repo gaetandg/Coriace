@@ -12,10 +12,10 @@ interface CompletedScreenProps {
   recentCount: number; // sessions in the last 7 days, this one included
   onRestart: () => void;
   onOpenStats: () => void;
-  account: ReactNode;
+  card: ReactNode; // installing the app, "Ton avis" or the sign-in card, one at most
 }
 
-export function CompletedScreen({ durationMinutes, exerciseCount, rythme, recentCount, onRestart, onOpenStats, account }: CompletedScreenProps) {
+export function CompletedScreen({ durationMinutes, exerciseCount, rythme, recentCount, onRestart, onOpenStats, card }: CompletedScreenProps) {
   const stats = [
     { value: String(durationMinutes), label: 'minutes' },
     { value: String(exerciseCount), label: 'exercices' },
@@ -42,7 +42,7 @@ export function CompletedScreen({ durationMinutes, exerciseCount, rythme, recent
         ))}
       </div>
 
-      {account}
+      {card}
 
       <div className="relative mt-auto flex flex-col gap-2.5">
         <button onClick={onOpenStats} className="h-12 font-semibold underline underline-offset-4 cursor-pointer">

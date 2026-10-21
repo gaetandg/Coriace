@@ -5,6 +5,8 @@ import {
 } from '../../articles';
 import { EXERCISE_DATABASE } from '../../exercises';
 import { inApp } from '../../lib/links';
+import { InstallRoute } from '../../lib/install';
+import { InstallAside } from '../InstallApp';
 import { isNativeApp } from '../../lib/native';
 import { ARTICLES_PAGE, HOME, SITE_URL, pagePath } from '../../pages';
 import { BackLink } from '../BackLink';
@@ -152,8 +154,9 @@ function ArticleFooter({ article }: { article: Article }) {
   );
 }
 
-export function ArticlePage({ article, onBack, onOpen, onOpenAuthor }: {
+export function ArticlePage({ article, installRoute, onBack, onOpen, onOpenAuthor }: {
   article: Article;
+  installRoute: InstallRoute;
   onBack: () => void;
   onOpen: OpenArticle;
   onOpenAuthor: () => void;
@@ -172,6 +175,7 @@ export function ArticlePage({ article, onBack, onOpen, onOpenAuthor }: {
       </header>
       <p className="text-[18px] leading-relaxed font-semibold">{article.lead}</p>
       {article.blocks.map((block, i) => <Block key={i} block={block} onOpenArticle={onOpen} />)}
+      <InstallAside route={installRoute} />
       <ArticleFooter article={article} />
     </article>
   );

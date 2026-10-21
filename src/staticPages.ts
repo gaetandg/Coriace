@@ -2,7 +2,7 @@ import { EXERCISE_DATABASE } from './exercises';
 import { EQUIPMENT_LABELS, EXERCISE_GROUPS } from './lib/groups';
 import { SCENES, sceneFrame, sceneThumb, sceneTop } from './illustrations/scenes';
 import {
-  ARTICLES_PAGE, CATEGORY_PAGES, EXERCISES_PAGE, HOME, HOME_PAGE, PageText, SITE_URL, SitePage, articleBySlug, exerciseSlug, pagePath, pageText,
+  ARTICLES_PAGE, CATEGORY_PAGES, EXERCISES_PAGE, HOME, HOME_PAGE, PLAY_STORE_URL, PageText, SITE_URL, SitePage, articleBySlug, exerciseSlug, pagePath, pageText,
 } from './pages';
 import {
   AUTHOR, AUTHOR_PAGE, Article, ArticleBlock, HEALTH_NOTICE, Inline, articleDate, authorPageVisible, parseInline, readingMinutes, visibleArticles,
@@ -228,6 +228,7 @@ ${main}
 <footer class="flex flex-col gap-4 mt-4">
 ${footer}
 <p class="text-sm text-sand">${esc(about)}</p>
+<p class="text-sm text-sand"><a href="${PLAY_STORE_URL}" class="underline">L'app Android sur Google Play</a></p>
 <p class="text-sm text-sand"><a href="${base}conditions.html" class="underline">Conditions d'utilisation</a> · <a href="${base}confidentialite.html" class="underline">Confidentialité</a></p>
 </footer>
 </div>
