@@ -52,7 +52,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Visites de l'app Android comptées aussi, avec l'étiquette `android`
 - [x] Connexion Google (Supabase) et synchronisation de l'historique entre appareils, accessible depuis l'en-tête
 - [x] Connexion Google dans l'app Android avec le compte du téléphone (Credential Manager, jeton Google transmis à Supabase) et « Supprimer mon compte » dans le menu du compte, sur l'app comme sur le site (suppression immédiate, traces de connexion comprises), comme Google Play l'exige
-- [ ] Mise en place de la connexion dans l'app : deux ID clients OAuth Android dans Google Cloud (clé de signature de Google Play et clé de test), migration `delete_account` dans Supabase, puis mettre à jour la section « Sécurité des données » de la Play Console si besoin
+- [ ] Mise en place de la connexion dans l'app : un ID client OAuth Android dans Google Cloud (clé de signature de Google Play ; pas la clé de test, publique), migration `delete_account` dans Supabase (faite), puis mettre à jour la section « Sécurité des données » de la Play Console si besoin
 - [ ] Synchroniser aussi les préférences et les séances enregistrées
 - [ ] Connexion avec Apple, obligatoire pour publier l'app iPhone sur l'App Store dès qu'une connexion Google est proposée (compte développeur Apple, 99 $ par an)
 - [x] Sans compte : proposer de se connecter en fin de séance pour sauvegarder son historique (l'historique local est repris à la connexion)
@@ -63,14 +63,14 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Android et ordinateur : badge officiel Google Play ; iPhone : étapes « Partager » puis « Sur l'écran d'accueil ». Rien dans l'app Android, ni sur le site installé, ni si l'app du Store est déjà sur le téléphone (`related_applications` dans le manifeste, `asset_statements` dans l'app)
 - [x] Emplacements : fin de séance, encadré sous chaque article, ligne en bas de l'accueil et dans le menu du compte, lien dans le pied des pages lues par les moteurs. Pas de bandeau ni de fenêtre à l'arrivée sur le site
 - [x] Lien Play Store avec un `referrer` par emplacement (fin de séance, article, pied de page, compte), pour voir dans la Play Console ce qui fait installer ; mesure Umami : proposition, clic, refus
-- [ ] Liens coriace.app ouverts dans l'app quand elle est installée (Android App Links : `/.well-known/assetlinks.json` sur le site avec l'empreinte SHA-256 de la clé de signature de Google Play, `intent-filter` vérifié dans l'app, ouverture de la bonne page avec `@capacitor/app`)
+- [x] Liens coriace.app ouverts dans l'app quand elle est installée (Android App Links : `/.well-known/assetlinks.json` sur le site avec l'empreinte SHA-256 de la clé de signature de Google Play, `intent-filter` vérifié dans l'app, ouverture de la bonne page avec `@capacitor/app`, jamais pendant une séance)
 
 ### Avis et retours
 - [x] « Ton avis » : note sur 5 facultative et message, depuis le bas de l'accueil, le menu du compte et une fois en fin de séance (à partir de la 3e séance terminée), sur le site comme dans l'app. Table `feedback` dans Supabase (date, note, message, support, nombre de séances), sans compte ni nom, écriture seule pour tous, lecture depuis le tableau de bord
 - [x] Note Google Play dans l'app Android (API In-App Review) : en fin de séance, à partir de la 5e séance terminée, au plus une fois par mois ; Google limite lui-même le nombre d'affichages et ne dit pas la note donnée
 - [x] Règle de Google Play : rien n'est demandé juste avant la carte de note, et tout le monde la voit, quel que soit son avis (renvoyer vers le Store seulement les 4 étoiles et plus est interdit). « Ton avis » et la carte de Google ne s'affichent jamais à la même fin de séance
 - [x] Page de confidentialité mise à jour ; mesure Umami : avis proposé, ouvert, envoyé, note demandée
-- [ ] Exécuter la migration `feedback` dans Supabase ; déclarer les avis dans la section « Sécurité des données » de la Play Console (activité dans l'app, autres contenus générés par l'utilisateur, non liés à l'identité)
+- [ ] Migration `feedback` exécutée dans Supabase (fait) ; déclarer les avis dans la section « Sécurité des données » de la Play Console (activité dans l'app, autres contenus générés par l'utilisateur, non liés à l'identité)
 - [ ] Lire les avis régulièrement (Supabase, *Table Editor → feedback*) et répondre à ceux du Play Store depuis la Play Console
 
 ### Articles (SEO et GEO)
