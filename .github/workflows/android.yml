@@ -8,6 +8,8 @@ name: Android app
 on:
   push:
     branches: [main]
+    # Notes and docs don't change the app: no new version for them.
+    paths-ignore: ['**.md']
   workflow_dispatch:
     inputs:
       track:

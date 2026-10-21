@@ -52,7 +52,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Visites de l'app Android comptées aussi, avec l'étiquette `android`
 - [x] Connexion Google (Supabase) et synchronisation de l'historique entre appareils, accessible depuis l'en-tête
 - [x] Connexion Google dans l'app Android avec le compte du téléphone (Credential Manager, jeton Google transmis à Supabase) et « Supprimer mon compte » dans le menu du compte, sur l'app comme sur le site (suppression immédiate, traces de connexion comprises), comme Google Play l'exige
-- [ ] Mise en place de la connexion dans l'app : un ID client OAuth Android dans Google Cloud (clé de signature de Google Play ; pas la clé de test, publique), migration `delete_account` dans Supabase (faite), puis mettre à jour la section « Sécurité des données » de la Play Console si besoin
+- [x] Mise en place de la connexion dans l'app : un ID client OAuth Android dans Google Cloud (clé de signature de Google Play ; pas la clé de test, publique), migration `delete_account` dans Supabase, section « Sécurité des données » de la Play Console ; connexion vérifiée sur téléphone
 - [ ] Synchroniser aussi les préférences et les séances enregistrées
 - [ ] Connexion avec Apple, obligatoire pour publier l'app iPhone sur l'App Store dès qu'une connexion Google est proposée (compte développeur Apple, 99 $ par an)
 - [x] Sans compte : proposer de se connecter en fin de séance pour sauvegarder son historique (l'historique local est repris à la connexion)
@@ -70,7 +70,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Note Google Play dans l'app Android (API In-App Review) : en fin de séance, à partir de la 5e séance terminée, au plus une fois par mois ; Google limite lui-même le nombre d'affichages et ne dit pas la note donnée
 - [x] Règle de Google Play : rien n'est demandé juste avant la carte de note, et tout le monde la voit, quel que soit son avis (renvoyer vers le Store seulement les 4 étoiles et plus est interdit). « Ton avis » et la carte de Google ne s'affichent jamais à la même fin de séance
 - [x] Page de confidentialité mise à jour ; mesure Umami : avis proposé, ouvert, envoyé, note demandée
-- [ ] Migration `feedback` exécutée dans Supabase (fait) ; déclarer les avis dans la section « Sécurité des données » de la Play Console (activité dans l'app, autres contenus générés par l'utilisateur, non liés à l'identité)
+- [x] Migration `feedback` exécutée dans Supabase ; avis déclarés dans la section « Sécurité des données » de la Play Console (activité dans l'app, autres contenus générés par l'utilisateur)
 - [ ] Lire les avis régulièrement (Supabase, *Table Editor → feedback*) et répondre à ceux du Play Store depuis la Play Console
 
 ### Articles (SEO et GEO)
@@ -100,8 +100,9 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Lien vers la politique de confidentialité dans l'app (bas de l'accueil)
 - [ ] Vérifier la disponibilité du nom « Coriace » avant la publication (marques INPI et EUIPO, classe 9)
 - [x] Créer l'app dans la Play Console et publier la première version
-- [x] Envoi automatique sur le test interne par l'API Google Play à chaque push sur `main` (compte de service, secret `PLAY_SERVICE_ACCOUNT_JSON`) ; production par la Play Console (promouvoir la version) ou en lançant le workflow à la main
-- [ ] Vérifier sur téléphone la version du test interne avec le menu du bas et les articles (articles lus hors ligne, graphiques, liens « À essayer » vers les séances), puis la promouvoir en production
+- [x] Envoi automatique sur le test interne par l'API Google Play à chaque push sur `main` qui touche l'app (compte de service, secret `PLAY_SERVICE_ACCOUNT_JSON`, clé d'importation dans `UPLOAD_KEYSTORE_BASE64` et `UPLOAD_KEYSTORE_PASSWORD`) ; production par la Play Console (promouvoir la version) ou en lançant le workflow à la main
+- [x] Version du test interne vérifiée sur téléphone : connexion Google, liens coriace.app, « Ton avis »
+- [ ] Promouvoir en production la dernière version du test interne (connexion Google, avis, liens, menu du bas et articles), puis vérifier dans *Ouvrir par défaut* que coriace.app est un lien validé
 - [ ] Polices dans l'app Android plutôt que chargées depuis Google Fonts (hors ligne)
 
 ### Langues
