@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Auth } from '../hooks/useAuth';
 
 interface AccountSheetProps {
@@ -10,6 +11,15 @@ interface AccountSheetProps {
 export function AccountSheet({ auth, onOpenStats, onClose }: AccountSheetProps) {
   const user = auth.user;
   const name = user?.user_metadata?.full_name as string | undefined;
+  // Deleting the account asks for a second tap, on a step of its own.
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const deleteAccount = async () => {
+    setDeleting(true);
+    if (await auth.deleteAccount()) onClose();
+    else setDeleting(false);
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 flex items-end justify-center" onClick={onClose}>
@@ -20,9 +30,30 @@ export function AccountSheet({ auth, onOpenStats, onClose }: AccountSheetProps) 
         className="w-full max-w-md bg-cream text-ink rounded-t-3xl px-6 pt-6 pb-8 flex flex-col gap-5"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id="account-title" className="font-display font-extrabold text-[30px] leading-tight">Compte</h2>
+        <h2 id="account-title" className="font-display font-extrabold text-[30px] leading-tight">
+          {user && confirmDelete ? 'Supprimer ton compte\u00a0?' : 'Compte'}
+        </h2>
 
-        {user ? (
+        {user && confirmDelete ? (
+          <>
+            <p className="text-[15px] leading-snug">
+              Ton compte et l'historique enregistré dessus seront effacés, définitivement. Les séances gardées sur ce téléphone y restent ; tu peux les effacer depuis tes stats.
+            </p>
+            <div className="flex flex-col gap-2.5">
+              <button
+                id="btn-delete-account-confirm"
+                onClick={deleteAccount}
+                disabled={deleting}
+                className="h-14 rounded-[18px] bg-brick text-white font-semibold text-base cursor-pointer disabled:opacity-60"
+              >
+                {deleting ? 'Suppression…' : 'Supprimer mon compte'}
+              </button>
+              <button onClick={() => setConfirmDelete(false)} className="h-12 font-semibold underline underline-offset-4 cursor-pointer">
+                Garder mon compte
+              </button>
+            </div>
+          </>
+        ) : user ? (
           <>
             <div className="flex flex-col gap-0.5">
               {name && <span className="font-semibold text-lg">{name}</span>}
@@ -42,6 +73,13 @@ export function AccountSheet({ auth, onOpenStats, onClose }: AccountSheetProps) 
                 className="h-12 font-semibold underline underline-offset-4 cursor-pointer"
               >
                 Se déconnecter
+              </button>
+              <button
+                id="btn-delete-account"
+                onClick={() => setConfirmDelete(true)}
+                className="h-11 text-[15px] text-clay underline underline-offset-4 cursor-pointer"
+              >
+                Supprimer mon compte
               </button>
             </div>
           </>

@@ -28,7 +28,7 @@ L'application génère une séance de renforcement en intervalles (travail / ré
 - **Pages des exercices** : « Les exercices », en bas des séances prédéfinies, liste les 35 exercices par groupe ; la page d'un exercice reprend sa fiche avec l'animation, les pages de séances qui l'utilisent et les autres exercices du groupe. Retour : de l'exercice à la liste, de la liste à l'accueil.
 - **Bouton retour du téléphone** : revient à l'écran précédent ; pendant une séance, il met en pause au lieu de quitter.
 - **Statistiques** : bouton en haut à droite. Séances sur 7 et 30 jours, minutes, semaines d'affilée, moyenne par semaine, graphique des séances par semaine (12 semaines, repère à 2 par semaine), séries par groupe musculaire sur 30 jours, séances les plus faites et historique complet, avec un bouton « Refaire » sur chaque séance : la même séance prédéfinie au même rythme, ou une séance personnalisée avec les mêmes exercices pour les séances aléatoires et personnalisées (sauf les anciennes séances sans liste d'exercices). Chaque séance terminée garde la liste de ses exercices. L'accueil affiche le nombre de séances des 7 derniers jours.
-- **Compte Google (optionnel)** : bouton compte en haut à droite ; en se connectant, l'historique est sauvegardé et synchronisé entre appareils (Supabase).
+- **Compte Google (optionnel)** : bouton compte en haut à droite ; en se connectant, l'historique est sauvegardé et synchronisé entre appareils (Supabase). Dans l'app Android, la connexion passe par le compte Google du téléphone. « Supprimer mon compte », dans le menu du compte, efface le compte et son historique tout de suite.
 - **Préférences retenues** : matériel, rythme, durée, exercices cochés et réglages du son sont gardés d'une visite à l'autre (dans le navigateur).
 - **Installable (PWA)** : s'ajoute à l'écran d'accueil et fonctionne hors ligne.
 
@@ -103,17 +103,18 @@ La connexion se fait uniquement avec Google, via Supabase. Le projet et sa clé 
 
 Mise en place, une seule fois, dans le tableau de bord Supabase :
 
-1. **SQL Editor** : exécuter, dans l'ordre, les fichiers de `supabase/migrations/` : `20261007000000_session_history.sql` (table de l'historique et règles d'accès : chacun ne voit que ses séances) puis `20261008000000_session_exercises.sql` (exercices de chaque séance) et `20261009000000_gentle_rhythm.sql` (rythme doux).
+1. **SQL Editor** : exécuter, dans l'ordre, les fichiers de `supabase/migrations/` : `20261007000000_session_history.sql` (table de l'historique et règles d'accès : chacun ne voit que ses séances) puis `20261008000000_session_exercises.sql` (exercices de chaque séance), `20261009000000_gentle_rhythm.sql` (rythme doux) et `20261021000000_delete_account.sql` (suppression du compte par son propriétaire).
 2. **Authentication → Sign In / Providers** : désactiver *Email*, activer *Google* avec l'identifiant et le secret d'un client OAuth Google Cloud dont l'URI de redirection autorisée est `https://prfadpnawhrphxigiyag.supabase.co/auth/v1/callback`.
 3. **Authentication → URL Configuration** : *Site URL* `https://coriace.app/`, et ajouter cette adresse (plus `http://localhost:3000/` pour le développement) aux *Redirect URLs*.
+4. **App Android** : dans Google Cloud (le projet du client OAuth web), *API et services → Identifiants* : créer deux ID clients OAuth de type *Android*, nom de package `app.coriace`, l'un avec l'empreinte SHA-1 de la clé de signature de Google Play (Play Console, *Intégrité de l'application → Signature d'application*), l'autre avec celle de la clé de test, `59:06:97:23:6B:8A:9A:73:F7:F1:FF:32:02:7D:33:9C:2A:2F:98:FB`. Rien à changer dans Supabase : le téléphone demande le jeton pour le client web (`GOOGLE_WEB_CLIENT_ID` dans `src/config.ts`), celui que Supabase connaît déjà.
 
-Suppression d'un compte : la demande arrive par e-mail à contact@coriace.app (page `public/suppression-compte.html`, déclarée dans la Play Console), à traiter sous 30 jours depuis l'adresse du compte. **Authentication → Users** : retrouver l'adresse, *Delete user* ; l'historique part avec (`on delete cascade`). Puis, dans **SQL Editor**, effacer ses traces de connexion : `delete from auth.audit_log_entries where payload->>'actor_id' = '<id du compte>';`. Répondre pour confirmer.
+Suppression d'un compte : chacun peut supprimer le sien dans le menu du compte (fonction `delete_my_account`, qui efface aussi ses traces de connexion). Sinon, la demande arrive par e-mail à contact@coriace.app (page `public/suppression-compte.html`, déclarée dans la Play Console), à traiter sous 30 jours depuis l'adresse du compte. **Authentication → Users** : retrouver l'adresse, *Delete user* ; l'historique part avec (`on delete cascade`). Puis, dans **SQL Editor**, effacer ses traces de connexion : `delete from auth.audit_log_entries where payload->>'actor_id' = '<id du compte>';`. Répondre pour confirmer.
 
 ## Mesure d'audience (Umami)
 
 L'app compte les visites et quelques actions avec [Umami Cloud](https://umami.is) : sans cookie, sans donnée personnelle, et rien n'est mesuré si le navigateur demande à ne pas être suivi. Seul le site publié est mesuré, jamais le développement local. L'app Android est mesurée aussi : ses visites portent l'étiquette `android` (filtre *Tag* dans Umami).
 
-Événements : `seance-preparee`, `seance-lancee`, `seance-terminee`, `seance-quittee` (avec `progression` en %), `seance-regeneree` (chacun avec `seance`, `minutes`, `rythme`, `deja_echauffe`), `statistiques`, `compte`, `reglages-son`, `fiche-exercice` (avec `exercice`), `connexion-google`.
+Événements : `seance-preparee`, `seance-lancee`, `seance-terminee`, `seance-quittee` (avec `progression` en %), `seance-regeneree` (chacun avec `seance`, `minutes`, `rythme`, `deja_echauffe`), `statistiques`, `compte`, `reglages-son`, `fiche-exercice` (avec `exercice`), `connexion-google`, `compte-supprime`.
 
 Chaque page a son adresse : Umami compte donc aussi les visites par page (`/marathon/`, `/10-km/`…).
 
@@ -142,7 +143,7 @@ Adresse : https://coriace.app/ (l'ancienne adresse github.io redirige)
 
 L'app Android emballe l'app web avec [Capacitor](https://capacitorjs.com) (identifiant `app.coriace`, dossier `android/`). Le site n'est pas concerné : dans un navigateur, tout fonctionne comme avant.
 
-Dans l'app, la voix passe par le moteur du téléphone (la vue web d'Android n'en a pas) et l'écran reste allumé pendant la séance ; pas de service worker, les fichiers sont dans l'app. La connexion Google est masquée tant que la connexion native n'est pas en place (Google refuse sa page de connexion web dans une app).
+Dans l'app, la voix passe par le moteur du téléphone (la vue web d'Android n'en a pas) et l'écran reste allumé pendant la séance ; pas de service worker, les fichiers sont dans l'app. La connexion Google passe par le compte Google du téléphone (Google refuse sa page de connexion web dans une app) : le module `GoogleSignInPlugin` de l'app (Credential Manager d'Android) renvoie un jeton Google, que l'app web transmet à Supabase.
 
 - `npm run build:android` : build web pour l'app puis copie dans `android/`.
 - Fabrication : le workflow `.github/workflows/android.yml` construit l'APK de test à chaque push sur `main` et le publie à l'adresse https://github.com/gaetandg/Coriace/releases/download/android-test/coriace.apk. Il est signé avec une clé de test partagée (`android/app/debug.keystore`, pas un secret), pour que chaque nouvelle version s'installe par-dessus la précédente.
