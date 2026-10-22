@@ -53,7 +53,8 @@ describe('static pages', () => {
   it('writes each exercise sheet with its picture and the sessions that use it', () => {
     const page = root(html('exercices/copenhagen-plank/index.html'));
     const exercise = EXERCISE_DATABASE.find(ex => ex.id === 'copenhagen_plank')!;
-    for (const text of [exercise.description, exercise.tips, exercise.easier!, exercise.harder!]) expect(page).toContain(text);
+    for (const text of [exercise.description, exercise.muscles!, exercise.tips, exercise.easier!, exercise.harder!]) expect(page).toContain(text);
+    expect(page).toContain('Muscles sollicités</h2>');
     expect(page).toContain('<h1');
     expect(page).toContain('role="img"');
     expect(page).toContain('href="/marathon/"');

@@ -13,6 +13,9 @@ export interface Exercise {
   group: ExerciseGroup;
   tips: string;
   instructionHighlight: string;
+  // The muscles worked, written as shown in the sheet: "Quadriceps, grand fessier et ischios"
+  // (missing on warm-up and cool-down moves). `target` says what the exercise is for.
+  muscles?: string;
   // Ways to adjust the difficulty, shown in the exercise sheet (missing on warm-up moves).
   easier?: string;
   harder?: string;

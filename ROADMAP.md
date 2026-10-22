@@ -27,7 +27,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Classer les exercices par groupe sur l'écran de préparation
 - [x] Première revue : ajout fessiers et ischios (pont fessier, abduction, soulevé de terre sur une jambe), fente bulgare, gainage latéral, dead bug ; retrait des crunchs et sit-ups
 - [x] Deuxième revue : variantes plus faciles et plus dures sur chaque fiche ; ajout de la corde (pas de course, sur un pied), sauts pieds joints, montée sur chaise, pont ischios, bird dog, équilibre sur un pied, montées de genoux ; bûcheron à la place des russian twists ; Copenhagen côté par côté à mi-temps
-- [ ] Faire relire la liste par un kiné
+- [ ] Faire relire la liste par un kiné, muscles sollicités compris
 - [x] Animation de chaque exercice (personnage en volume, positions clés, décor)
 - [ ] Éditeur de poses pour retoucher les animations à la souris (page interne), export GIF pour les articles
 - [x] Circuits équilibrés et variés : groupes clés garantis, ordre aléatoire, deux exercices max par groupe ; « Régénérer » évite la séance précédente
@@ -89,6 +89,8 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Nom de domaine propre plutôt que github.io (coriace.app), pour que le référencement profite à la marque
 - [x] Une page par distance et pour les séances ciblées (`/marathon/`…) : adresse, titre, description et texte lisible sans JavaScript, écrits au build ; sitemap et robots.txt
 - [x] Une page par exercice (`/exercices/…`) et la liste des exercices : fiche complète, image de la position, séances qui l'utilisent ; dans l'app aussi
+- [x] « Muscles sollicités » sur chaque fiche et en tête de sa description dans Google : les recherches d'exercices les demandent (« fentes arrière muscles sollicités », premières données de Search Console)
+- [ ] Refaire l'export de Search Console mi-novembre (requêtes, pages, positions) pour juger les titres et descriptions page par page
 - [x] Données structurées (Organization, WebSite, WebApplication, fil d'Ariane, listes de séances et d'exercices) et une image de partage par page (1200 × 630)
 - [x] Déclarer le site dans Google Search Console (propriété Domaine, enregistrement TXT chez OVH) et y envoyer le sitemap ; l'importer dans Bing Webmaster Tools
 - [ ] Faire connaître l'app ailleurs (forums, clubs, fiche Play Store) : les mentions comptent pour être cité par les assistants IA

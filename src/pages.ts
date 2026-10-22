@@ -99,7 +99,7 @@ export const exerciseSlug = (exercise: Exercise) =>
 
 const exerciseById = (id: string) => EXERCISE_DATABASE.find(ex => ex.id === id);
 
-// The search snippet: the target, then the movement, cut at a word near 160 characters.
+// The search snippet: the muscles worked, then the movement, cut at a word near 160 characters.
 function snippet(text: string, max = 160) {
   if (text.length <= max) return text;
   const cut = text.slice(0, max - 1);
@@ -150,7 +150,8 @@ export function pageText(page: SitePage): PageText {
       const exercise = exerciseById(page.exerciseId)!;
       return {
         title: `${exercise.name} : exercice de renfo pour coureurs · Coriace`,
-        description: snippet(`${exercise.target}. ${exercise.description}`),
+        // "Muscles sollicités", as people search it ("fentes arrière muscles sollicités").
+        description: snippet(`Muscles sollicités : ${exercise.muscles!.charAt(0).toLowerCase()}${exercise.muscles!.slice(1)}. ${exercise.description}`),
       };
     }
     case 'articles': return ARTICLES_PAGE;

@@ -49,4 +49,9 @@ describe('page addresses', () => {
     for (const page of PRESET_CATEGORIES.map(c => CATEGORY_PAGES[c])) expect(page.title.length).toBeLessThanOrEqual(65);
     for (const page of ALL) expect(pageText(page).description.length).toBeLessThanOrEqual(180);
   });
+
+  it('starts an exercise description with the muscles worked', () => {
+    expect(pageText({ kind: 'exercise', exerciseId: 'reverse_lunges' }).description)
+      .toMatch(/^Muscles sollicités : quadriceps, grand fessier, ischios, moyen fessier et adducteurs\. Fais un grand pas en arrière/);
+  });
 });

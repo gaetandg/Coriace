@@ -38,6 +38,13 @@ export function ExerciseDetail({ exercise, heading: Heading, headingId }: {
         <p className="text-base leading-relaxed">{exercise.description}</p>
       </div>
 
+      {exercise.muscles && (
+        <div className="flex flex-col gap-1">
+          <Sub className="text-sm font-semibold text-clay">Muscles sollicités</Sub>
+          <p className="text-base leading-relaxed">{exercise.muscles}</p>
+        </div>
+      )}
+
       {exercise.tips && (
         <div className="flex flex-col gap-1">
           <Sub className="text-sm font-semibold text-clay">Conseil</Sub>

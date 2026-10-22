@@ -367,6 +367,7 @@ function exerciseMain(exercise: Exercise, base: string) {
     `<div class="flex flex-col gap-1.5 pr-10"><span class="text-sm font-semibold text-clay">${esc(exercise.target)}</span><h1 class="font-display font-extrabold text-[30px] leading-tight tracking-tight">${esc(exercise.name)}</h1><div class="flex flex-wrap gap-1.5 pt-1">${equipment.map(label => `<span class="px-3 py-1 rounded-full bg-ink/10 text-[13px] font-semibold">${esc(label)}</span>`).join('')}</div></div>`,
     exerciseFigure(exercise),
     block('Mouvement', exercise.description),
+    exercise.muscles ? block('Muscles sollicités', exercise.muscles) : '',
     exercise.tips ? block('Conseil', exercise.tips) : '',
     levels.length > 0
       ? `<div class="grid grid-cols-2 gap-2">${levels.map(l => `<div class="rounded-2xl bg-ink/[0.06] px-3.5 py-3 flex flex-col gap-0.5"><h2 class="text-sm font-semibold text-clay">${l.title}</h2><p class="text-[15px] leading-snug">${esc(l.text!)}</p></div>`).join('')}</div>`

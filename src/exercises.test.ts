@@ -14,6 +14,10 @@ describe('exercise list', () => {
     }
   });
 
+  it('names the muscles worked by every exercise', () => {
+    for (const exercise of EXERCISE_DATABASE) expect(exercise.muscles, exercise.id).toMatch(/^[A-ZÉ]/);
+  });
+
   it('warns before every jump', () => {
     const jumps = EXERCISE_DATABASE.filter(e => /saut|corde/i.test(e.name) && e.id !== 'jumping_jacks');
     expect(jumps.length).toBeGreaterThanOrEqual(4);
