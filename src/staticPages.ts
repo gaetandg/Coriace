@@ -2,7 +2,7 @@ import { EXERCISE_DATABASE } from './exercises';
 import { EQUIPMENT_LABELS, EXERCISE_GROUPS } from './lib/groups';
 import { SCENES, sceneFrame, sceneThumb, sceneTop } from './illustrations/scenes';
 import {
-  ARTICLES_PAGE, CATEGORY_PAGES, EXERCISES_PAGE, HOME, HOME_PAGE, PLAY_STORE_URL, PageText, SITE_URL, SitePage, articleBySlug, exerciseSlug, pagePath, pageText,
+  ARTICLES_PAGE, CATEGORY_PAGES, EXERCISES_PAGE, HOME, HOME_EXERCISES, HOME_PAGE, PLAY_STORE_URL, PageText, SITE_URL, SitePage, articleBySlug, exerciseSlug, pagePath, pageText,
 } from './pages';
 import {
   AUTHOR, AUTHOR_PAGE, Article, ArticleBlock, HEALTH_NOTICE, Inline, articleDate, authorPageVisible, parseInline, readingMinutes, visibleArticles,
@@ -300,25 +300,31 @@ ${sessionList(sessions.filter(p => p.level === level.id), base)}
 const cardRow = (href: string, label: string, hint: string, count: string) =>
   `<li><a href="${href}" class="w-full bg-cream text-ink rounded-[18px] px-4 py-3.5 flex items-center gap-3"><span class="flex-1 flex flex-col gap-0.5"><span class="font-display font-bold text-[22px] leading-tight">${esc(label)}</span><span class="text-[15px] leading-snug text-clay">${esc(hint)}</span></span><span class="text-sm font-semibold text-clay shrink-0">${esc(count)}</span></a></li>`;
 
+// What one reads rather than does (the exercises, the articles): darker than the session rows.
+const readCard = 'w-full bg-ink/35 text-cream rounded-[18px] px-4 flex';
+const readText = (label: string, hint: string) =>
+  `<span class="flex-1 flex flex-col gap-0.5"><span class="font-display font-bold text-[22px] leading-tight">${esc(label)}</span><span class="text-[15px] leading-snug text-sand">${esc(hint)}</span></span>`;
+
 function homeMain(base: string, includeDrafts: boolean) {
   const articles = visibleArticles(includeDrafts);
-  const rows = [
-    ...PRESET_CATEGORIES.map(category => {
-      const objective = OBJECTIVES.find(o => o.id === category);
-      const count = objective ? RACE_SESSIONS.filter(p => p.objective === category).length : TARGETED_SESSIONS.length;
-      return cardRow(pagePath({ kind: 'category', category }, base), categoryLabel(category), objective?.hint ?? TARGETED_HINT, `${count} séances`);
-    }),
-    cardRow(pagePath({ kind: 'exercises' }, base), 'Les exercices', 'Chaque mouvement expliqué et animé.', `${EXERCISE_DATABASE.length} fiches`),
-    ...(articles.length > 0
-      ? [cardRow(pagePath({ kind: 'articles' }, base), 'Les articles', 'Le renfo raconté par un coureur, chiffres à l\'appui.', `${articles.length} article${articles.length > 1 ? 's' : ''}`)]
-      : []),
-  ];
+  const thumbs = HOME_EXERCISES.exerciseIds.map(id => exerciseThumb(exerciseOf(id), 'w-full h-14')).join('');
+  const rows = PRESET_CATEGORIES.map(category => {
+    const objective = OBJECTIVES.find(o => o.id === category);
+    const count = objective ? RACE_SESSIONS.filter(p => p.objective === category).length : TARGETED_SESSIONS.length;
+    return cardRow(pagePath({ kind: 'category', category }, base), categoryLabel(category), objective?.hint ?? TARGETED_HINT, `${count} séances`);
+  });
   return `<h1 class="font-display font-extrabold text-[44px] leading-none tracking-[-0.03em]">Le renfo pour les coureurs</h1>
 <p class="text-base leading-snug">Des séances de renforcement musculaire guidées, pensées pour la course à pied : mollets, adducteurs, fessiers, gainage. Prêtes pour ton objectif, ou composées selon ton matériel et ton temps.</p>
 <section class="flex flex-col gap-2.5">
 <h2 class="font-display font-extrabold text-[26px] leading-tight">Tu prépares quoi ?</h2>
 <ul class="flex flex-col gap-2.5">${rows.join('')}</ul>
-</section>`;
+</section>
+<section class="flex flex-col gap-2.5 mt-5">
+<h2 class="font-display font-extrabold text-[26px] leading-tight">${esc(HOME_EXERCISES.heading)}</h2>
+<a href="${pagePath({ kind: 'exercises' }, base)}" class="${readCard} pt-3.5 pb-4 flex-col gap-3.5"><span class="grid grid-cols-4 gap-2">${thumbs}</span>${readText(HOME_EXERCISES.title, HOME_EXERCISES.hint)}</a>
+</section>${articles.length > 0
+    ? `\n<a href="${pagePath({ kind: 'articles' }, base)}" class="${readCard} py-3.5 items-center gap-3 mt-3">${readText('Les articles', 'Le renfo raconté par un coureur, chiffres à l\'appui.')}<span class="text-sm font-semibold text-sand shrink-0">${articles.length} article${articles.length > 1 ? 's' : ''}</span></a>`
+    : ''}`;
 }
 
 // --- Exercise pages ---
@@ -331,11 +337,11 @@ function exerciseFigure(exercise: Exercise) {
   return `<div class="-mx-2 flex justify-center"><svg viewBox="0 ${top} 200 ${160 - top}" role="img" aria-label="${esc(`Position de l'exercice : ${exercise.name}`)}" class="block w-full max-w-[320px]">${sceneFrame(scene, scene.motion.still ?? 0, {})}</svg></div>`;
 }
 
-function exerciseThumb(exercise: Exercise) {
+function exerciseThumb(exercise: Exercise, size = 'w-[60px] h-12') {
   const scene = SCENES[exercise.id];
-  if (!scene) return '<span class="bg-cream rounded-xl shrink-0 w-[60px] h-12" aria-hidden="true"></span>';
+  if (!scene) return `<span class="bg-cream rounded-xl shrink-0 ${size}" aria-hidden="true"></span>`;
   const { viewBox, svg } = sceneThumb(scene);
-  return `<svg viewBox="${viewBox}" aria-hidden="true" class="bg-cream rounded-xl shrink-0 w-[60px] h-12">${svg}</svg>`;
+  return `<svg viewBox="${viewBox}" aria-hidden="true" class="bg-cream rounded-xl shrink-0 ${size}">${svg}</svg>`;
 }
 
 const exerciseRow = (exercise: Exercise, base: string) =>

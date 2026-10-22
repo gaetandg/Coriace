@@ -83,6 +83,15 @@ export const EXERCISES_PAGE: PageText & { heading: string; intro: string } = {
   description: `${EXERCISE_DATABASE.length} exercices de renforcement pour coureurs, expliqués et animés : mollets, adducteurs, fessiers, cuisses, gainage. Mouvement, conseil, version plus facile et plus dure.`,
 };
 
+// The way in to the exercises on the home page, set apart from the sessions: what one reads to
+// learn, not a session to do.
+export const HOME_EXERCISES = {
+  heading: 'Les exercices',
+  title: 'Chaque mouvement expliqué',
+  hint: `${EXERCISE_DATABASE.length} fiches animées, avec les muscles sollicités et les variantes.`,
+  exerciseIds: ['copenhagen_plank', 'reverse_lunges', 'plank_commando', 'single_leg_bridge'],
+};
+
 export const ARTICLES_SLUG = 'articles';
 
 export const ARTICLES_PAGE: PageText & { heading: string; intro: string } = {

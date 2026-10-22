@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { BuiltFile, SITE_PAGES, staticPages } from './staticPages';
-import { CATEGORY_PAGES, pagePath } from './pages';
+import { CATEGORY_PAGES, HOME_EXERCISES, pagePath } from './pages';
 import { EXERCISE_DATABASE } from './exercises';
 import { PRESET_CATEGORIES, RACE_SESSIONS, TARGETED_SESSIONS, presetExercises } from './sessions';
 
@@ -60,6 +60,14 @@ describe('static pages', () => {
     expect(page).toContain('href="/marathon/"');
     const list = root(html('exercices/index.html'));
     for (const ex of EXERCISE_DATABASE) expect(list).toContain(`href="${pagePath({ kind: 'exercise', exerciseId: ex.id })}"`);
+  });
+
+  it('sets the exercises apart from the sessions on the home page', () => {
+    const home = root(html('index.html'));
+    const start = home.indexOf('Tu prépares quoi ?');
+    expect(home.slice(start, home.indexOf('</ul>', start))).not.toContain('href="/exercices/"');
+    expect(home).toContain(`${HOME_EXERCISES.heading}</h2>`);
+    for (const id of HOME_EXERCISES.exerciseIds) expect(EXERCISE_DATABASE.some(ex => ex.id === id), id).toBe(true);
   });
 
   it('links the home page to every page, and each page to the others', () => {

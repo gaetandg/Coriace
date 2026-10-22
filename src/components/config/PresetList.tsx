@@ -3,16 +3,16 @@ import {
   LEVELS, OBJECTIVES, PRESET_EQUIPMENT_LABELS, PresetCategory, PresetSession, RACE_SESSIONS, TARGETED_HINT, TARGETED_INTRO,
   TARGETED_SESSIONS, categoryLabel, presetEquipment,
 } from '../../sessions';
-import { EXERCISE_DATABASE } from '../../exercises';
-import { HOME, pagePath } from '../../pages';
+import { HOME, HOME_EXERCISES, pagePath } from '../../pages';
 import { inApp } from '../../lib/links';
 import { BackLink } from '../BackLink';
 import { DurationDial } from '../DurationDial';
+import { ExerciseThumb } from '../ExerciseThumb';
 
 const chip = 'px-2.5 py-0.5 rounded-full bg-ink/10 text-[13px] font-semibold';
 
-// Home of the ready-made sessions: one row per race distance, then the targeted sessions, then
-// the exercises.
+// Home of the ready-made sessions: one row per race distance, then the targeted sessions. The
+// exercises come after, apart and darker: they are to read, not a session to do.
 export function PresetCategories({ onOpen, onOpenExercises }: {
   onOpen: (category: PresetCategory) => void;
   onOpenExercises: () => void;
@@ -27,12 +27,9 @@ export function PresetCategories({ onOpen, onOpenExercises }: {
   const rows = [
     ...OBJECTIVES.map(o => categoryRow(o.id, o.label, o.hint, RACE_SESSIONS.filter(p => p.objective === o.id).length)),
     categoryRow('ciblees', categoryLabel('ciblees'), TARGETED_HINT, TARGETED_SESSIONS.length),
-    {
-      id: 'exercises-link', href: pagePath({ kind: 'exercises' }, base), open: onOpenExercises,
-      label: 'Les exercices', hint: 'Chaque mouvement expliqué et animé.', count: `${EXERCISE_DATABASE.length} fiches`,
-    },
   ];
   return (
+    <>
     <div id="preset-list" className="relative flex flex-col gap-2.5">
       <h2 className="font-display font-extrabold text-[26px] leading-tight">Tu prépares quoi ?</h2>
       <ul className="flex flex-col gap-2.5">
@@ -55,6 +52,28 @@ export function PresetCategories({ onOpen, onOpenExercises }: {
         ))}
       </ul>
     </div>
+
+    <section id="home-exercises" className="flex flex-col gap-2.5 mt-5">
+      <h2 className="font-display font-extrabold text-[26px] leading-tight">{HOME_EXERCISES.heading}</h2>
+      <a
+        id="exercises-link"
+        href={pagePath({ kind: 'exercises' }, base)}
+        onClick={inApp(onOpenExercises)}
+        className="w-full bg-ink/35 text-cream rounded-[18px] px-4 pt-3.5 pb-4 flex flex-col gap-3.5 text-left cursor-pointer active:scale-[0.99] transition-transform"
+      >
+        <span className="grid grid-cols-4 gap-2">
+          {HOME_EXERCISES.exerciseIds.map(id => <ExerciseThumb key={id} exerciseId={id} className="w-full h-14" />)}
+        </span>
+        <span className="flex items-center gap-3">
+          <span className="flex-1 flex flex-col gap-0.5">
+            <span className="font-display font-bold text-[22px] leading-tight">{HOME_EXERCISES.title}</span>
+            <span className="text-[15px] leading-snug text-sand">{HOME_EXERCISES.hint}</span>
+          </span>
+          <ChevronRight className="w-5 h-5 shrink-0" aria-hidden="true" />
+        </span>
+      </a>
+    </section>
+    </>
   );
 }
 
