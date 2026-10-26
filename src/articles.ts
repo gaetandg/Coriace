@@ -450,7 +450,7 @@ export const ARTICLES: Article[] = [
     publishedAt: '2026-12-22',
     reviewedByPhysio: false,
     healthNotice: true,
-    draft: true,
+    draft: false,
     coverExerciseId: 'alternating_lunges',
     blocks: [
       { type: 'h2', text: 'Deux séances par semaine' },
@@ -539,7 +539,7 @@ export const ARTICLES: Article[] = [
     publishedAt: '2027-01-12',
     reviewedByPhysio: false,
     healthNotice: true,
-    draft: true,
+    draft: false,
     coverExerciseId: 'reverse_lunges',
     blocks: [
       { type: 'h2', text: 'Une règle mise à l\'épreuve' },
@@ -571,7 +571,7 @@ export const ARTICLES: Article[] = [
     publishedAt: '2027-01-19',
     reviewedByPhysio: false,
     healthNotice: false,
-    draft: true,
+    draft: false,
     coverExerciseId: 'side_plank',
     blocks: [
       { type: 'h2', text: "Le renfo d'abord, pour la force" },
@@ -602,7 +602,7 @@ export const ARTICLES: Article[] = [
     publishedAt: '2027-02-02',
     reviewedByPhysio: false,
     healthNotice: true,
-    draft: true,
+    draft: false,
     coverExerciseId: 'calf_raise_isometric_low',
     blocks: [
       { type: 'h2', text: 'Deux muscles, un tendon' },
@@ -641,7 +641,7 @@ export const ARTICLES: Article[] = [
     publishedAt: '2027-02-09',
     reviewedByPhysio: false,
     healthNotice: false,
-    draft: true,
+    draft: false,
     coverExerciseId: 'tempo_squat',
     blocks: [
       { type: 'h2', text: 'Pas de kilos en trop chez les coureurs' },
@@ -668,7 +668,7 @@ export const ARTICLES: Article[] = [
     publishedAt: '2027-02-16',
     reviewedByPhysio: false,
     healthNotice: true,
-    draft: true,
+    draft: false,
     coverExerciseId: 'single_leg_balance',
     blocks: [
       { type: 'h2', text: "L'étude" },
@@ -695,7 +695,7 @@ export const ARTICLES: Article[] = [
     publishedAt: '2027-02-23',
     reviewedByPhysio: false,
     healthNotice: true,
-    draft: true,
+    draft: false,
     coverExerciseId: 'side_lying_abduction',
     blocks: [
       { type: 'h2', text: 'Ce que disent les études' },
@@ -726,7 +726,7 @@ export const ARTICLES: Article[] = [
     publishedAt: '2027-03-02',
     reviewedByPhysio: false,
     healthNotice: false,
-    draft: true,
+    draft: false,
     coverExerciseId: 'bulgarian_split_squat',
     blocks: [
       { type: 'h2', text: 'Pour la performance, les charges lourdes' },
