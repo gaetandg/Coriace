@@ -34,7 +34,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 
 ### Séances
 - [x] Échauffement progressif sans répétition, option « Ne pas inclure d'échauffement » (même durée), finisher cardio, retour au calme guidé ; circuits courts et deux blocs pour les séances longues
-- [x] Séances prédéfinies par objectif (10 km, semi, marathon, +50 km) et niveau (débutant, intermédiaire, confirmé), et dix séances ciblées
+- [x] Séances prédéfinies par objectif (10 km, semi, marathon, +50 km) et niveau (débutant, intermédiaire, confirmé), et onze séances ciblées (dont Adducteurs, autour de la Copenhagen plank)
 - [x] Nouveaux exercices pour le trail et la puissance : descente lente d'une marche, squat descente lente, fentes arrière, sauts latéraux, squat sauté
 - [ ] Programmes sur plusieurs semaines (prépa marathon, trail, prévention des blessures, reprise) : phases fondation, développement, spécifique, affûtage ; calage sur la date de course ; carte « séance du jour » sur l'accueil ; progression synchronisée avec le compte
 - [x] Historique des séances terminées, avec le nombre de séances des 7 derniers jours sur l'accueil
@@ -106,6 +106,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Envoi automatique sur le test interne par l'API Google Play à chaque push sur `main` qui touche l'app (compte de service, secret `PLAY_SERVICE_ACCOUNT_JSON`, clé d'importation dans `UPLOAD_KEYSTORE_BASE64` et `UPLOAD_KEYSTORE_PASSWORD`) ; production par la Play Console (promouvoir la version) ou en lançant le workflow à la main
 - [x] Version du test interne vérifiée sur téléphone : connexion Google, liens coriace.app, « Ton avis »
 - [x] Version 37 promue en production et validée par Google (connexion Google, avis, liens, menu du bas, articles, muscles sollicités)
+- [ ] Promouvoir en production, avant le 15 décembre, une version avec la séance ciblée Adducteurs : l'article sur les adducteurs y renvoie, et la version 37 ne l'a pas
 - [ ] Vérifier dans *Ouvrir par défaut* (infos de l'app sur le téléphone) que coriace.app est un lien validé
 - [ ] Polices dans l'app Android plutôt que chargées depuis Google Fonts (hors ligne)
 

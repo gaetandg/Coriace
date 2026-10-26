@@ -70,7 +70,7 @@ export const CATEGORY_PAGES: Record<PresetCategory, CategoryPage> = {
     slug: 'seances-ciblees',
     heading: 'Séances de renfo ciblées',
     title: 'Renfo ciblé pour coureurs : mollets, genoux, gainage · Coriace',
-    description: `${TARGETED_SESSIONS.length} séances de renfo ciblées pour coureurs : mollets, tendon d'Achille, genoux, hanches, gainage, côtes, descentes. ${Math.min(...targetedMinutes)} à ${Math.max(...targetedMinutes)} minutes, guidées. Gratuit.`,
+    description: `${TARGETED_SESSIONS.length} séances de renfo ciblées pour coureurs : mollets, tendon d'Achille, genoux, hanches, adducteurs, gainage, côtes, descentes. ${Math.min(...targetedMinutes)} à ${Math.max(...targetedMinutes)} minutes, guidées. Gratuit.`,
   },
 };
 

@@ -169,6 +169,12 @@ const BASE_SESSIONS: PresetSession[] = [
     blocks: one(['single_leg_bridge', 'side_lying_abduction', 'lateral_lunges', 'side_plank', 'squat_sumo'], 3),
   },
   {
+    // The abduction between the adductor exercises: the inner thigh rests, and the hip works both ways.
+    id: 'adducteurs', name: 'Adducteurs', description: 'L\'intérieur des cuisses, qui tient le bassin et le genou à chaque foulée.',
+    durationMinutes: 15, warmupMinutes: 2, finisherIds: [], cooldownMinutes: 0,
+    blocks: one(['copenhagen_plank', 'squat_sumo', 'side_lying_abduction', 'lateral_lunges'], 3),
+  },
+  {
     id: 'genoux-solides', name: 'Genoux solides', description: 'Prévention du genou du coureur : cuisses en descente et moyen fessier.',
     durationMinutes: 20, warmupMinutes: 2, finisherIds: [], cooldownMinutes: 2,
     blocks: one(['step_down', 'side_lying_abduction', 'tempo_squat', 'single_leg_bridge', 'side_plank'], 3),
