@@ -81,6 +81,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Analyse de la sortie test de 30 km du 14 octobre, comparée à avril
 - [ ] Brouillons datés à finir, sinon ils ne sortent pas (`draft: true`) : marathon de Bordeaux avec le fichier de la montre (11 novembre), reprise après le marathon (24 novembre), test des mollets (1er décembre)
 - [ ] « Teste tes mollets en 2 minutes » : attend le résultat du test de l'auteur et l'avis du kiné
+- [ ] « Mon plan de marathon fait avec l'IA » : comment l'auteur a construit son plan pour Bordeaux avec une IA (sa demande, les infos données, le plan obtenu, ce qu'il a changé, ce que ça a donné à la course), et les limites d'un plan fait par une IA. Proposé pour le 5 janvier, quand on prépare les marathons de printemps
 - [ ] Articles « ce que dit la science » : une idée qui circule sur les réseaux (étirements avant la course, renfo qui alourdit, crampes et magnésium…), ce que montrent vraiment les études, leur niveau de preuve et ce qu'on ne sait pas, sources citées
 - [x] Charte éditoriale (dossier Drive « Application Coriace ») : contenu qu'on est seuls à pouvoir écrire (vécu de l'auteur, données Coriace, illustrations Coriace, tests, avis du kiné, interviews), première personne et tutoiement, rien d'inventé, illustrations maison sans images générées par IA, mention santé, relecture du kiné pour tout ce qui touche au corps
 - [x] Auteur signé « Le Coureur Coriace », page « Qui écrit ? » sans nom ni photo de visage
