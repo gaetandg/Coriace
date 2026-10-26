@@ -596,7 +596,7 @@ export const ARTICLES: Article[] = [
   {
     slug: 'soleaire-mollet-coureur',
     title: 'Le soléaire, le muscle caché du mollet',
-    description: "Le soléaire porte le coureur à chaque appui. Où il se trouve, ce qu'il fait en course, et les exercices pour le renforcer, genoux pliés.",
+    description: "Le soléaire porte le coureur à chaque appui. Où il se trouve, ce qu'il fait en course, et les exercices pour le renforcer.",
     kind: 'Guide',
     lead: "Quand on dit mollet, on pense au muscle bombé qu'on voit sous la peau. Mais en course, il y en a un autre qui travaille énormément : le soléaire, caché dessous.",
     publishedAt: '2027-02-02',
