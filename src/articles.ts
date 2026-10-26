@@ -734,7 +734,7 @@ export const ARTICLES: Article[] = [
       { type: 'p', text: "Les charges moyennes marchent aussi. Chez des coureurs de haut niveau, des programmes de 8 à 12 semaines, deux à trois fois par semaine, avec des charges faibles à modérées et des sauts, amélioraient nettement l'économie de course (Balsalobre-Fernández, 2016)." },
       { type: 'p', text: "Le renfo au poids du corps est plus proche du renfo léger que des charges lourdes, sauf sur certains exercices sur une jambe. Pour gagner en performance, ce n'est donc pas ce qu'il y a de plus efficace." },
       { type: 'h2', text: 'Pour les blessures, pas besoin de barre' },
-      { type: 'p', text: "Tous sports confondus, le renfo divise le risque de blessure par trois environ (Lauersen, 2014). Et certains programmes qui ont fait leurs preuves se font sans charge : la Copenhagen plank, au poids du corps, a réduit de 41 % les problèmes à l'aine chez des footballeurs (Harøy, 2019)." },
+      { type: 'p', text: "Tous sports confondus, le renfo divise le risque de blessure par trois environ (Lauersen, 2014). Et certains programmes qui ont fait leurs preuves se font sans charge : un programme autour de la Copenhagen plank, au poids du corps, a réduit de 41 % le risque de problèmes à l'aine chez des footballeurs (Harøy, 2019)." },
       { type: 'h2', text: "Ce que j'en retiens" },
       { type: 'p', text: "Moi, je n'ai jamais fait de musculation en salle. Le poids de 8 kg, je l'avais chez moi, c'est tout." },
       { type: 'p', text: "Le renfo au poids du corps a un gros avantage : on le fait chez soi, sans salle, donc on le fait vraiment, chaque semaine. Pour aller plus loin, la salle et les charges lourdes sont l'étape suivante." },
