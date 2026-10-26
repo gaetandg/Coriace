@@ -77,15 +77,15 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Section d'articles sur la course à pied et le renfo (`/articles/`) : liste des articles et une page par article, HTML écrit au build (titre, description, données structurées `Article` avec l'auteur, sitemap), brouillons visibles seulement en développement
 - [x] Premiers articles publiés : « Des crampes au 30e kilomètre, à chaque marathon » (avec le graphique d'allure des 2 Rives) et « Renfo et marathon : mon plan pour Bordeaux »
 - [x] Articles programmés : un article daté sort tout seul (le site est refait chaque matin) ; l'app Android lit les articles du site (`articles.json`) et les garde hors ligne, sans mise à jour du Store
-- [ ] Faire lire au kiné (un ami, avis informel) chaque article qui touche au corps avant sa date (affûtage le 3 novembre, étirements le 17 novembre, cadence le 8 décembre, adducteurs le 15 décembre), ou décaler la date. Jamais de mention « Relu par un kinésithérapeute » : sa lecture n'a rien d'officiel
+- [x] Relecture : l'auteur valide chaque article, sans attendre le kiné (un ami, avis informel) ; ses remarques s'ajoutent quand il en a. Jamais de mention « Relu par un kinésithérapeute »
 - [x] Analyse de la sortie test de 30 km du 14 octobre, comparée à avril
 - [ ] Brouillons datés à finir, sinon ils ne sortent pas (`draft: true`) : marathon de Bordeaux avec le fichier de la montre (11 novembre), reprise après le marathon (24 novembre), test des mollets (1er décembre)
 - [ ] « Teste tes mollets en 2 minutes » : attend le résultat du test de l'auteur et l'avis du kiné
-- [ ] Articles « ce que dit la science » : une idée qui circule sur les réseaux (étirements avant la course, renfo qui alourdit, crampes et magnésium…), ce que montrent vraiment les études, leur niveau de preuve et ce qu'on ne sait pas, sources citées ; relus par le kiné
+- [ ] Articles « ce que dit la science » : une idée qui circule sur les réseaux (étirements avant la course, renfo qui alourdit, crampes et magnésium…), ce que montrent vraiment les études, leur niveau de preuve et ce qu'on ne sait pas, sources citées
 - [x] Charte éditoriale (dossier Drive « Application Coriace ») : contenu qu'on est seuls à pouvoir écrire (vécu de l'auteur, données Coriace, illustrations Coriace, tests, avis du kiné, interviews), première personne et tutoiement, rien d'inventé, illustrations maison sans images générées par IA, mention santé, relecture du kiné pour tout ce qui touche au corps
 - [x] Auteur signé « Le Coureur Coriace », page « Qui écrit ? » sans nom ni photo de visage
 - [ ] Six premiers articles : pourquoi j'ai fini par faire du renfo, le renfo pour préparer un marathon, teste tes mollets en 2 minutes, renfo avant ou après la sortie, journal de prépa du marathon de Bordeaux, interview du kiné ; plus tard un baromètre tiré des données de l'app (chiffres agrégés et anonymes, mentionnés dans la page de confidentialité)
-- [ ] Rythme : deux articles par mois. Brouillon rédigé à partir de la matière de l'auteur (notes, Strava, photos), relu par l'auteur et le kiné avant publication
+- [ ] Rythme : deux articles par mois. Brouillon rédigé à partir de la matière de l'auteur (notes, Strava, photos), relu par l'auteur avant publication
 - [x] Nom de domaine propre plutôt que github.io (coriace.app), pour que le référencement profite à la marque
 - [x] Une page par distance et pour les séances ciblées (`/marathon/`…) : adresse, titre, description et texte lisible sans JavaScript, écrits au build ; sitemap et robots.txt
 - [x] Une page par exercice (`/exercices/…`) et la liste des exercices : fiche complète, image de la position, séances qui l'utilisent ; dans l'app aussi
