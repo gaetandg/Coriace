@@ -104,7 +104,8 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Créer l'app dans la Play Console et publier la première version
 - [x] Envoi automatique sur le test interne par l'API Google Play à chaque push sur `main` qui touche l'app (compte de service, secret `PLAY_SERVICE_ACCOUNT_JSON`, clé d'importation dans `UPLOAD_KEYSTORE_BASE64` et `UPLOAD_KEYSTORE_PASSWORD`) ; production par la Play Console (promouvoir la version) ou en lançant le workflow à la main
 - [x] Version du test interne vérifiée sur téléphone : connexion Google, liens coriace.app, « Ton avis »
-- [ ] Promouvoir en production la dernière version du test interne (connexion Google, avis, liens, menu du bas et articles), puis vérifier dans *Ouvrir par défaut* que coriace.app est un lien validé
+- [x] Version 37 promue en production et validée par Google (connexion Google, avis, liens, menu du bas, articles, muscles sollicités)
+- [ ] Vérifier dans *Ouvrir par défaut* (infos de l'app sur le téléphone) que coriace.app est un lien validé
 - [ ] Polices dans l'app Android plutôt que chargées depuis Google Fonts (hors ligne)
 
 ### Langues
