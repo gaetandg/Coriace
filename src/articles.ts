@@ -679,7 +679,7 @@ export const ARTICLES: Article[] = [
       { type: 'h2', text: 'Dans Coriace' },
       { type: 'p', text: "La séance « Pieds et chevilles » travaille le bas de la jambe : équilibre sur un pied, marche sur les talons, mollets et petits sauts latéraux. Ce ne sont pas les exercices de l'étude, mais ils travaillent les mêmes zones. Sur un pied, par exemple, le pied corrige sans arrêt : c'est ce qui protège la cheville sur un terrain irrégulier." },
       { type: 'exercises', ids: ['single_leg_balance', 'marche_talons_inversion'], caption: 'Équilibre sur un pied, et marche sur les talons.' },
-      { type: 'p', text: "Moi, je n'ai jamais eu mal aux pieds ni aux chevilles en courant." },
+      { type: 'p', text: "Moi, je n'ai jamais eu mal aux pieds ni aux chevilles en courant. Mais c'est toujours bon de savoir que ça existe, et que ça se travaille." },
       { type: 'try', items: ['La séance « Pieds et chevilles », dans les [séances ciblées](/seances-ciblees/).'] },
     ],
     sources: [
