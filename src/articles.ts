@@ -548,7 +548,7 @@ export const ARTICLES: Article[] = [
       { type: 'p', text: "Au Danemark, des chercheurs ont donné une montre GPS à 874 débutants et les ont suivis pendant un an. Dans l'ensemble, ceux qui augmentaient leur distance de plus de 10 % par semaine ne se blessaient pas plus que les autres." },
       { type: 'p', text: "Mais au-delà de 30 % d'augmentation sur deux semaines, certaines blessures liées à la distance devenaient plus fréquentes : douleur à l'avant du genou, syndrome de l'essuie-glace, périostite (Nielsen, 2014). Les auteurs restent prudents : l'écart n'est pas assez net pour en faire une preuve. Leur conseil aux débutants : rester sous 30 % par semaine." },
       { type: 'h2', text: 'Mon plan pour Bordeaux' },
-      { type: 'p', text: "Mon plan pour Bordeaux, construit avec une IA, comptait en minutes de course plutôt qu'en kilomètres. Il passait de près de 3 heures par semaine en juillet à un peu plus de 5 heures mi-octobre, au plus haut." },
+      { type: 'p', text: "Construit avec une IA, mon plan comptait en minutes de course plutôt qu'en kilomètres. Il passait de près de 3 heures par semaine en juillet à un peu plus de 5 heures mi-octobre, au plus haut." },
       { type: 'p', text: "D'une semaine normale à la suivante, il augmentait de 6 à 8 % : sous la barre des 10 %. Et toutes les quatre semaines, une semaine plus légère, de 20 à 30 % en moins, avant de repartir à peu près où j'en étais. Mon plan suivait donc presque la règle à la lettre." },
       { type: 'h2', text: "Ce que j'en retiens" },
       { type: 'p', text: "Le chiffre de 10 % n'a rien de magique. Ce qui semble compter, c'est d'éviter les gros sauts d'un coup, surtout quand on débute." },
