@@ -705,7 +705,7 @@ export const ARTICLES: Article[] = [
       { type: 'p', text: "Le moyen fessier, sur le côté de la hanche, tient le bassin à chaque appui. Quand il fatigue, le genou a tendance à rentrer vers l'intérieur. Dans cette synthèse, le renfo des hanches réduisait aussi les écarts du genou vers l'intérieur pendant la course, mais sur très peu d'études (Lack, 2015)." },
       { type: 'h2', text: 'De mon côté' },
       { type: 'p', text: "J'ai eu mal au genou il y a quelques années. J'ai réduit mon volume de course pendant deux ou trois semaines, et c'est passé, sans jamais revenir." },
-      { type: 'p', text: "À Saint-Émilion, c'est la hanche qui s'est réveillée, vers le 15e kilomètre. J'ai continué, la douleur est partie au bout de 5 km, et le repos après la course a suffi. Ça s'est bien fini, mais ce n'est pas une méthode." },
+      { type: 'p', text: "Sur ma première course, les 23 km de Saint-Émilion, c'est la hanche qui s'est réveillée, vers le 15e kilomètre. J'ai continué, la douleur est partie au bout de 5 km, et le repos après la course a suffi. Ça s'est bien fini, mais ce n'est pas une méthode." },
       { type: 'h2', text: 'Les exercices' },
       { type: 'exercises', ids: ['side_lying_abduction', 'single_leg_bridge'], caption: 'Abduction couché sur le côté et pont fessier sur une jambe, pour les hanches.' },
       { type: 'exercises', ids: ['step_down', 'tempo_squat'], caption: "Descente lente d'une marche et squat descente lente, pour les cuisses." },
