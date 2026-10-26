@@ -77,7 +77,7 @@ Ce qui est prévu pour Coriace, dans l'ordre de priorité actuel.
 - [x] Section d'articles sur la course à pied et le renfo (`/articles/`) : liste des articles et une page par article, HTML écrit au build (titre, description, données structurées `Article` avec l'auteur, sitemap), brouillons visibles seulement en développement
 - [x] Premiers articles publiés : « Des crampes au 30e kilomètre, à chaque marathon » (avec le graphique d'allure des 2 Rives) et « Renfo et marathon : mon plan pour Bordeaux »
 - [x] Articles programmés : un article daté sort tout seul (le site est refait chaque matin) ; l'app Android lit les articles du site (`articles.json`) et les garde hors ligne, sans mise à jour du Store
-- [ ] Faire relire par le kiné les articles publiés (crampes au 30e, plan pour Bordeaux, sortie de 30 km) et programmés avant leur date (sel et magnésium le 27 octobre, étirements le 17 novembre, cadence le 8 décembre, adducteurs le 15 décembre), ou décaler ces dates ; puis afficher « Relu par un kinésithérapeute »
+- [ ] Faire lire au kiné (un ami, avis informel) chaque article qui touche au corps avant sa date (étirements le 17 novembre, cadence le 8 décembre, adducteurs le 15 décembre), ou décaler la date. Jamais de mention « Relu par un kinésithérapeute » : sa lecture n'a rien d'officiel
 - [x] Analyse de la sortie test de 30 km du 14 octobre, comparée à avril
 - [ ] Brouillons datés à finir, sinon ils ne sortent pas (`draft: true`) : affûtage (3 novembre), marathon de Bordeaux avec le fichier de la montre (11 novembre), reprise après le marathon (24 novembre), test des mollets (1er décembre)
 - [ ] « Teste tes mollets en 2 minutes » : attend le résultat du test de l'auteur et l'avis du kiné

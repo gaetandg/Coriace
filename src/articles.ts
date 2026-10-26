@@ -191,7 +191,9 @@ export const ARTICLES: Article[] = [
       { type: 'p', text: "Ce sont quand même des crampes provoquées en laboratoire, sur des gens au repos. Personne n'a montré que le jus de cornichon empêche les crampes en course." },
       { type: 'h2', text: 'Quand ça bloque' },
       { type: 'p', text: "Étirer le muscle qui crampe : c'est le traitement le mieux appuyé par les études (Miller, 2022). C'est aussi ce que je fais en course. Je m'arrête, j'étire, je marche, et je repars dès que je peux." },
-      { type: 'p', text: "Pour qu'elles n'arrivent pas, les pistes sérieuses sont ailleurs : ne pas partir trop vite, et arriver moins fatigué au kilomètre où ça lâche d'habitude. J'en parle dans [mon article sur les crampes au 30e km](/articles/crampes-30e-kilometre-marathon/)." },
+      { type: 'h2', text: 'Alors, contre les crampes ?' },
+      { type: 'p', text: "Ni le sel, ni le magnésium, ni le jus de cornichon n'ont fait leurs preuves en course. La piste qui tient le mieux, c'est la fatigue du muscle (Miller, 2022). Sur l'Ironman, ceux qui ont crampé avaient couru plus vite que les autres, et avaient déjà eu des crampes sur des courses précédentes (Schwellnus, 2011)." },
+      { type: 'p', text: "Pour les éviter, il reste donc deux pistes : partir à une allure que tu tiendras jusqu'au bout, et arriver au kilomètre où ça lâche d'habitude avec des muscles moins fatigués. Pour ça, je mise sur le renfo des mollets, comme je l'explique dans [mon article sur les crampes au 30e km](/articles/crampes-30e-kilometre-marathon/). C'est un pari, pas une certitude. Réponse au marathon de Bordeaux, le 8 novembre." },
       { type: 'try', items: ["La séance « Mollets express » et les autres [séances ciblées](/seances-ciblees/), pour des mollets qui encaissent mieux."] },
     ],
     sources: [
