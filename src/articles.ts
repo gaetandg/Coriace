@@ -488,7 +488,7 @@ export const ARTICLES: Article[] = [
         ],
       },
       { type: 'h2', text: 'Les plus durs pour moi' },
-      { type: 'p', text: "Ceux qui font travailler les bras : la planche commando et les pompes. Si c'est pareil pour toi, chacun a sa version plus facile." },
+      { type: 'p', text: "Ceux qui font travailler les bras : la planche commando et les pompes. Si toi aussi tu as du mal avec ces deux exercices, commence par leur version plus facile." },
       { type: 'exercises', ids: ['plank_commando', 'pushups'], caption: 'Planche commando et pompes.' },
       {
         type: 'list',
