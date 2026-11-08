@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 470" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+<rect width="440" height="470" rx="18" fill="#F6EBDD"/>
+<text x="20" y="32" font-size="19" font-weight="700" fill="#3B140C">Bordeaux et les 2 Rives</text>
+<text x="20" y="54" font-size="15" fill="#7A3424">Mon allure au kilomètre (min/km)</text>
+<line x1="20" x2="44" y1="76" y2="76" stroke="#A13D2B" stroke-width="3.5"/><text x="50" y="81" font-size="14" fill="#3B140C" font-weight="700">Bordeaux, novembre</text>
+<line x1="210" x2="234" y1="76" y2="76" stroke="#7A3424" stroke-width="2.5" stroke-dasharray="5 4"/><text x="240" y="81" font-size="14" fill="#7A3424">2 Rives, mai</text>
+<line x1="50" x2="426" y1="100.0" y2="100.0" stroke="#E3CDBA"/>
+<text x="43" y="105.0" font-size="14" text-anchor="end" fill="#7A3424">4'30</text>
+<line x1="50" x2="426" y1="131.1" y2="131.1" stroke="#E3CDBA"/>
+<text x="43" y="136.1" font-size="14" text-anchor="end" fill="#7A3424">5'00</text>
+<line x1="50" x2="426" y1="193.3" y2="193.3" stroke="#E3CDBA"/>
+<text x="43" y="198.3" font-size="14" text-anchor="end" fill="#7A3424">6'00</text>
+<line x1="50" x2="426" y1="255.6" y2="255.6" stroke="#E3CDBA"/>
+<text x="43" y="260.6" font-size="14" text-anchor="end" fill="#7A3424">7'00</text>
+<line x1="50" x2="426" y1="317.8" y2="317.8" stroke="#E3CDBA"/>
+<text x="43" y="322.8" font-size="14" text-anchor="end" fill="#7A3424">8'00</text>
+<line x1="50" x2="426" y1="380.0" y2="380.0" stroke="#E3CDBA"/>
+<text x="43" y="385.0" font-size="14" text-anchor="end" fill="#7A3424">9'00</text>
+<line x1="50" x2="426" y1="114.5" y2="114.5" stroke="#2E5E3E" stroke-width="2" stroke-dasharray="7 5"/>
+<polyline points="54.0,109.5 63.0,103.2 72.0,102.5 80.9,104.4 89.9,102.6 98.9,104.4 107.9,103.3 116.8,103.6 125.8,103.7 134.8,101.4 143.8,104.9 152.7,107.0 161.7,105.8 170.7,106.1 179.7,105.6 188.6,106.7 197.6,107.4 206.6,105.1 215.6,106.4 224.5,104.4 233.5,107.8 242.5,106.2 251.5,111.7 260.4,114.9 269.4,111.7 278.4,118.8 287.4,169.1 296.3,134.9 305.3,145.1 314.3,147.8 323.3,223.4 332.2,168.1 341.2,169.1 350.2,200.3 359.2,151.8 368.1,354.1 377.1,182.3 386.1,219.8 395.1,273.3 404.0,177.8 413.0,197.1 422.0,169.1" fill="none" stroke="#7A3424" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<polyline points="54.0,116.2 63.0,109.5 72.0,110.0 80.9,107.2 89.9,108.8 98.9,114.0 107.9,114.9 116.8,114.2 125.8,107.6 134.8,114.1 143.8,111.1 152.7,108.1 161.7,108.5 170.7,110.6 179.7,109.1 188.6,118.0 197.6,108.9 206.6,108.6 215.6,108.9 224.5,106.2 233.5,114.5 242.5,108.7 251.5,110.3 260.4,108.7 269.4,111.3 278.4,119.4 287.4,113.3 296.3,116.8 305.3,113.6 314.3,117.4 323.3,125.8 332.2,118.7 341.2,123.6 350.2,125.7 359.2,133.8 368.1,121.2 377.1,127.4 386.1,129.6 395.1,137.6 404.0,133.0 413.0,133.2 422.0,137.9" fill="none" stroke="#A13D2B" stroke-width="3.5" stroke-linejoin="round"/>
+<text x="308.3" y="358.1" font-size="14" font-weight="700" text-anchor="end" fill="#7A3424">2 Rives, 36e km : 8 min 35</text>
+<text x="63.0" y="177.8" font-size="14" font-weight="700" fill="#A13D2B">Bordeaux : de 4'36 à 5'07/km</text>
+<text x="54.0" y="132.5" font-size="13" font-weight="700" fill="#2E5E3E">Visé : 4'44/km</text>
+<text x="54.0" y="402" font-size="14" text-anchor="middle" fill="#7A3424">1er km</text>
+<text x="134.8" y="402" font-size="14" text-anchor="middle" fill="#7A3424">10e km</text>
+<text x="224.5" y="402" font-size="14" text-anchor="middle" fill="#7A3424">20e km</text>
+<text x="314.3" y="402" font-size="14" text-anchor="middle" fill="#7A3424">30e km</text>
+<text x="404.0" y="402" font-size="14" text-anchor="middle" fill="#7A3424">40e km</text>
+<text x="20" y="432" font-size="14" fill="#3B140C">Temps : <tspan font-weight="700">3 h 22</tspan> à Bordeaux, <tspan font-weight="700">3 h 37</tspan> aux 2 Rives.</text>
+<text x="20" y="454" font-size="13" fill="#7A3424">Données de ma montre.</text>
+</svg>
