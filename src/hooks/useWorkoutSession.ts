@@ -6,7 +6,7 @@ import { SessionMode, loadPreferences, savePreferences } from '../lib/preference
 import { HistoryEntry, addHistoryEntry, clearHistory, loadHistory, saveHistory } from '../lib/history';
 import { deleteRemoteHistory, pushHistoryEntry, syncHistory } from '../lib/historySync';
 import { supabase } from '../lib/supabase';
-import { PRESET_SESSIONS, PresetCategory, PresetSession, buildPresetWorkout } from '../sessions';
+import { PRESET_SESSIONS, PresetCategory, PresetSession, buildPresetWorkout, presetCategoryOf } from '../sessions';
 import { EXERCISE_DATABASE } from '../exercises';
 import { getBlockSteps, groupPlan } from '../lib/plan';
 import { useBeep } from './useBeep';
@@ -245,7 +245,7 @@ export function useWorkoutSession(
     setConfig(prev => ({ ...prev, rythme: entry.rythme }));
     if (preset) {
       setMode('preset');
-      setPresetCategory(preset.objective ?? 'ciblees');
+      setPresetCategory(presetCategoryOf(preset));
       handleStartPreset(preset, entry.rythme);
       return;
     }

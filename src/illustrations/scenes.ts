@@ -42,6 +42,18 @@ const calvesStanding: Scene = {
   props: () => ({ back: wall(92) + step(92, 118, 126) }),
 };
 
+// On flat ground, at an even pace both ways.
+const calfRaises: Scene = {
+  motion: keyframes({
+    anchor: ['near.toe', [111, FLOOR - 1.5]],
+    angles: { torso: 184, head: 188, nearUpperArm: -128, nearForearm: -100, farUpperArm: -124, farForearm: -96, nearThigh: 1, nearShin: -1, nearFoot: -90, farThigh: 1, farShin: -1, farFoot: -90 },
+  }, [
+    { move: 900, hold: 400, pose: { angles: { nearFoot: -50, farFoot: -50 } } },
+    { move: 1100, hold: 300, pose: { angles: { nearFoot: -90, farFoot: -90 } } },
+  ]),
+  props: () => ({ back: wall(92) }),
+};
+
 const seatedRaise = (raised: boolean): Partial<Pose> => ({
   ik: raised ? { near: [110.5, 139.8], far: [108.5, 139.8] } : { near: [108, ANKLE_Y], far: [106, ANKLE_Y] },
   angles: raised ? { nearFoot: 55, farFoot: 55 } : flatFeet,
@@ -284,6 +296,12 @@ const singleLegBridge: Scene = {
   motion: keyframes({ ...bridgeBase([112, 141], false, [[134, ANKLE_Y]], 90, true), bend: { near: 1 } } as Pose, [
     { move: 1100, hold: 700, pose: bridgeBase([112, 121], true, [[134, ANKLE_Y]], 90, true) },
     { move: 1400, hold: 300, pose: bridgeBase([112, 141], false, [[134, ANKLE_Y]], 90, true) },
+  ]),
+};
+const gluteBridge: Scene = {
+  motion: keyframes({ ...bridgeBase([112, 141], false, [[134, ANKLE_Y], [132, ANKLE_Y]], 90, false), bend: { near: 1, far: 1 } } as Pose, [
+    { move: 1100, hold: 600, pose: bridgeBase([112, 121], true, [[134, ANKLE_Y], [132, ANKLE_Y]], 90, false) },
+    { move: 1400, hold: 300, pose: bridgeBase([112, 141], false, [[134, ANKLE_Y], [132, ANKLE_Y]], 90, false) },
   ]),
 };
 const hamstringBridge: Scene = {
@@ -629,6 +647,7 @@ const adductorStretch: Scene = {
 export const SCENES: Record<string, Scene> = {
   copenhagen_plank: copenhagen,
   calves_standing_slow: calvesStanding,
+  calf_raises: calfRaises,
   calves_seated: calvesSeated,
   squat_sumo: squatSumo,
   lateral_lunges: lateralLunges,
@@ -649,6 +668,7 @@ export const SCENES: Record<string, Scene> = {
   marche_talons_inversion: heelWalking,
   single_leg_balance: balance,
   shift_squat_goblet: shiftSquat,
+  glute_bridge: gluteBridge,
   single_leg_bridge: singleLegBridge,
   hamstring_bridge_chair: hamstringBridge,
   side_lying_abduction: abduction,

@@ -10,7 +10,8 @@ import {
 import { ARTICLE_FEED } from './lib/articleFeed';
 import {
   LEVELS, OBJECTIVES, PRESET_CATEGORIES, PRESET_EQUIPMENT_LABELS, PresetCategory, PresetSession, RACE_SESSIONS,
-  TARGETED_HINT, TARGETED_INTRO, TARGETED_SESSIONS, categoriesWithExercise, categoryLabel, presetEquipment, presetExercises,
+  RECOVERY_BY_DISTANCE, RECOVERY_CAUTION, RECOVERY_HINT, RECOVERY_INTRO, RECOVERY_SESSIONS,
+  TARGETED_HINT, TARGETED_INTRO, TARGETED_SESSIONS, categoriesWithExercise, categoryLabel, categorySessions, presetEquipment, presetExercises,
 } from './sessions';
 import { Exercise } from './types';
 
@@ -52,8 +53,8 @@ function card(page: SitePage): ShareCard {
     case 'home':
       return { title: 'Séances de renfo guidées pour les coureurs', subtitle: '10 km, semi, marathon, trail · Gratuit' };
     case 'category': {
-      const count = page.category === 'ciblees' ? TARGETED_SESSIONS.length : RACE_SESSIONS.filter(p => p.objective === page.category).length;
-      const minutes = page.category === 'ciblees' ? 'Une zone précise, 10 à 20 min' : '20, 30 ou 45 min';
+      const count = categorySessions(page.category).length;
+      const minutes = page.category === 'ciblees' ? 'Une zone précise, 10 à 20 min' : page.category === 'recup' ? 'Pas à pas, 15 à 25 min' : '20, 30 ou 45 min';
       return { title: CATEGORY_PAGES[page.category].heading, subtitle: `${count} séances guidées · ${minutes}` };
     }
     case 'exercises':
@@ -119,7 +120,7 @@ function structuredData(page: SitePage, base: string, includeDrafts: boolean): o
         },
       ];
     case 'category': {
-      const sessions = page.category === 'ciblees' ? TARGETED_SESSIONS : RACE_SESSIONS.filter(p => p.objective === page.category);
+      const sessions = categorySessions(page.category);
       return webPage('CollectionPage', CATEGORY_PAGES[page.category].heading, [home, { name: categoryLabel(page.category), url: url(page) }], {
         mainEntity: {
           '@type': 'ItemList',
@@ -277,13 +278,17 @@ const sessionList = (sessions: PresetSession[], base: string) =>
   `<ul class="flex flex-col gap-2.5">\n${sessions.map(p => sessionCard(p, base)).join('\n')}\n</ul>`;
 
 function categoryMain(category: PresetCategory, base: string) {
-  const intro = category === 'ciblees' ? TARGETED_INTRO : OBJECTIVES.find(o => o.id === category)!.intro;
+  const intro = category === 'ciblees' ? TARGETED_INTRO : category === 'recup' ? RECOVERY_INTRO : OBJECTIVES.find(o => o.id === category)!.intro;
   const parts = [
     `<h1 class="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">${esc(CATEGORY_PAGES[category].heading)}</h1>`,
     `<p class="text-base leading-snug">${esc(intro)}</p>`,
   ];
   if (category === 'ciblees') {
     parts.push(sessionList(TARGETED_SESSIONS, base));
+  } else if (category === 'recup') {
+    parts.push(`<ul class="flex flex-col gap-1 pl-5 list-disc text-base leading-snug">${RECOVERY_BY_DISTANCE.map(line => `<li>${esc(line)}</li>`).join('')}</ul>`);
+    parts.push(`<p class="text-sm text-sand">${esc(RECOVERY_CAUTION)}</p>`);
+    parts.push(sessionList(RECOVERY_SESSIONS, base));
   } else {
     const sessions = RACE_SESSIONS.filter(p => p.objective === category);
     parts.push(`<p class="text-base font-semibold">${sessions.length} séances, en trois durées : 20, 30 et 45 minutes.</p>`);
@@ -310,8 +315,8 @@ function homeMain(base: string, includeDrafts: boolean) {
   const thumbs = HOME_EXERCISES.exerciseIds.map(id => exerciseThumb(exerciseOf(id), 'w-full h-14')).join('');
   const rows = PRESET_CATEGORIES.map(category => {
     const objective = OBJECTIVES.find(o => o.id === category);
-    const count = objective ? RACE_SESSIONS.filter(p => p.objective === category).length : TARGETED_SESSIONS.length;
-    return cardRow(pagePath({ kind: 'category', category }, base), categoryLabel(category), objective?.hint ?? TARGETED_HINT, `${count} séances`);
+    const hint = objective?.hint ?? (category === 'recup' ? RECOVERY_HINT : TARGETED_HINT);
+    return cardRow(pagePath({ kind: 'category', category }, base), categoryLabel(category), hint, `${categorySessions(category).length} séances`);
   });
   return `<h1 class="font-display font-extrabold text-[44px] leading-none tracking-[-0.03em]">Le renfo pour les coureurs</h1>
 <p class="text-base leading-snug">Des séances de renforcement musculaire guidées, pensées pour la course à pied : mollets, adducteurs, fessiers, gainage. Prêtes pour ton objectif, ou composées selon ton matériel et ton temps.</p>

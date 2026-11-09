@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { LEVELS, OBJECTIVES, PRESET_SESSIONS, RACE_SESSIONS, TARGETED_SESSIONS, buildPresetWorkout, presetEquipment, presetUsesWeight, presetWithoutWeight } from './sessions';
+import {
+  LEVELS, OBJECTIVES, PRESET_CATEGORIES, PRESET_SESSIONS, RACE_SESSIONS, RECOVERY_SESSIONS, TARGETED_SESSIONS, buildPresetWorkout, categorySessions,
+  presetCategoryOf, presetEquipment, presetExercises, presetUsesWeight, presetWithoutWeight,
+} from './sessions';
 import { EXERCISE_DATABASE } from './exercises';
 import { FORMULAS } from './sessionFormulas';
 
@@ -86,5 +89,25 @@ describe('preset sessions', () => {
     expect(PRESET_SESSIONS.find(p => p.id === 'special-marathon')?.level).toBe('intermediaire');
     expect(PRESET_SESSIONS.find(p => p.id === 'complete')?.formula).toBe('Complète A');
     expect(PRESET_SESSIONS.find(p => p.id === '10k-debutant')?.formula).toBe('Complète A');
+  });
+});
+
+describe('sessions for after a race', () => {
+  const ids = (p: (typeof RECOVERY_SESSIONS)[number]) => presetExercises(p).map(ex => ex.id);
+  it('come in three steps, between the race distances and the targeted sessions', () => {
+    expect(RECOVERY_SESSIONS.map(p => p.formula)).toEqual(['1. Remettre en mouvement', '2. Réveiller les muscles', '3. Retour au renfo']);
+    expect(PRESET_CATEGORIES.indexOf('recup')).toBe(OBJECTIVES.length);
+    for (const category of PRESET_CATEGORIES) for (const p of categorySessions(category)) expect(presetCategoryOf(p)).toBe(category);
+    expect(TARGETED_SESSIONS.some(p => p.recovery)).toBe(false);
+  });
+
+  it('have no jumps and no weight, and no slow descents before the third', () => {
+    const jumps = ['pogo_jumps', 'squat_jumps', 'lateral_hops', 'jumping_jacks', 'high_knees', 'sauts_corde_bas', 'rope_running_step', 'rope_single_leg'];
+    const slowDescents = ['calves_standing_slow', 'step_down', 'tempo_squat'];
+    for (const p of RECOVERY_SESSIONS) {
+      expect(ids(p).filter(id => jumps.includes(id)), p.id).toEqual([]);
+      expect(presetUsesWeight(p), p.id).toBe(false);
+    }
+    for (const p of RECOVERY_SESSIONS.slice(0, 2)) expect(ids(p).filter(id => slowDescents.includes(id)), p.id).toEqual([]);
   });
 });

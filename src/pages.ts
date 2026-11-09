@@ -66,6 +66,12 @@ export const CATEGORY_PAGES: Record<PresetCategory, CategoryPage> = {
     title: `Renfo pour le trail et l'ultra : ${raceCount('ultra')} séances guidées · Coriace`,
     description: `${raceCount('ultra')} séances de renfo pour le trail et les courses de plus de 50 km : descentes, chevilles, équilibre et endurance des muscles. 20, 30 ou 45 minutes, guidées. Gratuit.`,
   },
+  recup: {
+    slug: 'apres-la-course',
+    heading: 'Le renfo après une course',
+    title: 'Renfo après une course : reprendre pas à pas · Coriace',
+    description: 'Trois séances de renfo pour reprendre après une course : remettre en mouvement, réveiller les muscles, puis revenir au renfo. Sans saut, 15 à 25 minutes, guidées. Gratuit.',
+  },
   ciblees: {
     slug: 'seances-ciblees',
     heading: 'Séances de renfo ciblées',

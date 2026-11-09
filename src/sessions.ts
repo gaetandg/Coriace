@@ -39,12 +39,23 @@ export const LEVELS: { id: Level; label: string; heading: string; hint: string }
 export const TARGETED_INTRO = 'Des séances courtes sur une zone précise, à glisser entre deux sorties ou en complément d\'une séance de préparation.';
 export const TARGETED_HINT = 'Une zone précise : mollets, gainage, genoux…';
 
-// The pages of ready-made sessions: one per race distance, then the targeted sessions.
-export type PresetCategory = Objective | 'ciblees';
-export const PRESET_CATEGORIES: PresetCategory[] = [...OBJECTIVES.map(o => o.id), 'ciblees'];
+export const RECOVERY_HINT = 'Reprendre le renfo en douceur, pas à pas.';
+export const RECOVERY_INTRO = 'Après une course, les muscles ont besoin de quelques jours. Ces trois séances reprennent le renfo pas à pas : d\'abord bouger, puis réveiller les muscles, puis revenir aux séances habituelles. Les deux premières se font au rythme doux.';
+export const RECOVERY_CAUTION = 'Les premiers jours, ni sauts ni descentes lentes : ce sont eux qui fatiguent le plus des muscles déjà abîmés. Les courbatures sont normales. Une douleur qui dure ou qui augmente ne l\'est pas : arrête, et demande l\'avis d\'un kiné.';
+// Where to start, by the distance just run.
+export const RECOVERY_BY_DISTANCE = [
+  'Après un 10 km : la séance 3, au bout de quelques jours.',
+  'Après un semi : la 2, puis la 3.',
+  'Après un marathon ou un long trail : les trois, une par semaine.',
+];
+
+// The pages of ready-made sessions: one per race distance, the sessions for after a race, then the
+// targeted sessions.
+export type PresetCategory = Objective | 'recup' | 'ciblees';
+export const PRESET_CATEGORIES: PresetCategory[] = [...OBJECTIVES.map(o => o.id), 'recup', 'ciblees'];
 
 export const categoryLabel = (category: PresetCategory) =>
-  category === 'ciblees' ? 'Séances ciblées' : OBJECTIVES.find(o => o.id === category)!.label;
+  category === 'ciblees' ? 'Séances ciblées' : category === 'recup' ? 'Après la course' : OBJECTIVES.find(o => o.id === category)!.label;
 
 export interface PresetSession {
   id: string;
@@ -58,8 +69,11 @@ export interface PresetSession {
   // Sessions for a race distance and a level; targeted sessions have neither.
   objective?: Objective;
   level?: Level;
-  // Race sessions: which of the level's five sessions this is (Complète A, Mollets…).
+  // Race sessions: which of the level's five sessions this is (Complète A, Mollets…). The sessions
+  // for after a race: their step.
   formula?: string;
+  // One of the sessions for after a race.
+  recovery?: true;
 }
 
 // Shorthands for the sessions below.
@@ -152,6 +166,26 @@ const BASE_SESSIONS: PresetSession[] = [
     ),
   }),
 
+  // --- After a race: no jumps, no load, and no slow descents before the third ---
+  {
+    id: 'recup-1', name: 'Après la course · 1. Remettre en mouvement', formula: '1. Remettre en mouvement', recovery: true,
+    description: '1re semaine, dès que tu marches normalement. Gainage doux, équilibre et fessiers, sans saut ni charge.',
+    durationMinutes: 15, warmupMinutes: 2, finisherIds: [], cooldownMinutes: 3,
+    blocks: one(['dead_bug', 'bird_dog', 'single_leg_balance', 'side_lying_abduction', 'glute_bridge'], 2),
+  },
+  {
+    id: 'recup-2', name: 'Après la course · 2. Réveiller les muscles', formula: '2. Réveiller les muscles', recovery: true,
+    description: '2e semaine. Squats à mi-hauteur, mollets sur sol plat et fentes arrière, toujours sans saut.',
+    durationMinutes: 20, warmupMinutes: 2, finisherIds: [], cooldownMinutes: 2,
+    blocks: one(['squat_classic', 'single_leg_bridge', 'side_plank', 'calf_raises', 'reverse_lunges'], 3),
+  },
+  {
+    id: 'recup-3', name: 'Après la course · 3. Retour au renfo', formula: '3. Retour au renfo', recovery: true,
+    description: '3e semaine. Les descentes lentes reviennent, toujours sans saut. Ensuite, retour aux séances de ta distance.',
+    durationMinutes: 25, warmupMinutes: 2, finisherIds: [], cooldownMinutes: 1,
+    blocks: one(['calves_standing_slow', 'step_down', 'copenhagen_plank', 'squat_sumo', 'single_leg_rdl', 'side_plank', 'bird_dog'], 3),
+  },
+
   // --- Targeted sessions ---
   {
     id: 'mollets-express', name: 'Mollets express', description: 'Mollets, tibias et rebond, à glisser avant ou après une sortie.',
@@ -232,7 +266,13 @@ function withFormulas(base: PresetSession): PresetSession[] {
 export const PRESET_SESSIONS: PresetSession[] = BASE_SESSIONS.flatMap(withFormulas);
 
 export const RACE_SESSIONS = PRESET_SESSIONS.filter(p => p.objective);
-export const TARGETED_SESSIONS = PRESET_SESSIONS.filter(p => !p.objective);
+export const RECOVERY_SESSIONS = PRESET_SESSIONS.filter(p => p.recovery);
+export const TARGETED_SESSIONS = PRESET_SESSIONS.filter(p => !p.objective && !p.recovery);
+
+// The page a session is on, and the sessions of a page.
+export const presetCategoryOf = (preset: PresetSession): PresetCategory =>
+  preset.objective ?? (preset.recovery ? 'recup' : 'ciblees');
+export const categorySessions = (category: PresetCategory) => PRESET_SESSIONS.filter(p => presetCategoryOf(p) === category);
 
 const exerciseById = (id: string): Exercise => {
   const exercise = EXERCISE_DATABASE.find(ex => ex.id === id);
@@ -253,7 +293,7 @@ export function categoriesWithExercise(exerciseId: string): { category: PresetCa
   return PRESET_CATEGORIES
     .map(category => ({
       category,
-      count: PRESET_SESSIONS.filter(p => (p.objective ?? 'ciblees') === category && presetExercises(p).some(ex => ex.id === exerciseId)).length,
+      count: categorySessions(category).filter(p => presetExercises(p).some(ex => ex.id === exerciseId)).length,
     }))
     .filter(row => row.count > 0);
 }

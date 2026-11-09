@@ -1,7 +1,7 @@
 import { ChevronRight } from 'lucide-react';
 import {
-  LEVELS, OBJECTIVES, PRESET_EQUIPMENT_LABELS, PresetCategory, PresetSession, RACE_SESSIONS, TARGETED_HINT, TARGETED_INTRO,
-  TARGETED_SESSIONS, categoryLabel, presetEquipment,
+  LEVELS, OBJECTIVES, PRESET_EQUIPMENT_LABELS, PresetCategory, PresetSession, RACE_SESSIONS, RECOVERY_BY_DISTANCE, RECOVERY_CAUTION,
+  RECOVERY_HINT, RECOVERY_INTRO, RECOVERY_SESSIONS, TARGETED_HINT, TARGETED_INTRO, TARGETED_SESSIONS, categoryLabel, presetEquipment,
 } from '../../sessions';
 import { HOME, HOME_EXERCISES, pagePath } from '../../pages';
 import { inApp } from '../../lib/links';
@@ -11,7 +11,7 @@ import { ExerciseThumb } from '../ExerciseThumb';
 
 const chip = 'px-2.5 py-0.5 rounded-full bg-ink/10 text-[13px] font-semibold';
 
-// Home of the ready-made sessions: one row per race distance, then the targeted sessions. The
+// Home of the ready-made sessions: one row per race distance, after the race, then the targeted sessions. The
 // exercises come after, apart and darker: they are to read, not a session to do.
 export function PresetCategories({ onOpen, onOpenExercises }: {
   onOpen: (category: PresetCategory) => void;
@@ -26,6 +26,7 @@ export function PresetCategories({ onOpen, onOpenExercises }: {
   });
   const rows = [
     ...OBJECTIVES.map(o => categoryRow(o.id, o.label, o.hint, RACE_SESSIONS.filter(p => p.objective === o.id).length)),
+    categoryRow('recup', categoryLabel('recup'), RECOVERY_HINT, RECOVERY_SESSIONS.length),
     categoryRow('ciblees', categoryLabel('ciblees'), TARGETED_HINT, TARGETED_SESSIONS.length),
   ];
   return (
@@ -107,14 +108,14 @@ function PresetCard({ preset, onStart }: { preset: PresetSession; onStart: (pres
   );
 }
 
-// The sessions of one page, with what they are for: a race distance's sessions by level, or the
-// targeted sessions. Tapping one opens it.
+// The sessions of one page, with what they are for: a race distance's sessions by level, the sessions
+// for after a race, or the targeted sessions. Tapping one opens it.
 export function PresetCategoryPage({ category, onBack, onStart }: {
   category: PresetCategory;
   onBack: () => void;
   onStart: (preset: PresetSession) => void;
 }) {
-  const intro = category === 'ciblees' ? TARGETED_INTRO : OBJECTIVES.find(o => o.id === category)!.intro;
+  const intro = category === 'ciblees' ? TARGETED_INTRO : category === 'recup' ? RECOVERY_INTRO : OBJECTIVES.find(o => o.id === category)!.intro;
   const list = (sessions: PresetSession[]) => (
     <ul className="flex flex-col gap-2.5">
       {sessions.map(preset => <PresetCard key={preset.id} preset={preset} onStart={onStart} />)}
@@ -125,13 +126,21 @@ export function PresetCategoryPage({ category, onBack, onStart }: {
       <BackLink href={pagePath(HOME, import.meta.env.BASE_URL)} label="Séances prédéfinies" onBack={onBack} />
       <h1 className="font-display font-extrabold text-[40px] leading-none tracking-[-0.03em]">{categoryLabel(category)}</h1>
       <p className="text-base leading-snug">{intro}</p>
-      {category !== 'ciblees' && (
+      {category === 'recup' && (
+        <>
+          <ul id="recovery-by-distance" className="flex flex-col gap-1 pl-5 list-disc text-base leading-snug">
+            {RECOVERY_BY_DISTANCE.map(line => <li key={line}>{line}</li>)}
+          </ul>
+          <p className="text-sm text-sand">{RECOVERY_CAUTION}</p>
+        </>
+      )}
+      {category !== 'ciblees' && category !== 'recup' && (
         <p id="category-count" className="text-base font-semibold">
           {RACE_SESSIONS.filter(p => p.objective === category).length} séances, en trois durées : 20, 30 et 45 minutes.
         </p>
       )}
-      {category === 'ciblees'
-        ? list(TARGETED_SESSIONS)
+      {category === 'ciblees' || category === 'recup'
+        ? list(category === 'recup' ? RECOVERY_SESSIONS : TARGETED_SESSIONS)
         : LEVELS.map(level => (
           <section key={level.id} id={`level-${level.id}`} className="flex flex-col gap-2.5 mt-2">
             <div className="flex flex-col gap-0.5">
