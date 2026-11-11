@@ -3,9 +3,12 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-  # Every morning, so that an article dated today goes out on its own.
+  # Every morning, so that an article dated today goes out on its own. GitHub can start a scheduled
+  # run hours late: the later ones catch up when the first one is slow to come.
   schedule:
     - cron: '47 4 * * *'
+    - cron: '17 7 * * *'
+    - cron: '17 9 * * *'
   workflow_dispatch:
 
 permissions:
